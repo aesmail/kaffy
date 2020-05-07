@@ -8,6 +8,10 @@ defmodule Kaffy.MixProject do
       elixir: "~> 1.7",
       compilers: [:phoenix] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
+      description: description(),
+      package: package(),
+      name: "Kaffy",
+      source_url: "https://github.com/aesmail/kaffy",
       deps: deps()
     ]
   end
@@ -26,6 +30,17 @@ defmodule Kaffy.MixProject do
       {:phoenix_html, "~> 2.11"},
       {:jason, "~> 1.0"},
       {:ecto_sql, "~> 3.4"}
+    ]
+  end
+
+  defp description() do
+    "Extremely simple yet powerful admin interface for phoenix applications"
+  end
+
+  defp package() do
+    [
+      licenses: ["MIT"],
+      links: %{"GitHub" => "https://github.com/aesmail/kaffy"}
     ]
   end
 end
