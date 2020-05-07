@@ -1,0 +1,62 @@
+<h2><%= Kaffy.ResourceAdmin.plural_name(@my_resource) %> <%= link "+", to: Kaffy.Utils.router().kaffy_resource_path(@conn, :new, @context, @resource), class: "btn btn-light btn-lg" %></h2>
+
+<nav aria-label="...">
+  <ul class="pagination">
+    <li class="page-item<%= if @page == 1 do %> disabled<% end %>">
+      <%= link "Previous", to: Kaffy.Utils.router().kaffy_resource_path(@conn, :index, @context, @resource, page: @page - 1, limit: @limit), class: "page-link" %>
+    </li>
+    <li class="page-item"><a class="page-link" href="?page=1">1</a></li>
+    <%= if @page < @total_pages do %>
+        <li class="page-item">
+            <a class="page-link" href="?page=<%= @page + 1 %>"><%= @page + 1 %></a>
+        </li>
+    <% end %>
+    <li class="page-item<%= if @page == @total_pages do %> disabled<% end %>">
+      <%= link "Next", to: Kaffy.Utils.router().kaffy_resource_path(@conn, :index, @context, @resource, page: @page + 1, limit: @limit), class: "page-link" %>
+    </li>
+  </ul>
+</nav>
+
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <%= for field <- @fields do %>
+                    <th><%= Kaffy.Resource.kaffy_field_name(Enum.at(@entries, 0), field) %></th>
+                <% end %>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <%= for entry <- @entries do %>
+                <tr>
+                    <%= for field <- @fields do %>
+                        <td>
+                            <%= Kaffy.Resource.kaffy_field_value(entry, field) %>
+                        </td>
+                    <% end %>
+                    <td>
+                        <%= link "Show", to: Kaffy.Utils.router().kaffy_resource_path(@conn, :show, @context, @resource, entry.id) %>
+                    </td>
+                </tr>
+            <% end %>
+        </tbody>
+    </table>
+</div>
+
+<nav aria-label="...">
+  <ul class="pagination">
+    <li class="page-item<%= if @page == 1 do %> disabled<% end %>">
+      <%= link "Previous", to: Kaffy.Utils.router().kaffy_resource_path(@conn, :index, @context, @resource, page: @page - 1, limit: @limit), class: "page-link" %>
+    </li>
+    <li class="page-item"><a class="page-link" href="?page=1">1</a></li>
+    <%= if @page < @total_pages do %>
+        <li class="page-item">
+            <a class="page-link" href="?page=<%= @page + 1 %>"><%= @page + 1 %></a>
+        </li>
+    <% end %>
+    <li class="page-item<%= if @page == @total_pages do %> disabled<% end %>">
+      <%= link "Next", to: Kaffy.Utils.router().kaffy_resource_path(@conn, :index, @context, @resource, page: @page + 1, limit: @limit), class: "page-link" %>
+    </li>
+  </ul>
+</nav>

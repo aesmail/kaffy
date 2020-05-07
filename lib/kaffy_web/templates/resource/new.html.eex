@@ -1,0 +1,17 @@
+<%= for error <- Kaffy.Resource.display_errors(@changeset) do %>
+    <div><%= error %></div>
+<% end %>
+
+<h2>New <%= String.capitalize(@resource) %></h2>
+
+<div>
+    <%= f = form_for(@changeset, Kaffy.Utils.router().kaffy_resource_path(@conn, :create, @context, @resource), method: :post, multipart: true) %>
+        <%= for field <- Kaffy.ResourceAdmin.form_fields(@my_resource) do %>
+            <div class="form-group">
+                <%= Kaffy.Resource.form_label(f, field) %>
+                <%= Kaffy.Resource.form_field(@changeset, f, field, class: "form-control") %>
+            </div>
+        <% end %>
+        <%= submit "Save", class: "btn btn-primary" %>
+    </form>
+</div>
