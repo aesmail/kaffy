@@ -29,7 +29,8 @@ defmodule Kaffy.MixProject do
       {:phoenix, "~> 1.5"},
       {:phoenix_html, "~> 2.11"},
       {:jason, "~> 1.0"},
-      {:ecto_sql, "~> 3.4"}
+      {:ecto_sql, "~> 3.4"},
+      {:ex_doc, ">= 0.0.0", only: :dev, runtime: false}
     ]
   end
 

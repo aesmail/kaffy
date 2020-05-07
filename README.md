@@ -175,3 +175,4 @@ end
 - [ ] Add filtration.
 - [ ] Export data as csv.
 - [ ] Add documentation.
+- [ ] Add support for phoenix < 1.5
