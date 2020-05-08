@@ -141,6 +141,12 @@ defmodule Bloggy.Admin.PostAdmin do
     ]
   end
 
+  def search_fields(_schema) do
+    # Must return a list of :string fields to search against when typing in the search box.
+    # If this function is not defined, Kaffy will return all the :string fields of the schema.
+    [:title, :slug, :body]
+  end
+
   def ordering(_schema) do
     # This returns how the entries should be ordered
     # if this function is not defined, Kaffy will return [desc: :id]
