@@ -20,6 +20,22 @@ defmodule Kaffy.ResourceAdmin do
     Utils.get_assigned_value_or_default(resource, :per_page, 100)
   end
 
+  def search_fields(resource) do
+    Utils.get_assigned_value_or_default(
+      resource,
+      :search_fields,
+      Resource.search_fields(resource)
+    )
+  end
+
+  def filter_fields(resource) do
+    Utils.get_assigned_value_or_default(
+      resource,
+      :filter_fields,
+      Resource.filter_fields(resource)
+    )
+  end
+
   def create_changeset(resource, changes) do
     schema = resource[:schema]
     functions = schema.__info__(:functions)

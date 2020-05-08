@@ -10,29 +10,54 @@ configs in your `config.exs` file (with the exception of adding a one liner to y
 
 A few points that encouraged the creation of Kaffy:
 
-- Taking contexts into account
-- No templates. All customizations are code-based.
-- No generators. Shouldn't need them.
+- Taking contexts into account.
+  - Supporting contexts makes the admin interface better organized.
+- Can handle as many schemas as necessary.
+  - Whether we have 1 schema or 1000 schemas, the admin interface should adapt well.
+- Have a visually pleasant user interface.
+  - This might be subjective.
+- No generators or generated templates.
+  - I believe the less files there are the better. This also means it's easier to upgrade for users when releasing new versions. This might mean some flexibility and customizations will be lost, but it's a trade-off.
+- Existing schemas/contexts shouldn't have to be modified.
+  - I shouldn't have to change my code in order to adapt to the package, the package should adapt to my code.
+- Should be easy to use whether with a new project or with existing projects with a lot of schemas.
+  - Adding kaffy should be as easy for existing projects as it is for new ones.
 - Highly flexible and customizable.
-- As few dependencies as possible. Currently it only depends on what phoenix depends on.
+  - Provide as many configurable options as possible.
+- As few dependencies as possible.
+  - Currently kaffy only depends on phoenix and ecto.
+- Simple authorization.
+  - I need to limit access for some admins to some schemas.
+- Minimum assumptions.
+  - Need to modify a schema's primary key? Need to hide a certain field? No problem.
 
 ## Installation
 
 ```elixir
 def deps do
   [
-    {:kaffy, "~> 0.1.0"}
+    {:kaffy, "~> 0.1.2"}
   ]
 end
 ```
 
 ## What You Get
 
-![Post list page](demos/posts_index.png)
+![Post list page](demos/post_index.png)
 
 ## Minimum configs
 
 ```elixir
+# in your router.ex
+use Kaffy.Routes, scope: "/admin"
+
+# in your endpoint.ex
+plug Plug.Static,
+  at: "/kaffy",
+  from: :kaffy,
+  gzip: false,
+  only: ~w(css img js scss vendor)
+
 # in your config/config.exs
 config :kaffy,
   ecto_repo: Bloggy.Repo,
@@ -41,14 +66,10 @@ config :kaffy,
     blog: [
       schemas: [
         post: [schema: Bloggy.Blog.Post],
-        comment: [schema: Bloggy.Blog.Comment],
-        tag: [schema: Bloggy.Blog.Tag]
+        # list your schemas for the blog context
       ]
     ]
   ]
-
-# in your router.ex
-use Kaffy.Routes, scope: "/admin"
 ```
 
 ## Customizations
@@ -61,7 +82,7 @@ config :kaffy,
   router: BloggyWeb.Router,
   resources: [
     blog: [
-      name: "My Blog", # the name of this "context"
+      name: "My Blog", # a custom name for this context/section.
       schemas: [
         post: [schema: Bloggy.Blog.Post, admin: Bloggy.Admin.PostAdmin],
         comment: [schema: Bloggy.Blog.Comment],
@@ -85,41 +106,43 @@ The following admin module is what the screenshot above is showing:
 
 defmodule Bloggy.Admin.PostAdmin do
   def index(_schema) do
-    # index should return a keyword list of fields and
+    # index/1 should return a keyword list of fields and
     # their options.
     # Supported options are :name and :value.
-    # both options can be a string or an anonymous function.
-    # if a fuction is provided, the current entry is passed to it.
-    # if this function is not defined, Kaffy will return all the fields of the schema and their default values
+    # Both options can be a string or an anonymous function.
+    # If a fuction is provided, the current entry is passed to it.
+    # If this function is not defined, Kaffy will return all the fields of the schema and their default values
     [
       id: %{name: "ID", value: fn post -> post.id + 100 end},
-      title: nil,
-      views: %{name: "Hits", value: fn post -> {:safe, "<strong>#{post.views}</strong>"} end},
-      published: %{name: "Published?", value: fn post -> published?(post) end}
+      title: nil, # this will render the default name for this field (Title) and its default value (post.title)
+      views: %{name: "Hits", value: fn post -> "<strong>#{post.views}</strong>" end},
+      published: %{name: "Published?", value: fn post -> published?(post) end},
+      comment_count: %{name: "Comments", value: fn post -> comment_count(post) end}
     ]
   end
 
   def form_fields(_schema) do
-    # supported options are:
-    # :label, :type, :choices, :permissions
+    # Supported options are:
+    # :label, :type, :choices, :permission
     # :type can be any ecto type in addition to :file and :textarea
-    # if :choices is provided, it must be a keyword list and
-    # the field will be a <select> element regardless of the actual field type.
-    # Settings :permission to :read will make the field non-editable.
-    # if this function is not defined, Kaffy will return all the fields with
+    # If :choices is provided, it must be a keyword list and
+    # the field will be rendered as a <select> element regardless of the actual field type.
+    # Setting :permission to :read will make the field non-editable. It is :write by default.
+    # If you want to remove a field from being rendered, just remove it from the list.
+    # If this function is not defined, Kaffy will return all the fields with
     # their default types based on the schema.
     [
       title: %{label: "Subject"},
       slug: nil,
       image: %{type: :file},
       status: %{choices: [{"Pending", "pending"}, {"Published", "published"}]},
-      body: %{type: :textarea},
+      body: %{type: :textarea, rows: 3},
       views: %{permission: :read}
     ]
   end
 
-  def ordering(_) do
-    # this returns how the entries should be ordered
+  def ordering(_schema) do
+    # This returns how the entries should be ordered
     # if this function is not defined, Kaffy will return [desc: :id]
     [desc: :id]
   end
@@ -151,28 +174,32 @@ defmodule Bloggy.Admin.PostAdmin do
   def singular_name(_schema) do
     # if this function is not defined, Kaffy will use the name of
     # the last part of the schema module (e.g. Post)
-    "Article"
+    "Post"
   end
 
   def plural_name(_schema) do
     # if this function is not defined, Kaffy will use the singular
     # name and add a "s" to it (e.g. Posts)
-    "Articles"
+    "Posts"
   end
 
   def published?(post) do
-    if post.status == "published", do: "Yes", else: "No"
+    if post.status == "published",
+      do: ~s(<span class="badge badge-success"><i class="fas fa-check"></i>),
+      else: ~s(<span class="badge badge-light"><i class="fas fa-times"></i></span>)
+  end
+
+  defp comment_count(post) do
+    post = Barbican.Repo.preload(post, :comments)
+    length(post.comments)
   end
 end
 ```
 
-![Post change page](demos/post_status.png)
+## Schema Form
 
-## Future plans
+![Post change page](demos/post_form.png)
 
-- [ ] Better support for associations.
-- [ ] Add a way to sign out of the current session.
-- [ ] Add filtration.
-- [ ] Export data as csv.
-- [ ] Add documentation.
-- [ ] Add support for phoenix < 1.5
+The form is constructed from the `form_fields/1` function if it exists in the admin module.
+Notice that even though the `status` field is of type `:string`, it is rendered as a `select` element.
+Also notice that the `views` field is in "readonly" mode since we gave it the `:read` permission.

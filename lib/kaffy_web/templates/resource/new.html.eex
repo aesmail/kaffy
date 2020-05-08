@@ -12,6 +12,10 @@
                 <%= Kaffy.Resource.form_field(@changeset, f, field, class: "form-control") %>
             </div>
         <% end %>
-        <%= submit "Save", class: "btn btn-primary" %>
+        <div class="form-group">
+            <%= link "Black", to: Kaffy.Utils.router().kaffy_resource_path(@conn, :index, @context, @resource), class: "btn btn-light" %> &nbsp;
+            <input type="submit" name="submit" value="Save" class="btn btn-primary" />
+            <input type="submit" name="submit" value="Save and add another" class="btn btn-info" />
+        </div>
     </form>
 </div>

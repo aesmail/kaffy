@@ -1,10 +1,10 @@
 defmodule KaffyWeb.ResourceController do
   use Phoenix.Controller, namespace: KaffyWeb
+  use Phoenix.HTML
 
-  def index(conn, %{"context" => context, "resource" => resource} = params) do
+  def index(conn, %{"context" => context, "resource" => resource}) do
     IO.inspect(conn)
     my_resource = Kaffy.Utils.get_resource(context, resource)
-    schema = my_resource[:schema]
 
     case can_proceed?(my_resource, conn) do
       false ->
@@ -12,21 +12,12 @@ defmodule KaffyWeb.ResourceController do
 
       true ->
         fields = Kaffy.ResourceAdmin.index(my_resource)
-        entries = Kaffy.ResourceQuery.list_resource(my_resource, params)
-        total_pages = Kaffy.ResourceQuery.total_pages(my_resource, params)
-        limit = Map.get(params, "limit", "100") |> String.to_integer()
-        page = Map.get(params, "page", "1") |> String.to_integer()
 
         render(conn, "index.html",
           context: context,
           resource: resource,
-          entries: entries,
-          schema: schema,
           fields: fields,
-          my_resource: my_resource,
-          limit: limit,
-          page: page,
-          total_pages: total_pages
+          my_resource: my_resource
         )
     end
   end
@@ -139,11 +130,23 @@ defmodule KaffyWeb.ResourceController do
 
         case Kaffy.Utils.repo().insert(changeset) do
           {:ok, entry} ->
+            redirect_to =
+              case Map.get(params, "submit") do
+                "Save" ->
+                  Kaffy.Utils.router().kaffy_resource_path(
+                    conn,
+                    :show,
+                    context,
+                    resource,
+                    entry.id
+                  )
+
+                _ ->
+                  Kaffy.Utils.router().kaffy_resource_path(conn, :new, context, resource)
+              end
+
             put_flash(conn, :info, "Created a new #{resource_name} successfully")
-            |> redirect(
-              to:
-                Kaffy.Utils.router().kaffy_resource_path(conn, :show, context, resource, entry.id)
-            )
+            |> redirect(to: redirect_to)
 
           {:error, changeset} ->
             render(conn, "new.html",
@@ -154,6 +157,53 @@ defmodule KaffyWeb.ResourceController do
             )
         end
     end
+  end
+
+  def api(conn, %{"context" => context, "resource" => resource} = params) do
+    IO.inspect(params)
+    my_resource = Kaffy.Utils.get_resource(context, resource)
+    # per_page = Map.get(params, "length", "10") |> String.to_integer()
+    # start = Map.get(params, "start", "0") |> String.to_integer()
+    # filters = %{"limit" => per_page, "page"}
+    fields = Kaffy.ResourceAdmin.index(my_resource)
+    IO.puts("--- fields")
+    IO.inspect(fields)
+    {filtered_count, entries} = Kaffy.ResourceQuery.list_resource(my_resource, params)
+    keys = for field <- fields, do: Kaffy.Resource.kaffy_field_name(Enum.at(entries, 0), field)
+    IO.puts("--- keys")
+    IO.inspect(keys)
+
+    records =
+      Enum.map(entries, fn entry ->
+        rows =
+          Enum.reduce(fields, [], fn field, e ->
+            [Kaffy.Resource.kaffy_field_value(entry, field) | e]
+          end)
+          |> Enum.reverse()
+
+        [first | rest] = rows
+
+        {:safe, first} =
+          link(first,
+            to: Kaffy.Utils.router().kaffy_resource_path(conn, :show, context, resource, entry.id)
+          )
+
+        first = to_string(first)
+
+        [first | rest]
+      end)
+
+    total_count = Kaffy.ResourceQuery.total_count(my_resource)
+
+    final_result = %{
+      raw: Map.get(params, "raw", "0") |> String.to_integer(),
+      recordsTotal: total_count,
+      recordsFiltered: filtered_count,
+      data: records
+    }
+
+    IO.inspect(final_result)
+    json(conn, final_result)
   end
 
   defp can_proceed?(resource, conn) do

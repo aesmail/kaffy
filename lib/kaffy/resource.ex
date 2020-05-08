@@ -92,11 +92,38 @@ defmodule Kaffy.Resource do
     label(form, field)
   end
 
+  def bare_form_field(resource, form, {field, options}) do
+    options = options || %{}
+    type = Map.get(options, :type, field_type(resource[:schema], field))
+    permission = Map.get(options, :permission, :write)
+    choices = Map.get(options, :choices)
+
+    cond do
+      !is_nil(choices) ->
+        select(form, field, choices, class: "custom-select")
+
+      permission == :read ->
+        content_tag(:div, label(form, field, kaffy_field_value(resource[:schema], field)))
+
+      true ->
+        build_html_input(resource[:schema], form, field, type, [])
+    end
+  end
+
   def form_field(changeset, form, field, opts \\ [])
 
   def form_field(changeset, form, {field, options}, opts) do
     options = options || %{}
     type = Map.get(options, :type, field_type(changeset.data.__struct__, field))
+
+    opts =
+      if type == :textarea do
+        rows = Map.get(options, :rows, 5)
+        Keyword.put(opts, :rows, rows)
+      else
+        opts
+      end
+
     permission = Map.get(options, :permission, :write)
     choices = Map.get(options, :choices)
 
@@ -172,6 +199,13 @@ defmodule Kaffy.Resource do
         text_input(form, field, opts)
     end
   end
+
+  def search_fields(resource) do
+    schema = resource[:schema]
+    Enum.filter(fields(schema), fn f -> field_type(schema, f) == :string end)
+  end
+
+  def filter_fields(_), do: nil
 
   def field_type(_schema, {_, type}), do: type
   def field_type(schema, field), do: schema.__schema__(:type, field)

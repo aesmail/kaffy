@@ -7,7 +7,7 @@ defmodule Kaffy.Routes do
 
     quote do
       pipeline :kaffy_browser do
-        plug(:accepts, ["html"])
+        plug(:accepts, ["html", "json"])
         plug(:fetch_session)
         plug(:fetch_flash)
         plug(:protect_from_forgery)
@@ -23,6 +23,8 @@ defmodule Kaffy.Routes do
         get("/:context/:resource/new", ResourceController, :new, as: :kaffy_resource)
         get("/:context/:resource/:id", ResourceController, :show, as: :kaffy_resource)
         put("/:context/:resource/:id", ResourceController, :update, as: :kaffy_resource)
+
+        get("/kaffy/api/:context/:resource", ResourceController, :api, as: :kaffy_api_resource)
       end
     end
   end

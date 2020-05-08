@@ -4,7 +4,7 @@ defmodule Kaffy.MixProject do
   def project do
     [
       app: :kaffy,
-      version: "0.1.1",
+      version: "0.1.2",
       elixir: "~> 1.7",
       compilers: [:phoenix] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
@@ -28,7 +28,7 @@ defmodule Kaffy.MixProject do
     [
       {:phoenix, "~> 1.5"},
       {:phoenix_html, "~> 2.11"},
-      {:ecto_sql, "~> 3.4"},
+      {:ecto, "~> 3.0"},
       {:ex_doc, ">= 0.0.0", only: :dev, runtime: false}
     ]
   end

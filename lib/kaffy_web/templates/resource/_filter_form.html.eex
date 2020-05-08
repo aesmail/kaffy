@@ -1,0 +1,10 @@
+<%= f = form_for(@dummy_changeset, "#", method: :get) %>
+    <%= for field <- Kaffy.ResourceAdmin.filter_fields(@my_resource) do %>
+        <div class="form-group">
+            <%= Kaffy.Resource.form_label(:filter, field) %>
+            <div><%= Kaffy.Resource.bare_form_field(@my_resource, f, field) %></div>
+        </div>
+    <% end %>
+    <input type="hidden" name="search" value="<%= @search %>" />
+    <button type="submit" class="btn btn-success btn-sm btn-block">Filter</button>
+</form>

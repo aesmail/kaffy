@@ -1,0 +1,18 @@
+<thead>
+    <tr>
+        <%= for field <- @fields do %>
+            <th><%= Kaffy.Resource.kaffy_field_name(@my_resource[:schema], field) %></th>
+        <% end %>
+    </tr>
+</thead>
+
+<tfoot>
+    <tr>
+        <%= for field <- @fields do %>
+            <th><%= Kaffy.Resource.kaffy_field_name(@my_resource[:schema], field) %></th>
+        <% end %>
+    </tr>
+</tfoot>
+
+<tbody>
+</tbody>

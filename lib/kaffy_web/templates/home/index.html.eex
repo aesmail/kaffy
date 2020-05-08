@@ -7,6 +7,7 @@
     <div class="row mt-3">
         <div class="col-md-12 text-center">
             <h4>Kaffy is designed to be a simple and easy to use admin interface for phoenix applications.</h4>
+            <h4>In future versions, this dashboard page should be customizable</h4>
         </div>
     </div>
 </div>
