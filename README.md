@@ -84,7 +84,7 @@ config :kaffy,
     blog: [
       name: "My Blog", # a custom name for this context/section.
       schemas: [
-        post: [schema: Bloggy.Blog.Post, admin: Bloggy.Admin.PostAdmin],
+        post: [schema: Bloggy.Blog.Post, admin: Bloggy.Blog.PostAdmin],
         comment: [schema: Bloggy.Blog.Comment],
         tag: [schema: Bloggy.Blog.Tag]
       ]
@@ -92,8 +92,8 @@ config :kaffy,
     inventory: [
       name: "Inventory",
       schemas: [
-        category: [schema: Bloggy.Products.Category, admin: Bloggy.Admin.CategoryAdmin],
-        product: [schema: Bloggy.Products.Product, admin: Bloggy.Admin.ProductAdmin]
+        category: [schema: Bloggy.Products.Category, admin: Bloggy.Products.CategoryAdmin],
+        product: [schema: Bloggy.Products.Product, admin: Bloggy.Products.ProductAdmin]
       ]
     ]
   ]
@@ -104,7 +104,7 @@ The following admin module is what the screenshot above is showing:
 ```elixir
 # all the functions are optional
 
-defmodule Bloggy.Admin.PostAdmin do
+defmodule Bloggy.Blog.PostAdmin do
   def index(_schema) do
     # index/1 should return a keyword list of fields and
     # their options.
