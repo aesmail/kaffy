@@ -1,4 +1,6 @@
 defmodule KaffyWeb.ResourceController do
+  @moduledoc false
+
   use Phoenix.Controller, namespace: KaffyWeb
   use Phoenix.HTML
 

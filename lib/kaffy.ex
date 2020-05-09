@@ -1,17 +1,6 @@
 defmodule Kaffy do
-  @moduledoc """
-  Documentation for `Kaffy`.
-  """
+  @moduledoc false
 
-  @doc """
-  Hello world.
-
-  ## Examples
-
-      iex> Kaffy.hello()
-      :world
-
-  """
   def hello do
     :world
   end

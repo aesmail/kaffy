@@ -1,5 +1,16 @@
 defmodule Kaffy.Routes do
-  use Phoenix.Router
+  @moduledoc """
+  Kaffy.Routes must be "used" in your phoenix routes:
+
+  ```elixir
+  use Kaffy.Routes, scope: "/admin", pipe_through: [:browser, :authenticate]
+  ```
+
+  `:scope` defaults to `"/admin"`
+  `:pipe_through` defaults to kaffy's `[:kaffy_browser]`
+  """
+
+  # use Phoenix.Router
 
   defmacro __using__(options \\ []) do
     scoped = Keyword.get(options, :scope, "/admin")

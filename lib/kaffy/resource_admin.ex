@@ -10,7 +10,7 @@ defmodule Kaffy.ResourceAdmin do
   """
 
   @doc """
-  index/1 takes the schema module and should return a keyword list of fields and
+  `index/1` takes the schema module and should return a keyword list of fields and
   their options.
   Supported options are `:name` and `:value`.
   Both options can be a string or an anonymous function.

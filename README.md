@@ -17,7 +17,9 @@ end
 
 ```elixir
 # in your router.ex
-use Kaffy.Routes, scope: "/admin"
+use Kaffy.Routes, scope: "/admin", pipe_through: [...]
+# :scope defaults to "/admin"
+# :pipe_through defaults to kaffy's [:kaffy_browser]
 
 # in your endpoint.ex
 plug Plug.Static,

@@ -1,10 +1,12 @@
 defmodule Kaffy.MixProject do
   use Mix.Project
 
+  @version "0.2.0"
+
   def project do
     [
       app: :kaffy,
-      version: "0.2.0",
+      version: @version,
       elixir: "~> 1.7",
       compilers: [:phoenix] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
@@ -12,7 +14,8 @@ defmodule Kaffy.MixProject do
       package: package(),
       name: "Kaffy",
       source_url: "https://github.com/aesmail/kaffy",
-      deps: deps()
+      deps: deps(),
+      docs: docs()
     ]
   end
 
@@ -39,8 +42,22 @@ defmodule Kaffy.MixProject do
 
   defp package() do
     [
+      maintainers: ["Abdullah Esmail"],
       licenses: ["MIT"],
       links: %{"GitHub" => "https://github.com/aesmail/kaffy"}
+    ]
+  end
+
+  def docs() do
+    [
+      main: "readme",
+      name: "Kaffy",
+      source_ref: "v#{@version}",
+      canonical: "http://hexdocs.pm/kaffy",
+      source_url: "https://github.com/aesmail/kaffy",
+      extras: [
+        "README.md"
+      ]
     ]
   end
 end
