@@ -110,7 +110,7 @@ defmodule Bloggy.Blog.PostAdmin do
     # their options.
     # Supported options are :name and :value.
     # Both options can be a string or an anonymous function.
-    # If a fuction is provided, the current entry is passed to it.
+    # If a function is provided, the current entry is passed to it.
     # If this function is not defined, Kaffy will return all the fields of the schema and their default values
     [
       id: %{name: "ID", value: fn post -> post.id + 100 end},
