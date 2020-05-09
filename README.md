@@ -17,7 +17,7 @@ end
 
 ```elixir
 # in your router.ex
-use Kaffy.Routes, scope: "/admin", pipe_through: [...]
+use Kaffy.Routes, scope: "/admin", pipe_through: [:some_plug, :authenticate]
 # :scope defaults to "/admin"
 # :pipe_through defaults to kaffy's [:kaffy_browser]
 
