@@ -2,50 +2,18 @@
 
 Extremely simple yet powerful admin interface for phoenix applications
 
-## Why another admin interface
-
-Kaffy was created out of a need to have a minimum, flexible, and customizable admin interface 
-without the need to touch the current codebase. It should work out of the box just by adding some
-configs in your `config.exs` file (with the exception of adding a one liner to your `router.ex` file).
-
-A few points that encouraged the creation of Kaffy:
-
-- Taking contexts into account.
-  - Supporting contexts makes the admin interface better organized.
-- Can handle as many schemas as necessary.
-  - Whether we have 1 schema or 1000 schemas, the admin interface should adapt well.
-- Have a visually pleasant user interface.
-  - This might be subjective.
-- No generators or generated templates.
-  - I believe the less files there are the better. This also means it's easier to upgrade for users when releasing new versions. This might mean some flexibility and customizations will be lost, but it's a trade-off.
-- Existing schemas/contexts shouldn't have to be modified.
-  - I shouldn't have to change my code in order to adapt to the package, the package should adapt to my code.
-- Should be easy to use whether with a new project or with existing projects with a lot of schemas.
-  - Adding kaffy should be as easy for existing projects as it is for new ones.
-- Highly flexible and customizable.
-  - Provide as many configurable options as possible.
-- As few dependencies as possible.
-  - Currently kaffy only depends on phoenix and ecto.
-- Simple authorization.
-  - I need to limit access for some admins to some schemas.
-- Minimum assumptions.
-  - Need to modify a schema's primary key? Need to hide a certain field? No problem.
-
 ## Installation
 
+#### Add `kaffy` as a dependency
 ```elixir
 def deps do
   [
-    {:kaffy, "~> 0.1.2"}
+    {:kaffy, "~> 0.2.0"}
   ]
 end
 ```
 
-## What You Get
-
-![Post list page](demos/post_index.png)
-
-## Minimum configs
+#### These are the minimum configurations required
 
 ```elixir
 # in your router.ex
@@ -60,19 +28,21 @@ plug Plug.Static,
 
 # in your config/config.exs
 config :kaffy,
+  otp_app: :my_app,
   ecto_repo: Bloggy.Repo,
-  router: BloggyWeb.Router,
-  resources: [
-    blog: [
-      schemas: [
-        post: [schema: Bloggy.Blog.Post],
-        # list your schemas for the blog context
-      ]
-    ]
-  ]
+  router: BloggyWeb.Router
 ```
 
+
+## What You Get
+
+![Post list page](demos/post_index.png)
+
 ## Customizations
+
+If you don't specify a `resources` option in your configs, Kaffy will try to auto-detect your schemas and your admin modules. Admin modules should be in the same namespace as their respective schemas. For exmaple, if you have a schema `MyApp.Products.Product`, its admin module should be `MyApp.Products.ProductAdmin`.
+
+If you'd like to explicitly specify your schemas and their admin modules, you can do like the following:
 
 ```elixir
 # config.exs
@@ -209,3 +179,35 @@ end
 The form is constructed from the `form_fields/1` function if it exists in the admin module.
 Notice that even though the `status` field is of type `:string`, it is rendered as a `select` element.
 Also notice that the `views` field is in "readonly" mode since we gave it the `:read` permission.
+
+
+## Why another admin interface
+
+Kaffy was created out of a need to have a minimum, flexible, and customizable admin interface 
+without the need to touch the current codebase. It should work out of the box just by adding some
+configs in your `config.exs` file (with the exception of adding a one liner to your `router.ex` file).
+
+A few points that encouraged the creation of Kaffy:
+
+- Taking contexts into account.
+  - Supporting contexts makes the admin interface better organized.
+- Can handle as many schemas as necessary.
+  - Whether we have 1 schema or 1000 schemas, the admin interface should adapt well.
+- Have a visually pleasant user interface.
+  - This might be subjective.
+- No generators or generated templates.
+  - I believe the less files there are the better. This also means it's easier to upgrade for users when releasing new versions. This might mean some flexibility and customizations will be lost, but it's a trade-off.
+- Existing schemas/contexts shouldn't have to be modified.
+  - I shouldn't have to change my code in order to adapt to the package, the package should adapt to my code.
+- Should be easy to use whether with a new project or with existing projects with a lot of schemas.
+  - Adding kaffy should be as easy for existing projects as it is for new ones.
+- Highly flexible and customizable.
+  - Provide as many configurable options as possible.
+- As few dependencies as possible.
+  - Currently kaffy only depends on phoenix and ecto.
+- Simple authorization.
+  - I need to limit access for some admins to some schemas.
+- Minimum assumptions.
+  - Need to modify a schema's primary key? Need to hide a certain field? No problem.
+
+

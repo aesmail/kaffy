@@ -3,7 +3,6 @@ defmodule KaffyWeb.ResourceController do
   use Phoenix.HTML
 
   def index(conn, %{"context" => context, "resource" => resource}) do
-    IO.inspect(conn)
     my_resource = Kaffy.Utils.get_resource(context, resource)
 
     case can_proceed?(my_resource, conn) do
@@ -34,7 +33,6 @@ defmodule KaffyWeb.ResourceController do
       true ->
         entry = Kaffy.ResourceQuery.fetch_resource(my_resource, id)
         changeset = Ecto.Changeset.change(entry)
-        IO.inspect(changeset)
 
         render(conn, "show.html",
           changeset: changeset,
@@ -126,7 +124,6 @@ defmodule KaffyWeb.ResourceController do
 
       true ->
         changeset = Kaffy.ResourceAdmin.create_changeset(my_resource, changes)
-        IO.inspect(changeset)
 
         case Kaffy.Utils.repo().insert(changeset) do
           {:ok, entry} ->
@@ -160,18 +157,9 @@ defmodule KaffyWeb.ResourceController do
   end
 
   def api(conn, %{"context" => context, "resource" => resource} = params) do
-    IO.inspect(params)
     my_resource = Kaffy.Utils.get_resource(context, resource)
-    # per_page = Map.get(params, "length", "10") |> String.to_integer()
-    # start = Map.get(params, "start", "0") |> String.to_integer()
-    # filters = %{"limit" => per_page, "page"}
     fields = Kaffy.ResourceAdmin.index(my_resource)
-    IO.puts("--- fields")
-    IO.inspect(fields)
     {filtered_count, entries} = Kaffy.ResourceQuery.list_resource(my_resource, params)
-    keys = for field <- fields, do: Kaffy.Resource.kaffy_field_name(Enum.at(entries, 0), field)
-    IO.puts("--- keys")
-    IO.inspect(keys)
 
     records =
       Enum.map(entries, fn entry ->
@@ -202,7 +190,6 @@ defmodule KaffyWeb.ResourceController do
       data: records
     }
 
-    IO.inspect(final_result)
     json(conn, final_result)
   end
 

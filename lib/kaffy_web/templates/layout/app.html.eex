@@ -300,7 +300,8 @@
             <%= if get_flash(@conn, :error) do %>
                 <div class="alert alert-danger"><%= get_flash(@conn, :error) %></div>
             <% end %>
-            <%= @inner_content %>
+
+            <%= render(@view_module, @view_template, assigns) %>
         </div>
         <!-- /.container-fluid -->
 

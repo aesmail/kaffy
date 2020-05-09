@@ -1,4 +1,6 @@
 defmodule Kaffy.ResourceQuery do
+  @moduledoc false
+
   import Ecto.Query
 
   def list_resource(resource, params \\ %{}) do

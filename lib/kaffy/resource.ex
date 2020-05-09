@@ -1,4 +1,6 @@
 defmodule Kaffy.Resource do
+  @moduledoc false
+
   use Phoenix.HTML
 
   def excluded_fields(schema) do
@@ -11,7 +13,7 @@ defmodule Kaffy.Resource do
   end
 
   def kaffy_field_name(schema, {field, options}) do
-    default_name = to_string(field) |> String.capitalize()
+    default_name = kaffy_field_name(schema, field)
     name = Map.get(options || %{}, :name)
 
     cond do
@@ -211,8 +213,6 @@ defmodule Kaffy.Resource do
   def field_type(schema, field), do: schema.__schema__(:type, field)
 
   defp text_or_assoc(schema, form, field, opts) do
-    IO.inspect(field)
-    IO.inspect(associations(schema))
     field_no_id = to_string(field) |> String.slice(0..-4) |> String.to_existing_atom()
 
     case field_no_id in associations(schema) do

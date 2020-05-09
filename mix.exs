@@ -4,7 +4,7 @@ defmodule Kaffy.MixProject do
   def project do
     [
       app: :kaffy,
-      version: "0.1.2",
+      version: "0.2.0",
       elixir: "~> 1.7",
       compilers: [:phoenix] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
@@ -26,7 +26,7 @@ defmodule Kaffy.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:phoenix, "~> 1.5"},
+      {:phoenix, "~> 1.4"},
       {:phoenix_html, "~> 2.11"},
       {:ecto, "~> 3.0"},
       {:ex_doc, ">= 0.0.0", only: :dev, runtime: false}
