@@ -23,7 +23,7 @@ defmodule Kaffy.ResourceAdmin do
     [
       id: %{name: "ID", value: fn post -> post.id + 100 end},
       title: nil, # this will render the default name for this field (Title) and its default value (post.title)
-      views: %{name: "Hits", value: fn post -> "<strong>#{post.views}</strong>" end},
+      views: %{name: "Hits", value: fn post -> post.views + 10 end},
       published: %{name: "Published?", value: fn post -> published?(post) end},
       comment_count: %{name: "Comments", value: fn post -> comment_count(post) end}
     ]
