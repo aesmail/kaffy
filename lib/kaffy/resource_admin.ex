@@ -4,17 +4,23 @@ defmodule Kaffy.ResourceAdmin do
 
   @moduledoc """
   ResourceAdmin modules should be created for every schema you want to customize/configure in Kaffy.
+
   If you have a schema like `MyApp.Products.Product`, you should create an admin module with
   name `MyApp.Products.ProductAdmin` and add functions documented in this module to customize the behavior.
+
   All functions are optional.
   """
 
   @doc """
   `index/1` takes the schema module and should return a keyword list of fields and
   their options.
+
   Supported options are `:name` and `:value`.
+
   Both options can be a string or an anonymous function.
+
   If a fuction is provided, the current entry is passed to it.
+
   If index/1 is not defined, Kaffy will return all the fields of the schema and their default values.
 
   Example:
@@ -37,13 +43,20 @@ defmodule Kaffy.ResourceAdmin do
 
   @doc """
   form_fields/1 takes a schema and returns a keyword list of fields and their options for the new/edit form.
+
   Supported options are:
+
   `:label`, `:type`, `:choices`, and `:permission`
+
   `:type` can be any ecto type in addition to `:file` and `:textarea`
+
   If `:choices` is provided, it must be a keyword list and
   the field will be rendered as a `<select>` element regardless of the actual field type.
+
   Setting `:permission` to `:read` will make the field non-editable. It is `:write` by default.
+
   If you want to remove a field from being rendered, just remove it from the list.
+
   If form_fields/1 is not defined, Kaffy will return all the fields with
   their default types based on the schema.
 
@@ -68,6 +81,7 @@ defmodule Kaffy.ResourceAdmin do
 
   @doc """
   `search_fields/1` takes a schema and must return a list of `:string` fields to search against when typing in the search box.
+
   If `search_fields/1` is not defined, Kaffy will return all the `:string` fields of the schema.
 
   Example:
@@ -87,7 +101,9 @@ defmodule Kaffy.ResourceAdmin do
 
   @doc """
   `ordering/1` takes a schema and returns how the entries should be ordered.
-  If `ordering/1` is not defined, Kaffy will return [desc: :id]
+
+  If `ordering/1` is not defined, Kaffy will return `[desc: :id]`.
+
   Example:
   ```elixir
   def ordering(_schema) do
@@ -102,7 +118,9 @@ defmodule Kaffy.ResourceAdmin do
   @doc """
   `authorized?/2` takes the schema and the current Plug.Conn struct and
   should return a boolean value.
+
   Returning false will prevent the access of this resource for the current user/request.
+
   If `authorized?/2` is not defined, Kaffy will return true.
 
   Example:
@@ -118,8 +136,9 @@ defmodule Kaffy.ResourceAdmin do
 
   @doc """
   `create_changeset/2` takes the record and the changes and should return a changeset for creating a new record.
-  If `create_changeset/2` is not defined, Kaffy will try to call:
-  `schema.changeset/2`
+
+  If `create_changeset/2` is not defined, Kaffy will try to call `schema.changeset/2`
+
   and if that's not defined, `Ecto.Changeset.change/2` will be called.
 
   Example:
@@ -150,8 +169,9 @@ defmodule Kaffy.ResourceAdmin do
 
   @doc """
   `update_changeset/2` takes the record and the changes and should return a changeset for updating an existing record.
-  If `update_changeset/2` is not defined, Kaffy will try to call:
-  `schema.changeset/2`
+
+  If `update_changeset/2` is not defined, Kaffy will try to call `schema.changeset/2`
+
   and if that's not defined, `Ecto.Changeset.change/2` will be called.
 
   Example:
@@ -181,10 +201,13 @@ defmodule Kaffy.ResourceAdmin do
   end
 
   @doc """
+  This function should return a string for the singular name of a resource.
+
   If `singular_name/1` is not defined, Kaffy will use the name of
   the last part of the schema module (e.g. Post in MyApp.Blog.Post)
-  This function should return a string for the singular name of a resource.
+
   This is useful for when you have a schema but you want to display its name differently.
+
   If you have "Post" and you want to display "Article" for example.
 
   Example:
@@ -205,10 +228,12 @@ defmodule Kaffy.ResourceAdmin do
   end
 
   @doc """
-  If `plural_name/1` is not defined, Kaffy will use the singular
-  name and add an "s" to it (e.g. Posts)
   This is useful for names that cannot be plural by adding an "s" at the end.
+
   Like "Category" => "Categories" or "Person" => "People".
+
+  If `plural_name/1` is not defined, Kaffy will use the singular
+  name and add an "s" to it (e.g. Posts).
 
   Example:
   ```elixir

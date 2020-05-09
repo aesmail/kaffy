@@ -7,6 +7,7 @@ defmodule Kaffy.Routes do
   ```
 
   `:scope` defaults to `"/admin"`
+
   `:pipe_through` defaults to kaffy's `[:kaffy_browser]`
   """
 
