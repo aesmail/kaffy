@@ -5,6 +5,10 @@ defmodule Kaffy.Utils do
     env(:admin_title, "Kaffy")
   end
 
+  def json() do
+    Application.get_env(:phoenix, :json_library, Jason)
+  end
+
   def repo do
     env(:ecto_repo)
   end

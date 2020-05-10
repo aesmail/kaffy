@@ -38,7 +38,7 @@ defmodule Kaffy.Resource do
         else
           Map.from_struct(value)
           |> Map.drop([:__meta__])
-          |> Jason.encode!(escape: :html_safe, pretty: true)
+          |> Kaffy.Utils.json().encode!(escape: :html_safe, pretty: true)
         end
 
       is_binary(value) ->
@@ -48,7 +48,7 @@ defmodule Kaffy.Resource do
         value.(schema)
 
       is_map(value) ->
-        Jason.encode!(value, escape: :html_safe, pretty: true)
+        Kaffy.Utils.json().encode!(value, escape: :html_safe, pretty: true)
 
       true ->
         default_value
@@ -65,11 +65,11 @@ defmodule Kaffy.Resource do
         else
           Map.from_struct(value)
           |> Map.drop([:__meta__])
-          |> Jason.encode!(escape: :html_safe, pretty: true)
+          |> Kaffy.Utils.json().encode!(escape: :html_safe, pretty: true)
         end
 
       is_map(value) ->
-        Jason.encode!(value, escape: :html_safe, pretty: true)
+        Kaffy.Utils.json().encode!(value, escape: :html_safe, pretty: true)
 
       true ->
         value
@@ -276,7 +276,7 @@ defmodule Kaffy.Resource do
 
         value =
           cond do
-            is_map(value) -> Jason.encode!(value, escape: :html_safe, pretty: true)
+            is_map(value) -> Kaffy.Utils.json().encode!(value, escape: :html_safe, pretty: true)
             true -> value
           end
 
@@ -394,7 +394,7 @@ defmodule Kaffy.Resource do
       Map.get(params, resource, %{})
       |> Enum.map(fn {k, v} ->
         case k in map_fields do
-          true -> {k, Jason.decode!(v)}
+          true -> {k, Kaffy.Utils.json().decode!(v)}
           false -> {k, v}
         end
       end)
@@ -409,7 +409,7 @@ defmodule Kaffy.Resource do
 
         Enum.reduce(embed_map_fields, params, fn f, p ->
           json_string = get_in(attrs, [to_string(e), to_string(f)])
-          json_object = Jason.decode!(json_string)
+          json_object = Kaffy.Utils.json().decode!(json_string)
           put_in(p, [to_string(e), to_string(f)], json_object)
         end)
       end)
