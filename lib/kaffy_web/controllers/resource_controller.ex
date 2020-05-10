@@ -51,6 +51,7 @@ defmodule KaffyWeb.ResourceController do
   def update(conn, %{"context" => context, "resource" => resource, "id" => id} = params) do
     my_resource = Kaffy.Utils.get_resource(context, resource)
     schema = my_resource[:schema]
+    params = Kaffy.Resource.decode_map_fields(resource, schema, params)
 
     resource_name = Kaffy.ResourceAdmin.singular_name(my_resource) |> String.capitalize()
 

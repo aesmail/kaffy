@@ -1,5 +1,8 @@
 ### v0.2.1 (in deveopment)
 
+- Added support for embedded schemas.
+- Added support for `:map` fields for json values.
+
 ### v0.2.0 (2020-05-09)
 
 - Kaffy now supports phoenix 1.4 and higher.

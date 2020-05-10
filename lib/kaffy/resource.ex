@@ -32,43 +32,101 @@ defmodule Kaffy.Resource do
     value = Map.get(options || %{}, :value)
 
     cond do
-      is_binary(value) -> value
-      is_function(value) -> value.(schema)
-      true -> default_value
+      is_struct(value) ->
+        if value.__struct__ in [NaiveDateTime, DateTime, Date, Time] do
+          value
+        else
+          Map.from_struct(value)
+          |> Map.drop([:__meta__])
+          |> Jason.encode!(escape: :html_safe, pretty: true)
+        end
+
+      is_binary(value) ->
+        value
+
+      is_function(value) ->
+        value.(schema)
+
+      is_map(value) ->
+        Jason.encode!(value, escape: :html_safe, pretty: true)
+
+      true ->
+        default_value
     end
   end
 
   def kaffy_field_value(schema, field) when is_atom(field) do
-    Map.get(schema, field, "")
+    value = Map.get(schema, field, "")
+
+    cond do
+      is_struct(value) ->
+        if value.__struct__ in [NaiveDateTime, DateTime, Date, Time] do
+          value
+        else
+          Map.from_struct(value)
+          |> Map.drop([:__meta__])
+          |> Jason.encode!(escape: :html_safe, pretty: true)
+        end
+
+      is_map(value) ->
+        Jason.encode!(value, escape: :html_safe, pretty: true)
+
+      true ->
+        value
+    end
   end
 
   def fields(schema) do
-    all_fields =
-      schema.__changeset__()
-      |> Enum.filter(fn {_, v} -> is_atom(v) end)
-      |> Enum.map(fn {k, _} -> k end)
+    to_be_removed = fields_to_be_removed(schema)
+    all_fields = all_fields(schema) -- to_be_removed
+    reorder_fields(all_fields, schema)
+  end
 
-    all_fields =
-      if :id in all_fields do
-        all_fields = all_fields -- [:id]
-        [:id] ++ all_fields
-      else
-        all_fields
+  defp fields_to_be_removed(schema) do
+    # if schema defines belongs_to assocations, remove the respective *_id fields.
+    schema.__changeset__()
+    |> Enum.reduce([], fn {field, type}, all ->
+      case type do
+        {:assoc, %Ecto.Association.BelongsTo{}} ->
+          [field | all]
+
+        _ ->
+          all
       end
+    end)
+  end
 
-    all_fields =
-      if :inserted_at in all_fields do
-        all_fields = all_fields -- [:inserted_at]
-        all_fields ++ [:inserted_at]
-      else
-        all_fields
+  defp all_fields(schema) do
+    schema.__changeset__()
+    |> Enum.map(fn {k, _} -> k end)
+  end
+
+  defp reorder_fields(fields_list, schema) do
+    fields_list
+    |> reorder_field(:name, :first)
+    |> reorder_field(:title, :first)
+    |> reorder_field(:id, :first)
+    |> reorder_field(embeds(schema), :last)
+    |> reorder_field([:inserted_at, :updated_at], :last)
+  end
+
+  defp reorder_field(fields_list, [], _), do: fields_list
+
+  defp reorder_field(fields_list, [field | rest], position) do
+    fields_list = reorder_field(fields_list, field, position)
+    reorder_field(fields_list, rest, position)
+  end
+
+  defp reorder_field(fields_list, field, position) do
+    if field in fields_list do
+      fields_list = fields_list -- [field]
+
+      case position do
+        :first -> [field] ++ fields_list
+        :last -> fields_list ++ [field]
       end
-
-    if :updated_at in all_fields do
-      all_fields = all_fields -- [:updated_at]
-      all_fields ++ [:updated_at]
     else
-      all_fields
+      fields_list
     end
   end
 
@@ -82,6 +140,18 @@ defmodule Kaffy.Resource do
 
   def association_schema(schema, assoc) do
     association(schema, assoc).queryable
+  end
+
+  def embeds(schema) do
+    schema.__schema__(:embeds)
+  end
+
+  def embed(schema, name) do
+    schema.__schema__(:embed, name)
+  end
+
+  def embed_struct(schema, name) do
+    embed(schema, name).related
   end
 
   def form_label(form, {field, options}) do
@@ -142,13 +212,38 @@ defmodule Kaffy.Resource do
   end
 
   def form_field(changeset, form, field, opts) do
-    case field_type(changeset.data.__struct__, field) do
-      type -> build_html_input(changeset.data.__struct__, form, field, type, opts)
-    end
+    type = field_type(changeset.data.__struct__, field)
+    build_html_input(changeset.data, form, field, type, opts)
   end
 
   defp build_html_input(schema, form, field, type, opts) do
+    data = schema
+    schema = schema.__struct__
+
     case type do
+      {:embed, _} ->
+        embed = embed_struct(schema, field)
+        embed_fields = fields(embed)
+        embed_changeset = Ecto.Changeset.change(Map.get(data, field) || embed.__struct__)
+
+        inputs_for(form, field, fn fp ->
+          [
+            {:safe, ~s(<div class="card ml-3" style="padding:15px;">)},
+            Enum.reduce(embed_fields, [], fn f, all ->
+              content_tag :div, class: "form-group" do
+                [
+                  [
+                    Kaffy.Resource.form_label(fp, f),
+                    Kaffy.Resource.form_field(embed_changeset, fp, f, class: "form-control")
+                  ]
+                  | all
+                ]
+              end
+            end),
+            {:safe, "</div>"}
+          ]
+        end)
+
       :id ->
         text_or_assoc(schema, form, field, opts)
 
@@ -171,7 +266,15 @@ defmodule Kaffy.Resource do
         checkbox(form, field)
 
       :map ->
-        text_input(form, field, opts)
+        value = Map.get(data, field, "")
+
+        value =
+          cond do
+            is_map(value) -> Jason.encode!(value, escape: :html_safe, pretty: true)
+            true -> value
+          end
+
+        textarea(form, field, [value: value, rows: 4] ++ opts)
 
       :file ->
         file_input(form, field, opts)
@@ -271,5 +374,26 @@ defmodule Kaffy.Resource do
     Enum.reduce(errors, [], fn error, combined ->
       Enum.reduce(error, combined, fn e, all -> [e | all] end)
     end)
+  end
+
+  def get_map_fields(schema) do
+    all_fields(schema)
+    |> Enum.filter(fn f -> field_type(schema, f) == :map end)
+  end
+
+  def decode_map_fields(resource, schema, params) do
+    map_fields = get_map_fields(schema) |> Enum.map(fn f -> to_string(f) end)
+
+    attrs =
+      Map.get(params, resource, %{})
+      |> Enum.map(fn {k, v} ->
+        case k in map_fields do
+          true -> {k, Jason.decode!(v)}
+          false -> {k, v}
+        end
+      end)
+      |> Map.new()
+
+    Map.put(params, resource, attrs)
   end
 end
