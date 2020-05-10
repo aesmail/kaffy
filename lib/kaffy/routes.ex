@@ -35,6 +35,7 @@ defmodule Kaffy.Routes do
         get("/:context/:resource/new", ResourceController, :new, as: :kaffy_resource)
         get("/:context/:resource/:id", ResourceController, :show, as: :kaffy_resource)
         put("/:context/:resource/:id", ResourceController, :update, as: :kaffy_resource)
+        delete("/:context/:resource/:id", ResourceController, :delete, as: :kaffy_resource)
 
         get("/kaffy/api/:context/:resource", ResourceController, :api, as: :kaffy_api_resource)
       end

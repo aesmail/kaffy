@@ -8,7 +8,35 @@
                 <%= Kaffy.Resource.form_field(@changeset, f, field, class: "form-control") %>
             </div>
         <% end %>
-        <%= link "Back", to: Kaffy.Utils.router().kaffy_resource_path(@conn, :index, @context, @resource), class: "btn btn-light btn-lg" %>
-        <%= submit "Save", class: "btn btn-primary btn-lg" %>
+
+        <div class="p-2">
+            <%= link "Back", to: Kaffy.Utils.router().kaffy_resource_path(@conn, :index, @context, @resource), class: "btn btn-light btn-lg" %>
+            <input type="submit" name="submit" value="Save" class="btn btn-primary btn-lg" />
+            <button type="button" class="btn btn-danger btn-lg float-right" data-toggle="modal" data-target="#delete-modal">
+                <i class="fas fa-trash"></i> Delete
+            </button>
+        </div>
     </form>
+
+    <!-- Modal -->
+    <%= form_for(@changeset, Kaffy.Utils.router().kaffy_resource_path(@conn, :delete, @context, @resource, @changeset.data.id), method: :delete) %>
+    <div class="modal fade" id="delete-modal" tabindex="-1" role="dialog" aria-labelledby="delete-modal-label" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="delete-modal-label">Are you sure?</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    You might lose this record and other related records forever if you continue. Make sure this is what you really want to do.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger">Yes, delete this <%= @resource_name %></button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

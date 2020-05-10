@@ -1,5 +1,7 @@
 ### v0.2.2 (in development)
 
+- [feature] Added ability to delete resources.
+
 ### v0.2.1 (2020-05-10)
 
 - [feature] Added support for embedded schemas.

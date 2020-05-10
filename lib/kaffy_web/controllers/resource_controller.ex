@@ -159,6 +159,33 @@ defmodule KaffyWeb.ResourceController do
     end
   end
 
+  def delete(conn, %{"context" => context, "resource" => resource, "id" => id}) do
+    my_resource = Kaffy.Utils.get_resource(context, resource)
+
+    case can_proceed?(my_resource, conn) do
+      false ->
+        unauthorized_access(conn)
+
+      true ->
+        entry = Kaffy.ResourceQuery.fetch_resource(my_resource, id)
+
+        case Kaffy.Utils.repo().delete(entry) do
+          {:ok, _deleted} ->
+            put_flash(conn, :info, "The record was deleted successfully")
+            |> redirect(
+              to: Kaffy.Utils.router().kaffy_resource_path(conn, :index, context, resource)
+            )
+
+          {:error, _changeset} ->
+            put_flash(conn, :error, "There was a problem deleting this record")
+            |> redirect(
+              to:
+                Kaffy.Utils.router().kaffy_resource_path(conn, :show, context, resource, entry.id)
+            )
+        end
+    end
+  end
+
   def api(conn, %{"context" => context, "resource" => resource} = params) do
     my_resource = Kaffy.Utils.get_resource(context, resource)
     fields = Kaffy.ResourceAdmin.index(my_resource)
