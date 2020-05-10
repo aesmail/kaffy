@@ -401,10 +401,10 @@ defmodule Kaffy.Resource do
         embed_map_fields =
           fields(embed_schema) |> Enum.filter(fn f -> field_type(embed_schema, f) == :map end)
 
-        Enum.reduce(embed_map_fields, attrs, fn f, params ->
+        Enum.reduce(embed_map_fields, params, fn f, p ->
           json_string = get_in(attrs, [to_string(e), to_string(f)])
           json_object = Jason.decode!(json_string)
-          put_in(attrs, [to_string(e), to_string(f)], json_object)
+          put_in(p, [to_string(e), to_string(f)], json_object)
         end)
       end)
 
