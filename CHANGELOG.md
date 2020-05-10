@@ -1,4 +1,6 @@
-### v0.2.1 (in deveopment)
+### v0.2.2 (in development)
+
+### v0.2.1 (2020-05-10)
 
 - [feature] Added support for embedded schemas.
 - [feature] Added support for `:map` fields for json values.
