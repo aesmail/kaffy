@@ -397,7 +397,6 @@ defmodule Kaffy.Resource do
     attrs =
       Enum.reduce(embeds(schema), attrs, fn e, params ->
         embed_schema = embed_struct(schema, e)
-        IO.inspect(embed_schema)
 
         embed_map_fields =
           fields(embed_schema) |> Enum.filter(fn f -> field_type(embed_schema, f) == :map end)
