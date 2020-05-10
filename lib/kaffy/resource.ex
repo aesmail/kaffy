@@ -394,6 +394,21 @@ defmodule Kaffy.Resource do
       end)
       |> Map.new()
 
+    attrs =
+      Enum.reduce(embeds(schema), attrs, fn e, params ->
+        embed_schema = embed_struct(schema, e)
+        IO.inspect(embed_schema)
+
+        embed_map_fields =
+          fields(embed_schema) |> Enum.filter(fn f -> field_type(embed_schema, f) == :map end)
+
+        Enum.reduce(embed_map_fields, attrs, fn f, params ->
+          json_string = get_in(attrs, [to_string(e), to_string(f)])
+          json_object = Jason.decode!(json_string)
+          put_in(attrs, [to_string(e), to_string(f)], json_object)
+        end)
+      end)
+
     Map.put(params, resource, attrs)
   end
 end
