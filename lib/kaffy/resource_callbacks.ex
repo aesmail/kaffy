@@ -44,8 +44,8 @@ defmodule Kaffy.ResourceCallbacks do
   def delete_callbacks(resource, entry) do
     Kaffy.Utils.repo().transaction(fn repo ->
       result =
-        with {:ok, entry} <- before_delete(resource, entry),
-             {:ok, entry} <- Kaffy.Utils.repo().delete(entry),
+        with {:ok, changeset} <- before_delete(resource, entry),
+             {:ok, entry} <- Kaffy.Utils.repo().delete(changeset),
              do: after_delete(resource, entry)
 
       case result do
@@ -99,10 +99,26 @@ defmodule Kaffy.ResourceCallbacks do
   end
 
   defp before_delete(resource, entry) do
-    Utils.get_assigned_value_or_default(resource, :before_delete, {:ok, entry}, [entry], false)
+    changeset = Kaffy.ResourceAdmin.update_changeset(resource, entry, %{})
+
+    Utils.get_assigned_value_or_default(
+      resource,
+      :before_delete,
+      {:ok, changeset},
+      [changeset],
+      false
+    )
   end
 
   defp after_delete(resource, entry) do
-    Utils.get_assigned_value_or_default(resource, :after_delete, {:ok, entry}, [entry], false)
+    # changeset = Kaffy.ResourceAdmin.update_changeset(resource, entry, %{})
+
+    Utils.get_assigned_value_or_default(
+      resource,
+      :after_delete,
+      {:ok, entry},
+      [entry],
+      false
+    )
   end
 end

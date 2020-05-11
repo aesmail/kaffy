@@ -121,6 +121,7 @@ defmodule KaffyWeb.ResourceController do
 
   def new(conn, %{"context" => context, "resource" => resource}) do
     my_resource = Kaffy.Utils.get_resource(context, resource)
+    resource_name = Kaffy.ResourceAdmin.singular_name(my_resource)
 
     case can_proceed?(my_resource, conn) do
       false ->
@@ -133,6 +134,7 @@ defmodule KaffyWeb.ResourceController do
           changeset: changeset,
           context: context,
           resource: resource,
+          resource_name: resource_name,
           my_resource: my_resource
         )
     end
@@ -167,6 +169,7 @@ defmodule KaffyWeb.ResourceController do
               changeset: changeset,
               context: context,
               resource: resource,
+              resource_name: resource_name,
               my_resource: my_resource
             )
 
@@ -179,6 +182,7 @@ defmodule KaffyWeb.ResourceController do
               changeset: changeset,
               context: context,
               resource: resource,
+              resource_name: resource_name,
               my_resource: my_resource
             )
         end

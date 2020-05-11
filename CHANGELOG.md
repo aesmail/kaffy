@@ -1,7 +1,8 @@
-### v0.2.2 (in development)
+### v0.3.0 (2020-05-11)
 
 - [feature] Added ability to delete resources.
 - [feature] Added resource callbacks when creating, updating, and deleting resources.
+- [bugfix] Don't try to decode map fields when they are empty.
 
 ### v0.2.1 (2020-05-10)
 

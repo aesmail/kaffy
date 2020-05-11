@@ -393,7 +393,7 @@ defmodule Kaffy.Resource do
     attrs =
       Map.get(params, resource, %{})
       |> Enum.map(fn {k, v} ->
-        case k in map_fields do
+        case k in map_fields && String.length(v) > 0 do
           true -> {k, Kaffy.Utils.json().decode!(v)}
           false -> {k, v}
         end
@@ -409,8 +409,13 @@ defmodule Kaffy.Resource do
 
         Enum.reduce(embed_map_fields, params, fn f, p ->
           json_string = get_in(attrs, [to_string(e), to_string(f)])
-          json_object = Kaffy.Utils.json().decode!(json_string)
-          put_in(p, [to_string(e), to_string(f)], json_object)
+
+          if json_string && String.length(json_string) > 0 do
+            json_object = Kaffy.Utils.json().decode!(json_string)
+            put_in(p, [to_string(e), to_string(f)], json_object)
+          else
+            p
+          end
         end)
       end)
 

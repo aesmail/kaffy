@@ -2,7 +2,7 @@
     <div><%= error %></div>
 <% end %>
 
-<h2>New <%= String.capitalize(@resource) %></h2>
+<h2>New <%= @resource_name %></h2>
 
 <div>
     <%= f = form_for(@changeset, Kaffy.Utils.router().kaffy_resource_path(@conn, :create, @context, @resource), method: :post, multipart: true) %>
