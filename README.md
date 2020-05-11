@@ -8,7 +8,7 @@ Extremely simple yet powerful admin interface for phoenix applications
 ```elixir
 def deps do
   [
-    {:kaffy, "~> 0.2.2"}
+    {:kaffy, "~> 0.3.0"}
   ]
 end
 ```
