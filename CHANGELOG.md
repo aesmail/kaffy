@@ -1,6 +1,7 @@
 ### v0.2.2 (in development)
 
 - [feature] Added ability to delete resources.
+- [feature] Added resource callbacks when creating, updating, and deleting resources.
 
 ### v0.2.1 (2020-05-10)
 

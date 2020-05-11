@@ -33,18 +33,24 @@ defmodule KaffyWeb.ResourceController do
         unauthorized_access(conn)
 
       true ->
-        entry = Kaffy.ResourceQuery.fetch_resource(my_resource, id)
-        changeset = Ecto.Changeset.change(entry)
+        if entry = Kaffy.ResourceQuery.fetch_resource(my_resource, id) do
+          changeset = Ecto.Changeset.change(entry)
 
-        render(conn, "show.html",
-          changeset: changeset,
-          context: context,
-          resource: resource,
-          my_resource: my_resource,
-          resource_name: resource_name,
-          schema: schema,
-          entry: entry
-        )
+          render(conn, "show.html",
+            changeset: changeset,
+            context: context,
+            resource: resource,
+            my_resource: my_resource,
+            resource_name: resource_name,
+            schema: schema,
+            entry: entry
+          )
+        else
+          put_flash(conn, :error, "The resource you are trying to visit does not exist!")
+          |> redirect(
+            to: Kaffy.Utils.router().kaffy_resource_path(conn, :index, context, resource)
+          )
+        end
     end
   end
 
@@ -63,37 +69,53 @@ defmodule KaffyWeb.ResourceController do
         entry = Kaffy.ResourceQuery.fetch_resource(my_resource, id)
         changes = Map.get(params, resource, %{})
 
-        result =
-          Kaffy.ResourceAdmin.update_changeset(my_resource, entry, changes)
-          |> Kaffy.Utils.repo().update()
+        case Kaffy.ResourceCallbacks.update_callbacks(my_resource, entry, changes) do
+          {:ok, entry} ->
+            changeset = Ecto.Changeset.change(entry)
+            conn = put_flash(conn, :info, "Saved #{resource} successfully")
 
-        {conn, changeset} =
-          case result do
-            {:ok, entry} ->
-              changeset = Ecto.Changeset.change(entry)
-              conn = put_flash(conn, :info, "Saved #{resource} successfully")
-              {conn, changeset}
+            render(conn, "show.html",
+              changeset: changeset,
+              context: context,
+              resource: resource,
+              my_resource: my_resource,
+              resource_name: resource_name,
+              schema: schema,
+              entry: entry
+            )
 
-            {:error, changeset} ->
-              conn =
-                put_flash(
-                  conn,
-                  :error,
-                  "A problem occurred while trying to save this #{resource}"
-                )
+          {:error, %Ecto.Changeset{} = changeset} ->
+            conn =
+              put_flash(
+                conn,
+                :error,
+                "A problem occurred while trying to save this #{resource}"
+              )
 
-              {conn, changeset}
-          end
+            render(conn, "show.html",
+              changeset: changeset,
+              context: context,
+              resource: resource,
+              my_resource: my_resource,
+              resource_name: resource_name,
+              schema: schema,
+              entry: entry
+            )
 
-        render(conn, "show.html",
-          changeset: changeset,
-          context: context,
-          resource: resource,
-          my_resource: my_resource,
-          resource_name: resource_name,
-          schema: schema,
-          entry: entry
-        )
+          {:error, {entry, error}} when is_binary(error) ->
+            conn = put_flash(conn, :error, error)
+            changeset = Ecto.Changeset.change(entry)
+
+            render(conn, "show.html",
+              changeset: changeset,
+              context: context,
+              resource: resource,
+              my_resource: my_resource,
+              resource_name: resource_name,
+              schema: schema,
+              entry: entry
+            )
+        end
     end
   end
 
@@ -126,30 +148,34 @@ defmodule KaffyWeb.ResourceController do
         unauthorized_access(conn)
 
       true ->
-        changeset = Kaffy.ResourceAdmin.create_changeset(my_resource, changes)
-
-        case Kaffy.Utils.repo().insert(changeset) do
+        case Kaffy.ResourceCallbacks.create_callbacks(my_resource, changes) do
           {:ok, entry} ->
-            redirect_to =
-              case Map.get(params, "submit") do
-                "Save" ->
-                  Kaffy.Utils.router().kaffy_resource_path(
-                    conn,
-                    :show,
-                    context,
-                    resource,
-                    entry.id
-                  )
+            case Map.get(params, "submit") do
+              "Save" ->
+                put_flash(conn, :info, "Created a new #{resource_name} successfully")
+                |> redirect_to_resource(context, resource, entry)
 
-                _ ->
-                  Kaffy.Utils.router().kaffy_resource_path(conn, :new, context, resource)
-              end
+              _ ->
+                put_flash(conn, :info, "Created a new #{resource_name} successfully")
+                |> redirect(
+                  to: Kaffy.Utils.router().kaffy_resource_path(conn, :new, context, resource)
+                )
+            end
 
-            put_flash(conn, :info, "Created a new #{resource_name} successfully")
-            |> redirect(to: redirect_to)
-
-          {:error, changeset} ->
+          {:error, %Ecto.Changeset{} = changeset} ->
             render(conn, "new.html",
+              changeset: changeset,
+              context: context,
+              resource: resource,
+              my_resource: my_resource
+            )
+
+          {:error, {entry, error}} when is_binary(error) ->
+            changeset = Ecto.Changeset.change(entry)
+
+            conn
+            |> put_flash(:error, error)
+            |> render("new.html",
               changeset: changeset,
               context: context,
               resource: resource,
@@ -169,19 +195,24 @@ defmodule KaffyWeb.ResourceController do
       true ->
         entry = Kaffy.ResourceQuery.fetch_resource(my_resource, id)
 
-        case Kaffy.Utils.repo().delete(entry) do
+        case Kaffy.ResourceCallbacks.delete_callbacks(my_resource, entry) do
           {:ok, _deleted} ->
             put_flash(conn, :info, "The record was deleted successfully")
             |> redirect(
               to: Kaffy.Utils.router().kaffy_resource_path(conn, :index, context, resource)
             )
 
-          {:error, _changeset} ->
-            put_flash(conn, :error, "There was a problem deleting this record")
-            |> redirect(
-              to:
-                Kaffy.Utils.router().kaffy_resource_path(conn, :show, context, resource, entry.id)
+          {:error, %Ecto.Changeset{} = _changeset} ->
+            put_flash(
+              conn,
+              :error,
+              "A database-related issue prevented this record from being deleted."
             )
+            |> redirect_to_resource(context, resource, entry)
+
+          {:error, {entry, error}} when is_binary(error) ->
+            put_flash(conn, :error, error)
+            |> redirect_to_resource(context, resource, entry)
         end
     end
   end
@@ -231,5 +262,18 @@ defmodule KaffyWeb.ResourceController do
     conn
     |> put_flash(:error, "You are not authorized to access that page")
     |> redirect(to: Kaffy.Utils.router().kaffy_home_path(conn, :index))
+  end
+
+  defp redirect_to_resource(conn, context, resource, entry) do
+    redirect(conn,
+      to:
+        Kaffy.Utils.router().kaffy_resource_path(
+          conn,
+          :show,
+          context,
+          resource,
+          entry.id
+        )
+    )
   end
 end

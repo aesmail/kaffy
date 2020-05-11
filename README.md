@@ -49,23 +49,23 @@ If you'd like to explicitly specify your schemas and their admin modules, you ca
 ```elixir
 # config.exs
 config :kaffy,
-  admin_title: "Bloggy",
-  ecto_repo: Bloggy.Repo,
-  router: BloggyWeb.Router,
+  admin_title: "My Awesome App",
+  ecto_repo: MyApp.Repo,
+  router: MyAppWeb.Router,
   resources: [
     blog: [
       name: "My Blog", # a custom name for this context/section.
       schemas: [
-        post: [schema: Bloggy.Blog.Post, admin: Bloggy.Blog.PostAdmin],
-        comment: [schema: Bloggy.Blog.Comment],
-        tag: [schema: Bloggy.Blog.Tag]
+        post: [schema: MyApp.Blog.Post, admin: MyApp.Blog.PostAdmin],
+        comment: [schema: MyApp.Blog.Comment],
+        tag: [schema: MyApp.Blog.Tag]
       ]
     ],
     inventory: [
       name: "Inventory",
       schemas: [
-        category: [schema: Bloggy.Products.Category, admin: Bloggy.Products.CategoryAdmin],
-        product: [schema: Bloggy.Products.Product, admin: Bloggy.Products.ProductAdmin]
+        category: [schema: MyApp.Products.Category, admin: MyApp.Products.CategoryAdmin],
+        product: [schema: MyApp.Products.Product, admin: MyApp.Products.ProductAdmin]
       ]
     ]
   ]
@@ -73,10 +73,37 @@ config :kaffy,
 
 The following admin module is what the screenshot above is showing:
 
+### Customizing the index page
+
+The `index/1` function takes a schema and must return a keyword list of fields and their options.
+
+If the options are `nil`, Kaffy will use default values for that field.
+
+If this function is not defined, Kaffy will return all fields with their respective values.
+
+```elixir
+defmodule MyApp.Blog.PostAdmin do
+  def index(_) do
+    [
+      title: nil,
+      views: %{name: "Hits"},
+      date: %{name: "Date Added", value: fn p -> p.inserted_at end},
+    ]
+  end
+end
+```
+
+Result
+
+![Customized index page](demos/post_index_custom.png)
+
+Note that the keyword list keys don't necessarily have to be schema fields as long as you provide a `:value` option.
+
+
 ```elixir
 # all the functions are optional
 
-defmodule Bloggy.Blog.PostAdmin do
+defmodule MyApp.Blog.PostAdmin do
   def index(_schema) do
     # index/1 should return a keyword list of fields and
     # their options.
