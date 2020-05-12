@@ -1,4 +1,6 @@
-### v0.3.1 (in development)
+### v0.3.2 (in development)
+
+### v0.3.1 (2020-05-12)
 
 - [enhancement] A better way to support foreign key fields with a huge amount of records to select from.
 - [enhancement] Retrieve the actual name of the association field from the association struct.

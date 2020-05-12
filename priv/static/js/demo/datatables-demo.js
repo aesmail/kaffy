@@ -12,7 +12,6 @@ $(document).ready(function () {
   if ($("a#pick-raw-resource").length) {
     $("a#pick-raw-resource").click(function () {
       var link = $(this).attr("href");
-      console.log(link);
       window.open(link, "_blank");
       return false;
     });
