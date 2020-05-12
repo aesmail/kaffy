@@ -2,6 +2,10 @@
 
 Extremely simple yet powerful admin interface for phoenix applications
 
+## Demo
+
+[Check out the simple demo here](https://kaffy.gigalixirapp.com/admin/)
+
 ## Minimum Requirements
 
 - elixir 1.7.0
