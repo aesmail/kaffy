@@ -32,7 +32,7 @@ defmodule Kaffy.Resource do
     value = Map.get(options || %{}, :value)
 
     cond do
-      is_struct(value) ->
+      Map.has_key?(value, :__struct__) ->
         if value.__struct__ in [NaiveDateTime, DateTime, Date, Time] do
           value
         else
@@ -59,7 +59,7 @@ defmodule Kaffy.Resource do
     value = Map.get(schema, field, "")
 
     cond do
-      is_struct(value) ->
+      Map.has_key?(value, :__struct__) ->
         if value.__struct__ in [NaiveDateTime, DateTime, Date, Time] do
           value
         else

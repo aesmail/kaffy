@@ -1,5 +1,7 @@
 ### v0.3.2 (in development)
 
+- [bugfix] Replace `Kernel.is_struct/1` to support elixir < 1.10
+
 ### v0.3.1 (2020-05-12)
 
 - [enhancement] A better way to support foreign key fields with a huge amount of records to select from.
