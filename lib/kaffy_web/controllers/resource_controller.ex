@@ -167,8 +167,9 @@ defmodule KaffyWeb.ResourceController do
   end
 
   def create(conn, %{"context" => context, "resource" => resource} = params) do
-    changes = Map.get(params, resource, %{})
     my_resource = Kaffy.Utils.get_resource(context, resource)
+    params = Kaffy.Resource.decode_map_fields(resource, my_resource[:schema], params)
+    changes = Map.get(params, resource, %{})
     resource_name = Kaffy.ResourceAdmin.singular_name(my_resource)
 
     case can_proceed?(my_resource, conn) do
