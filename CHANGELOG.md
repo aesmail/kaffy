@@ -1,4 +1,6 @@
-### v0.3.2 (in development)
+### v0.3.3 (in development)
+
+### v0.3.2 (2020-05-12)
 
 - [bugfix] Kaffy didn't compile with elixir < 1.10 due to the use of `Kernel.is_struct`. It is currently tested with elixir 1.7+
 - [bugfix] Sometimes new records couldn't be created if they have `:map` fields.
