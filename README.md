@@ -2,6 +2,11 @@
 
 Extremely simple yet powerful admin interface for phoenix applications
 
+## Minimum Requirements
+
+- elixir 1.7.0
+- phoenix 1.4.0
+
 ## Installation
 
 #### Add `kaffy` as a dependency
