@@ -224,6 +224,7 @@ defmodule Kaffy.Resource do
 
   defp build_html_input(schema, form, field, type, opts) do
     data = schema
+    {conn, opts} = Keyword.pop(opts, :conn)
     schema = schema.__struct__
 
     case type do
@@ -251,7 +252,7 @@ defmodule Kaffy.Resource do
         end)
 
       :id ->
-        text_or_assoc(schema, form, field, opts)
+        text_or_assoc(conn, schema, form, field, opts)
 
       :string ->
         text_input(form, field, opts)
@@ -321,31 +322,79 @@ defmodule Kaffy.Resource do
   def field_type(_schema, {_, type}), do: type
   def field_type(schema, field), do: schema.__schema__(:type, field)
 
-  defp text_or_assoc(schema, form, field, opts) do
-    field_no_id = to_string(field) |> String.slice(0..-4) |> String.to_existing_atom()
+  defp text_or_assoc(conn, schema, form, field, opts) do
+    actual_assoc =
+      Enum.filter(associations(schema), fn a ->
+        association(schema, a).owner_key == field
+      end)
+      |> Enum.at(0)
+
+    field_no_id =
+      case actual_assoc do
+        nil -> field
+        _ -> association(schema, actual_assoc).field
+      end
 
     case field_no_id in associations(schema) do
       true ->
         assoc = association_schema(schema, field_no_id)
-        options = Kaffy.Utils.repo().all(assoc)
+        option_count = Kaffy.ResourceQuery.total_count(schema: assoc)
+        IO.puts(option_count)
 
-        string_fields = Enum.filter(fields(assoc), fn f -> field_type(assoc, f) == :string end)
+        case option_count > 20 do
+          true ->
+            target_context = Kaffy.Utils.get_context_for_schema(assoc)
+            target_resource = Kaffy.Utils.get_schema_key(target_context, assoc)
 
-        popular_strings =
-          Enum.filter(string_fields, fn f -> f in [:name, :title] end) |> Enum.at(0)
+            content_tag :div, class: "input-group col-md-2" do
+              [
+                number_input(form, field,
+                  class: "form-control",
+                  id: field,
+                  aria_describedby: field
+                ),
+                content_tag :div, class: "input-group-append" do
+                  content_tag :span, class: "input-group-text", id: field do
+                    link(content_tag(:i, "", class: "fas fa-search"),
+                      to:
+                        Kaffy.Utils.router().kaffy_resource_path(
+                          conn,
+                          :index,
+                          target_context,
+                          target_resource,
+                          c: conn.params["context"],
+                          r: conn.params["resource"],
+                          pick: field
+                        ),
+                      id: "pick-raw-resource"
+                    )
+                  end
+                end
+              ]
+            end
 
-        string_field =
-          case is_nil(popular_strings) do
-            true -> Enum.at(string_fields, 0)
-            false -> popular_strings
-          end
+          false ->
+            options = Kaffy.Utils.repo().all(assoc)
 
-        select(
-          form,
-          field,
-          Enum.map(options, fn o -> {Map.get(o, string_field, "ERROR"), o.id} end),
-          class: "custom-select"
-        )
+            string_fields =
+              Enum.filter(fields(assoc), fn f -> field_type(assoc, f) == :string end)
+
+            popular_strings =
+              Enum.filter(string_fields, fn f -> f in [:name, :title] end) |> Enum.at(0)
+
+            string_field =
+              case is_nil(popular_strings) do
+                true -> Enum.at(string_fields, 0)
+                false -> popular_strings
+              end
+
+            select(
+              form,
+              field,
+              Enum.map(options, fn o -> {Map.get(o, string_field, "ERROR"), o.id} end),
+              class: "custom-select"
+            )
+        end
 
       false ->
         number_input(form, field, opts)

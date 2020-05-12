@@ -4,6 +4,32 @@ defmodule KaffyWeb.ResourceController do
   use Phoenix.Controller, namespace: KaffyWeb
   use Phoenix.HTML
 
+  def index(conn, %{
+        "context" => context,
+        "resource" => resource,
+        "c" => _target_context,
+        "r" => _target_resource,
+        "pick" => _field
+      }) do
+    my_resource = Kaffy.Utils.get_resource(context, resource)
+
+    case can_proceed?(my_resource, conn) do
+      false ->
+        unauthorized_access(conn)
+
+      true ->
+        fields = Kaffy.ResourceAdmin.index(my_resource)
+
+        render(conn, "pick_resource.html",
+          layout: {KaffyWeb.LayoutView, "bare.html"},
+          context: context,
+          resource: resource,
+          fields: fields,
+          my_resource: my_resource
+        )
+    end
+  end
+
   def index(conn, %{"context" => context, "resource" => resource}) do
     my_resource = Kaffy.Utils.get_resource(context, resource)
 

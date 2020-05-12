@@ -31,6 +31,26 @@ defmodule Kaffy.Utils do
     get_in(full_resources(), [context, :name]) || default
   end
 
+  def get_context_for_schema(schema) do
+    contexts()
+    |> Enum.filter(fn c ->
+      schemas = Enum.map(schemas_for_context(c), fn {_k, v} -> Keyword.get(v, :schema) end)
+      schema in schemas
+    end)
+    |> Enum.at(0)
+  end
+
+  def get_schema_key(context, schema) do
+    schemas_for_context(context)
+    |> Enum.reduce([], fn {k, v}, keys ->
+      case schema == Keyword.get(v, :schema) do
+        true -> [k | keys]
+        false -> keys
+      end
+    end)
+    |> Enum.at(0)
+  end
+
   def get_resource(context, resource) do
     {context, resource} = convert_to_atoms(context, resource)
     get_in(full_resources(), [context, :schemas, resource])

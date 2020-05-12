@@ -73,8 +73,6 @@ config :kaffy,
   ]
 ```
 
-The following admin module is what the screenshot above is showing:
-
 ### Index page
 
 The `index/1` function takes a schema and must return a keyword list of fields and their options.
@@ -340,6 +338,10 @@ Result
 
 ![After create callback](demos/callback_after_create.png)
 
+
+### Random features
+
+- If you have a schema with a `belongs_to` association and this association has too many records to be included in a `<select>` box, Kaffy will automatically change the field from a `<select>` box to a text box and opens a new where the association records are paginated and filterable so you can select the necessary record with ease.
 
 ## Why another admin interface
 

@@ -1,3 +1,8 @@
+### v0.3.1 (in development)
+
+- [enhancement] A better way to support foreign key fields with a huge amount of records to select from.
+- [enhancement] Retrieve the actual name of the association field from the association struct.
+
 ### v0.3.0 (2020-05-11)
 
 - [feature] Added ability to delete resources.

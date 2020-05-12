@@ -5,7 +5,7 @@
         <%= for field <- Kaffy.ResourceAdmin.form_fields(@my_resource) do %>
             <div class="form-group">
                 <%= Kaffy.Resource.form_label(f, field) %>
-                <%= Kaffy.Resource.form_field(@changeset, f, field, class: "form-control") %>
+                <%= Kaffy.Resource.form_field(@changeset, f, field, class: "form-control", conn: @conn) %>
             </div>
         <% end %>
 
