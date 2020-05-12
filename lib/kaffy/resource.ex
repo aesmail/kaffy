@@ -339,7 +339,6 @@ defmodule Kaffy.Resource do
       true ->
         assoc = association_schema(schema, field_no_id)
         option_count = Kaffy.ResourceQuery.total_count(schema: assoc)
-        IO.puts(option_count)
 
         case option_count > 20 do
           true ->
