@@ -328,7 +328,7 @@ Result
 ![Single actions](demos/resource_actions.png)
 
 `resource_actions/1` takes a `conn` and must return a keyword list. 
-The keys must be atoms defining the action "key".
+The keys must be atoms defining the unqiue action "keys".
 The values are maps providing a human-friendly `:name` and an `:action` that is an anonymous function with arity 2 that takes a `conn` and the record.
 
 Actions must return one of the following:
