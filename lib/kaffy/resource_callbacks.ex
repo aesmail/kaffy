@@ -3,16 +3,16 @@ defmodule Kaffy.ResourceCallbacks do
 
   alias Kaffy.Utils
 
-  def create_callbacks(resource, changes) do
+  def create_callbacks(conn, resource, changes) do
     changeset = Kaffy.ResourceAdmin.create_changeset(resource, changes)
 
     Kaffy.Utils.repo().transaction(fn repo ->
       result =
-        with {:ok, changeset} <- before_create(resource, changeset),
-             {:ok, changeset} <- before_save(resource, changeset),
+        with {:ok, changeset} <- before_create(conn, resource, changeset),
+             {:ok, changeset} <- before_save(conn, resource, changeset),
              {:ok, entry} <- Kaffy.Utils.repo().insert(changeset),
-             {:ok, entry} <- after_save(resource, entry),
-             do: after_create(resource, entry)
+             {:ok, entry} <- after_save(conn, resource, entry),
+             do: after_create(conn, resource, entry)
 
       case result do
         {:ok, entry} -> entry
@@ -22,16 +22,16 @@ defmodule Kaffy.ResourceCallbacks do
     end)
   end
 
-  def update_callbacks(resource, entry, changes) do
+  def update_callbacks(conn, resource, entry, changes) do
     changeset = Kaffy.ResourceAdmin.update_changeset(resource, entry, changes)
 
     Kaffy.Utils.repo().transaction(fn repo ->
       result =
-        with {:ok, changeset} <- before_update(resource, changeset),
-             {:ok, changeset} <- before_save(resource, changeset),
+        with {:ok, changeset} <- before_update(conn, resource, changeset),
+             {:ok, changeset} <- before_save(conn, resource, changeset),
              {:ok, entry} <- Kaffy.Utils.repo().update(changeset),
-             {:ok, entry} <- after_save(resource, entry),
-             do: after_update(resource, entry)
+             {:ok, entry} <- after_save(conn, resource, entry),
+             do: after_update(conn, resource, entry)
 
       case result do
         {:ok, entry} -> entry
@@ -41,12 +41,12 @@ defmodule Kaffy.ResourceCallbacks do
     end)
   end
 
-  def delete_callbacks(resource, entry) do
+  def delete_callbacks(conn, resource, entry) do
     Kaffy.Utils.repo().transaction(fn repo ->
       result =
-        with {:ok, changeset} <- before_delete(resource, entry),
+        with {:ok, changeset} <- before_delete(conn, resource, entry),
              {:ok, entry} <- Kaffy.Utils.repo().delete(changeset),
-             do: after_delete(resource, entry)
+             do: after_delete(conn, resource, entry)
 
       case result do
         {:ok, entry} -> entry
@@ -56,68 +56,80 @@ defmodule Kaffy.ResourceCallbacks do
     end)
   end
 
-  defp before_create(resource, changeset) do
+  defp before_create(conn, resource, changeset) do
     Utils.get_assigned_value_or_default(
       resource,
       :before_create,
       {:ok, changeset},
-      [changeset],
+      [conn, changeset],
       false
     )
   end
 
-  defp after_create(resource, entry) do
-    Utils.get_assigned_value_or_default(resource, :after_create, {:ok, entry}, [entry], false)
+  defp after_create(conn, resource, entry) do
+    Utils.get_assigned_value_or_default(
+      resource,
+      :after_create,
+      {:ok, entry},
+      [conn, entry],
+      false
+    )
   end
 
-  defp before_update(resource, changeset) do
+  defp before_update(conn, resource, changeset) do
     Utils.get_assigned_value_or_default(
       resource,
       :before_update,
       {:ok, changeset},
-      [changeset],
+      [conn, changeset],
       false
     )
   end
 
-  defp before_save(resource, changeset) do
+  defp before_save(conn, resource, changeset) do
     Utils.get_assigned_value_or_default(
       resource,
       :before_save,
       {:ok, changeset},
-      [changeset],
+      [conn, changeset],
       false
     )
   end
 
-  defp after_save(resource, entry) do
-    Utils.get_assigned_value_or_default(resource, :after_save, {:ok, entry}, [entry], false)
+  defp after_save(conn, resource, entry) do
+    Utils.get_assigned_value_or_default(resource, :after_save, {:ok, entry}, [conn, entry], false)
   end
 
-  defp after_update(resource, entry) do
-    Utils.get_assigned_value_or_default(resource, :after_update, {:ok, entry}, [entry], false)
+  defp after_update(conn, resource, entry) do
+    Utils.get_assigned_value_or_default(
+      resource,
+      :after_update,
+      {:ok, entry},
+      [conn, entry],
+      false
+    )
   end
 
-  defp before_delete(resource, entry) do
+  defp before_delete(conn, resource, entry) do
     changeset = Kaffy.ResourceAdmin.update_changeset(resource, entry, %{})
 
     Utils.get_assigned_value_or_default(
       resource,
       :before_delete,
       {:ok, changeset},
-      [changeset],
+      [conn, changeset],
       false
     )
   end
 
-  defp after_delete(resource, entry) do
+  defp after_delete(conn, resource, entry) do
     # changeset = Kaffy.ResourceAdmin.update_changeset(resource, entry, %{})
 
     Utils.get_assigned_value_or_default(
       resource,
       :after_delete,
       {:ok, entry},
-      [entry],
+      [conn, entry],
       false
     )
   end

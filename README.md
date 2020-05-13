@@ -17,7 +17,7 @@ Extremely simple yet powerful admin interface for phoenix applications
 ```elixir
 def deps do
   [
-    {:kaffy, "~> 0.3.0"}
+    {:kaffy, "~> 0.4.0"}
   ]
 end
 ```
@@ -314,18 +314,23 @@ These callbacks are:
 - `after_update/1`
 - `after_create/1`
 
-`before_*` functions are passed a changeset. `after_*` functions are passed the record itself. With the exception 
-of `before_delete/1` and `after_delete/1` which are both passed the record itself.
+`before_*` functions are passed a changeset. `after_*` functions are passed the record itself. With the exception of `before_delete/1` and `after_delete/1` which are both passed the record itself.
 
-`before_*` functions must return `{:ok, changeset}` to continue the flow normally.
+- `before_(create|save|update)/1` must return `{:ok, changeset}` to continue.
+- `before_delete/1` must return `{:ok, record}` to continue.
+- All `after_*` functions must return `{:ok, record}` to continue.
 
-To prevent the chain from continuing, return `{:error, changeset}` for `before_*` functions and `{:error, record, "Error msg"}` for `after_*` functions.
+To prevent the chain from continuing and roll back any changes:
+
+- `before_(create|save|update)/1` must return `{:error, changeset}`.
+- `before_delete/1` must return `{:error, record}`.
+- All `after_*` functions must return `{:error, record, "Customized error message"}`.
 
 When creating a new record, the following functions are called in this order:
 
 - `before_create/1`
 - `before_save/1`
-- inserting the record happens here.
+- inserting the record happens here: `Repo.insert/1`
 - `after_save/1`
 - `after_create/1`
 
@@ -333,42 +338,35 @@ When updating an existing record, the following functions are called in this ord
 
 - `before_update/1`
 - `before_save/1`
-- updating the record happens here.
+- updating the record happens here: `Repo.update/1`
 - `after_save/1`
 - `after_update/1`
 
 When deleting a record, the following functions are called in this order:
 
 - `before_delete/1`
-- deleting the record happens here.
+- deleting the record happens here: `Repo.delete/1`
 - `after_delete/1`
 
 It's important to know that all callbacks are run inside a transaction. So in case of failure, everything is rolled back even if the operation actually happened.
 
 ```elixir
 defmodule MyApp.Blog.PostAdmin do
-  def before_create(changeset) do
-    case String.contains?(changeset.changes.title, "kaffy") do
-      true ->
-        {:ok, changeset}
-      false ->
-        changeset = Ecto.Changeset.add_error(changeset, :title, "must contain kaffy")
-        {:error, changeset}
+  def before_create(conn, changeset) do
+    case conn.assigns.user.username == "aesmail" do
+      true -> {:error, changeset} # aesmail should never create a post
+      false -> {:ok, changeset}
     end
   end
 
-  def after_create(post) do
+  def after_create(_conn, post) do
     {:error, post, "This will prevent posts from being created"}
   end
 
-  def after_delete(post) do
-    if post.settings.slug == "do-not-delete" do
-      # Ops! deleted by accident!
-      # since callbacks are run in a transactions, the deletion will be rolled back and the post will exist again.
-      {:error, post, "Do not delete this post please!"}
-    else
-      # it's ok to delete this post.
-      {:ok, post}
+  def before_delete(conn, post) do
+    case conn.assigns.user.role do
+      "admin" -> {:ok, post}
+      _ -> {:error, post, "Only admins can delete posts"}
     end
   end
 end

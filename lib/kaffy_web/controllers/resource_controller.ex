@@ -95,7 +95,7 @@ defmodule KaffyWeb.ResourceController do
         entry = Kaffy.ResourceQuery.fetch_resource(my_resource, id)
         changes = Map.get(params, resource, %{})
 
-        case Kaffy.ResourceCallbacks.update_callbacks(my_resource, entry, changes) do
+        case Kaffy.ResourceCallbacks.update_callbacks(conn, my_resource, entry, changes) do
           {:ok, entry} ->
             changeset = Ecto.Changeset.change(entry)
             conn = put_flash(conn, :info, "Saved #{resource} successfully")
@@ -177,7 +177,7 @@ defmodule KaffyWeb.ResourceController do
         unauthorized_access(conn)
 
       true ->
-        case Kaffy.ResourceCallbacks.create_callbacks(my_resource, changes) do
+        case Kaffy.ResourceCallbacks.create_callbacks(conn, my_resource, changes) do
           {:ok, entry} ->
             case Map.get(params, "submit") do
               "Save" ->
@@ -226,7 +226,7 @@ defmodule KaffyWeb.ResourceController do
       true ->
         entry = Kaffy.ResourceQuery.fetch_resource(my_resource, id)
 
-        case Kaffy.ResourceCallbacks.delete_callbacks(my_resource, entry) do
+        case Kaffy.ResourceCallbacks.delete_callbacks(conn, my_resource, entry) do
           {:ok, _deleted} ->
             put_flash(conn, :info, "The record was deleted successfully")
             |> redirect(

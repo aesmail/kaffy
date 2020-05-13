@@ -1,4 +1,7 @@
-### v0.3.3 (in development)
+### v0.4.0 (in development)
+
+- [breaking] pass `conn` struct to all callback functions.
+- [enhancement] fix typo in the resource form (thanks @axelclark)
 
 ### v0.3.2 (2020-05-12)
 
