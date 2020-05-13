@@ -295,6 +295,48 @@ Result
 Notice the "Posts" above the "Terms". This is the context name and it can be changed in the `configs.exs` file. 
 See the "Configurations" section above.
 
+### Custom Actions
+
+Kaffy supports performing custom actions on single resources by defining the `resource_actions/1` function.
+
+```elixir
+defmodule MyApp.Blog.ProductAdmin
+  def resource_actions(_conn) do
+    [
+      publish: %{name: "Publish this product", action: fn _c, p -> restock(p) end},
+      soldout: %{name: "Sold out!", action: fn _c, p -> soldout(p) end}
+    ]
+  end
+
+  defp restock(product) do
+    update_product(product, %{"status" => "available"})
+  end
+
+  defp soldout(product) do
+    case product.id == 3 do
+      true ->
+        {:error, product, "This product should never be sold out!"}
+
+      false ->
+        update_product(product, %{"status" => "soldout"})
+    end
+  end
+```
+
+Result
+
+![Single actions](demos/resource_actions.png)
+
+`resource_actions/1` takes a `conn` and must return a keyword list. 
+The keys must be atoms defining the action "key".
+The values are maps providing a human-friendly `:name` and an `:action` that is an anonymous function with arity 2 that takes a `conn` and the record.
+
+Actions must return one of the following:
+
+- `{:ok, record}` indicating the action was performed successfully.
+- `{:error, changeset}` indicating there was a validation error.
+- `{:error, record, custom_error}` to communicate a custom error message to the user where custom_error is a string.
+
 ### Callbacks
 
 Sometimes you need to execute certain actions when creating, updating, or deleting records.
@@ -305,48 +347,48 @@ There are a few callbacks that are called every time you create, update, or dele
 
 These callbacks are:
 
-- `before_create/1`
-- `before_update/1`
-- `before_delete/1`
-- `before_save/1`
-- `after_save/1`
-- `after_delete/1`
-- `after_update/1`
-- `after_create/1`
+- `before_create/2`
+- `before_update/2`
+- `before_delete/2`
+- `before_save/2`
+- `after_save/2`
+- `after_delete/2`
+- `after_update/2`
+- `after_create/2`
 
-`before_*` functions are passed a changeset. `after_*` functions are passed the record itself. With the exception of `before_delete/1` and `after_delete/1` which are both passed the record itself.
+`before_*` functions are passed the current `conn` and a changeset. `after_*` functions are passed the current `conn` and the record itself. With the exception of `before_delete/2` and `after_delete/2` which are both passed the current `conn` and the record itself.
 
-- `before_(create|save|update)/1` must return `{:ok, changeset}` to continue.
-- `before_delete/1` must return `{:ok, record}` to continue.
+- `before_(create|save|update)/2` must return `{:ok, changeset}` to continue.
+- `before_delete/2` must return `{:ok, record}` to continue.
 - All `after_*` functions must return `{:ok, record}` to continue.
 
 To prevent the chain from continuing and roll back any changes:
 
-- `before_(create|save|update)/1` must return `{:error, changeset}`.
-- `before_delete/1` must return `{:error, record}`.
+- `before_(create|save|update)/2` must return `{:error, changeset}`.
+- `before_delete/2` must return `{:error, record, "Customized error message}`.
 - All `after_*` functions must return `{:error, record, "Customized error message"}`.
 
 When creating a new record, the following functions are called in this order:
 
-- `before_create/1`
-- `before_save/1`
+- `before_create/2`
+- `before_save/2`
 - inserting the record happens here: `Repo.insert/1`
-- `after_save/1`
-- `after_create/1`
+- `after_save/2`
+- `after_create/2`
 
 When updating an existing record, the following functions are called in this order:
 
-- `before_update/1`
-- `before_save/1`
+- `before_update/2`
+- `before_save/2`
 - updating the record happens here: `Repo.update/1`
-- `after_save/1`
-- `after_update/1`
+- `after_save/2`
+- `after_update/2`
 
 When deleting a record, the following functions are called in this order:
 
-- `before_delete/1`
+- `before_delete/2`
 - deleting the record happens here: `Repo.delete/1`
-- `after_delete/1`
+- `after_delete/2`
 
 It's important to know that all callbacks are run inside a transaction. So in case of failure, everything is rolled back even if the operation actually happened.
 

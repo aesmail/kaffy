@@ -1,4 +1,23 @@
-<h2><%= @resource_name %> #<%= @changeset.data.id %></h2>
+<h2>
+    <%= @resource_name %> #<%= @changeset.data.id %>
+    <%= if Kaffy.ResourceAdmin.resource_actions(@my_resource, @conn) do %>
+        <div class="float-right">
+            <div class="btn-group">
+                <button type="button" class="btn btn-light dropdown-toggle btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fas fa-hammer"></i> <span class="d-none d-md-inline">Actions</span>
+                </button>
+                <div class="dropdown-menu">
+                    <%= for {action_key, options} <- Kaffy.ResourceAdmin.resource_actions(@my_resource, @conn) do %>
+                        <%= form_tag(Kaffy.Utils.router().kaffy_resource_path(@conn, :single_action, @context, @resource, @changeset.data.id, to_string(action_key)), method: :post) %>
+                            <%# link options.name, to: Kaffy.Utils.router().kaffy_resource_path(@conn, :single_action, @context, @resource, @changeset.data.id, to_string(action_key)), class: "dropdown-item" %>
+                            <input type="submit" name="submit" value="<%= options.name %>" class="dropdown-item" />
+                        </form>
+                    <% end %>
+                </div>
+            </div>
+        </div>
+    <% end %>
+</h2>
 
 <div>
     <%= f = form_for(@changeset, Kaffy.Utils.router().kaffy_resource_path(@conn, :update, @context, @resource, @changeset.data.id), method: :put, multipart: true) %>
@@ -10,9 +29,9 @@
         <% end %>
 
         <div class="p-2">
-            <%= link "Back", to: Kaffy.Utils.router().kaffy_resource_path(@conn, :index, @context, @resource), class: "btn btn-light btn-lg" %>
-            <input type="submit" name="submit" value="Save" class="btn btn-primary btn-lg" />
-            <button type="button" class="btn btn-danger btn-lg float-right" data-toggle="modal" data-target="#delete-modal">
+            <%= link "Back", to: Kaffy.Utils.router().kaffy_resource_path(@conn, :index, @context, @resource), class: "btn btn-light" %>
+            <input type="submit" name="submit" value="Save" class="btn btn-primary" />
+            <button type="button" class="btn btn-danger float-right" data-toggle="modal" data-target="#delete-modal">
                 <i class="fas fa-trash"></i> Delete
             </button>
         </div>

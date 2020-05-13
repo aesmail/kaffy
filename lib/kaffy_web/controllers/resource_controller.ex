@@ -248,6 +248,33 @@ defmodule KaffyWeb.ResourceController do
     end
   end
 
+  def single_action(conn, %{
+        "context" => context,
+        "resource" => resource,
+        "id" => id,
+        "action_key" => action_key
+      }) do
+    my_resource = Kaffy.Utils.get_resource(context, resource)
+    entry = Kaffy.ResourceQuery.fetch_resource(my_resource, id)
+    actions = Kaffy.ResourceAdmin.resource_actions(my_resource, conn)
+    action_key = String.to_existing_atom(action_key)
+    [action_record] = Keyword.get_values(actions, action_key)
+
+    case action_record.action.(conn, entry) do
+      {:ok, entry} ->
+        conn = put_flash(conn, :info, "Action performed successfully")
+        redirect_to_resource(conn, context, resource, entry)
+
+      {:error, _} ->
+        conn = put_flash(conn, :error, "A validation error occurred")
+        redirect_to_resource(conn, context, resource, entry)
+
+      {:error, _, error_msg} ->
+        conn = put_flash(conn, :error, error_msg)
+        redirect_to_resource(conn, context, resource, entry)
+    end
+  end
+
   def api(conn, %{"context" => context, "resource" => resource} = params) do
     my_resource = Kaffy.Utils.get_resource(context, resource)
     fields = Kaffy.ResourceAdmin.index(my_resource)

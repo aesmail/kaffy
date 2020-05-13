@@ -1,7 +1,10 @@
-### v0.4.0 (in development)
+### v0.4.1 (in development)
+
+### v0.4.0 (2020-05-13)
 
 - [breaking] pass `conn` struct to all callback functions.
-- [enhancement] fix typo in the resource form (thanks @axelclark)
+- [feature] introducing custom actions for single resources.
+- [enhancement] fix typo in the resource form (thanks @axelclark).
 
 ### v0.3.2 (2020-05-12)
 

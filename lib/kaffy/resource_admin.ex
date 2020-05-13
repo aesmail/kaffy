@@ -246,4 +246,8 @@ defmodule Kaffy.ResourceAdmin do
     default = singular_name(resource) <> "s"
     Utils.get_assigned_value_or_default(resource, :plural_name, default)
   end
+
+  def resource_actions(resource, conn) do
+    Utils.get_assigned_value_or_default(resource, :resource_actions, nil, [conn], false)
+  end
 end
