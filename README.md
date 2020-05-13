@@ -82,6 +82,39 @@ config :kaffy,
   ]
 ```
 
+Note that, for auto-detection to work properly, schemas in different contexts should have different direct "prefix" namespaces. That is:
+
+```elixir
+# auto-detection works properly with this:
+MyApp.Posts.Post
+MyApp.Posts.Category
+MyApp.Products.Product
+MyApp.Products.Category # this Category will not be confused with Posts.Category
+
+# auto-detection will be confused with this:
+# both Category schemas have the same "Schemas" prefix.
+MyApp.Posts.Schemas.Post
+MyApp.Posts.Schemas.Category
+MyApp.Products.Schemas.Product
+MyApp.Products.Schemas.Category
+
+# To fix this, define resources manually:
+resources: [
+  posts: [
+    schemas: [
+      post: [schema: MyApp.Posts.Schemas.Post],
+      category: [schema: MyApp.Posts.Schemas.Category]
+    ]
+  ],
+  products: [
+    schemas: [
+      product: [schema: MyApp.Products.Schemas.Product],
+      category: [schema: MyApp.Products.Schemas.Category]
+    ]
+  ]
+]
+```
+
 ### Index page
 
 The `index/1` function takes a schema and must return a keyword list of fields and their options.
