@@ -12,6 +12,24 @@ defmodule Kaffy.Resource do
     schema.__schema__(:primary_key)
   end
 
+  def has_field_filters?(resource) do
+    admin_fields = Kaffy.ResourceAdmin.index(resource)
+
+    fields_with_filters =
+      Enum.map(admin_fields, fn f -> kaffy_field_filters(resource[:schema], f) end)
+
+    Enum.any?(fields_with_filters, fn
+      {_, filters} -> filters
+      _ -> false
+    end)
+  end
+
+  def kaffy_field_filters(_schema, {field, options}) do
+    {field, Map.get(options || %{}, :filters, false)}
+  end
+
+  def kaffy_field_filters(_, _), do: false
+
   def kaffy_field_name(schema, {field, options}) do
     default_name = kaffy_field_name(schema, field)
     name = Map.get(options || %{}, :name)
@@ -80,6 +98,16 @@ defmodule Kaffy.Resource do
     to_be_removed = fields_to_be_removed(schema)
     all_fields = all_fields(schema) -- to_be_removed
     reorder_fields(all_fields, schema)
+  end
+
+  def display_string_fields([], all), do: Enum.reverse(all) |> Enum.join(",")
+
+  def display_string_fields([{field, _} | rest], all) do
+    display_string_fields(rest, [field | all])
+  end
+
+  def display_string_fields([field | rest], all) do
+    display_string_fields(rest, [field | all])
   end
 
   defp fields_to_be_removed(schema) do

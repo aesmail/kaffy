@@ -1,7 +1,7 @@
 defmodule Kaffy.MixProject do
   use Mix.Project
 
-  @version "0.3.3"
+  @version "0.4.1"
 
   def project do
     [

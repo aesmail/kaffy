@@ -1,4 +1,7 @@
-### v0.4.1 (in development)
+### v0.4.1 (2020-05-14)
+
+- [feature] add custom field filters.
+- [bugfix] sometimes if `index/1` is not defined in the admin module, the index page is empty.
 
 ### v0.4.0 (2020-05-13)
 

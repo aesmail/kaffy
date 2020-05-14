@@ -4,6 +4,26 @@
             <th><%= Kaffy.Resource.kaffy_field_name(@my_resource[:schema], field) %></th>
         <% end %>
     </tr>
+
+    <%= if Kaffy.Resource.has_field_filters?(@my_resource) do %>
+        <tr>
+            <%= for {field, index} <- Enum.with_index(@fields) do %>
+                <% {field, filters} = Kaffy.Resource.kaffy_field_filters(@my_resource[:schema], field) %>
+                <%= if filters do %>
+                    <th>
+                        <select class="kaffy-filter custom-select" id="kaffy-field-<%= index %>" data-field-name="<%= Kaffy.Resource.kaffy_field_name(@my_resource[:schema], field) %>">
+                            <option value="">All</option>
+                            <%= for {human, machine} <- filters do %>
+                                <option value="<%= machine %>"><%= human %></option>
+                            <% end %>
+                        </select>
+                    </th>
+                <% else %>
+                    <th></th>
+                <% end %>
+            <% end %>
+        </tr>
+    <% end %>
 </thead>
 
 <tfoot>

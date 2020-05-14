@@ -278,13 +278,15 @@ defmodule KaffyWeb.ResourceController do
   def api(conn, %{"context" => context, "resource" => resource} = params) do
     my_resource = Kaffy.Utils.get_resource(context, resource)
     fields = Kaffy.ResourceAdmin.index(my_resource)
+
     {filtered_count, entries} = Kaffy.ResourceQuery.list_resource(my_resource, params)
 
     records =
       Enum.map(entries, fn entry ->
         rows =
           Enum.reduce(fields, [], fn field, e ->
-            [Kaffy.Resource.kaffy_field_value(entry, field) | e]
+            field_value = Kaffy.Resource.kaffy_field_value(entry, field)
+            [field_value | e]
           end)
           |> Enum.reverse()
 
@@ -300,11 +302,18 @@ defmodule KaffyWeb.ResourceController do
         [first | rest]
       end)
 
+    columns =
+      Enum.map(fields, fn
+        {f, _} -> %{name: f}
+        f -> %{name: f}
+      end)
+
     total_count = Kaffy.ResourceQuery.total_count(my_resource)
 
     final_result = %{
       raw: Map.get(params, "raw", "0") |> String.to_integer(),
       recordsTotal: total_count,
+      columnDefs: columns,
       recordsFiltered: filtered_count,
       data: records
     }

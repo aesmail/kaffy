@@ -1,12 +1,31 @@
 // Call the dataTables jQuery plugin
 $(document).ready(function () {
   var api_url = $("#kaffy-api-url").html();
+  var columnNames = $("#column-names").text();
+  var columnNames = columnNames.split(',')
+  var tableColumnNames = columnNames.map(function (value, _index, _arr) {
+    return { name: value };
+  });
 
   $('#dataTable').DataTable({
     "processing": true,
     "serverSide": true,
     "ordering": false,
+    "columns": tableColumnNames,
     "ajax": api_url,
+    initComplete: function () {
+      var dtApi = this.api();
+      $(".kaffy-filter").each(function () {
+        var selectFilter = $(this);
+        var columnIndex = selectFilter.attr('id').split('-')[2];
+        var columnName = selectFilter.data('field-name');
+        var column = dtApi.columns(columnIndex);
+        selectFilter.on('change', function () {
+          var val = $(this).val();
+          column.search(val ? val : '', false, false).draw();
+        });
+      });
+    }
   });
 
   if ($("a#pick-raw-resource").length) {

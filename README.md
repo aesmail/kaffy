@@ -142,6 +142,36 @@ Result
 
 Notice that the keyword list keys don't necessarily have to be schema fields as long as you provide a `:value` option.
 
+You can also provide some basic column-based filtration by providing the `:filters` option:
+
+```elixir
+defmodule MyApp.Products.ProductAdmin do
+  def index(_) do
+    [
+      title: nil,
+      category_id: %{
+        value: fn p -> get_category!(p.category_id).name end,
+        filters: Enum.map(list_categories(), fn c -> {c.name, c.id} end)
+      },
+      price: %{value: fn p -> Decimal.to_string(p.price) end},
+      quantity: nil,
+      status: %{
+        name: "Is it available?",
+        value: fn p -> available?(p) end,
+        filters: [{"Available", "available"}, {"Sold out", "soldout"}]
+      },
+      views: nil
+    ]
+  end
+end
+```
+
+`:filters` must be a list of tuples where the first element is a human-frieldy string and the second element is the actual field value used to filter the records.
+
+Result
+
+![Product filters](demos/product_filters.png)
+
 If you need to change the order of the records, define `ordering/1`:
 
 ```elixir

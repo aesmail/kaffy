@@ -8,12 +8,23 @@ defmodule Kaffy.ResourceQuery do
     # page = Map.get(params, "page", "1") |> String.to_integer()
     search = Map.get(params, "search", %{}) |> Map.get("value", "") |> String.trim()
     search_fields = Kaffy.ResourceAdmin.search_fields(resource)
+    filtered_fields = get_filter_fields(params)
     default_ordering = Kaffy.ResourceAdmin.ordering(resource)
     ordering = Map.get(params, "ordering", default_ordering)
     current_offset = Map.get(params, "start", "0") |> String.to_integer()
     schema = resource[:schema]
 
-    {all, paged} = build_query(schema, search_fields, search, per_page, ordering, current_offset)
+    {all, paged} =
+      build_query(
+        schema,
+        search_fields,
+        filtered_fields,
+        search,
+        per_page,
+        ordering,
+        current_offset
+      )
+
     current_page = Kaffy.Utils.repo().all(paged)
     all_count = from(r in all, select: count(r.id)) |> Kaffy.Utils.repo().one()
     {all_count, current_page}
@@ -37,24 +48,62 @@ defmodule Kaffy.ResourceQuery do
     :math.ceil(total / per_page)
   end
 
-  defp build_query(schema, search_fields, search, per_page, ordering, current_offset) do
+  defp get_filter_fields(params) do
+    columns = Map.get(params, "columns", %{})
+
+    Enum.map(columns, fn {_key, column} ->
+      field_name = get_in(column, ["name"])
+      field_value = get_in(column, ["search", "value"])
+      %{name: field_name, value: field_value}
+    end)
+  end
+
+  defp build_query(
+         schema,
+         search_fields,
+         filtered_fields,
+         search,
+         per_page,
+         ordering,
+         current_offset
+       ) do
+    query = from(s in schema)
+
     query =
       cond do
         is_nil(search_fields) or search == "" ->
-          schema
+          query
 
         true ->
           term = String.replace(search, ["%", "_"], "")
           term = "%#{term}%"
 
-          Enum.reduce(search_fields, schema, fn f, q ->
+          Enum.reduce(search_fields, query, fn f, q ->
             from(s in q, or_where: ilike(field(s, ^f), ^term))
           end)
       end
+
+    query = build_filtered_fields_query(query, filtered_fields)
 
     limited_query =
       from(s in query, limit: ^per_page, offset: ^current_offset, order_by: ^ordering)
 
     {query, limited_query}
+  end
+
+  defp build_filtered_fields_query(query, []), do: query
+
+  defp build_filtered_fields_query(query, [filter | rest]) do
+    query =
+      case filter.value == "" do
+        true ->
+          query
+
+        false ->
+          field_name = String.to_existing_atom(filter.name)
+          from(s in query, where: field(s, ^field_name) == ^filter.value)
+      end
+
+    build_filtered_fields_query(query, rest)
   end
 end
