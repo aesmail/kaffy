@@ -1,3 +1,5 @@
+### v0.4.2 (in development)
+
 ### v0.4.1 (2020-05-14)
 
 - [feature] add custom field filters.
