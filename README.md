@@ -115,6 +115,78 @@ resources: [
 ]
 ```
 
+### Dashboard page
+
+Kaffy supports dashboard customizations through `widgets`.
+
+![Dashboard page widgets](demos/dashboard_page.png)
+
+Currently, kaffy provides support for 4 types of widgets:
+
+- `text` widgets. Suitable for display relatively long textual information. Candidates: a short review, a specific message for the admin, etc.
+- `tidbit` widgets. Suitable for tiny bits of information (one word, or one number). Cadidates: total sales, a specific date, system status ("Healthy", "Down"), etc.
+- `progress` widgets. Suitable for measuring progres in terms of percentages. Candidates: task progress, survey results, memory usage, etc.
+- `chart` widgets. Suitable for displaying chart data with X and Y values. Candidates: any measure number over a period of time.
+
+Widgets have shared options:
+
+- `:type` (required) is the type of the widget. Valid options are `text`, `tidbit`, `progress`, and `chart`.
+- `:title` (required) is the title for the widget. What this widget is about.
+- `:content` (required) is the main content of the widget. This can be a string or a map depending on the type of widget.
+- `:order` (optional) is the displaying order of the wigdet. Widgets are display in order based on this value. The default value is 999.
+- `:width` (optional) is the width the widget should occupy on the page. Valid values are 1 to 12. The default for tidbits is 3 and the others 6.
+- `:percentage` (required for progress widgets) is the percentage value for the progress. This must be an integer.
+- `:icon` (optional for tidbit widgets) is the icon displayed next to the tidbit's `content`. Any FontAwesome-valid icon is valid here. For example: `thumbs-up`.
+
+When defining a chart widget, the content must be a map with the following required keys:
+
+- `:x` must be a list of values for the x-axis.
+- `:y` must be a list of numbers (integers/floats) for the y-axis.
+- `:y_title` must be a string describing `:y` (e.g. USD, Transactions, Visits, etc)
+
+
+To create widgets, define `widgets/2` in your admin modules.
+
+`widgets/2` takes a schema and a `conn` and must return a list of widget maps:
+
+```elixir
+defmodule MyApp.Products.ProductAdmin do
+  def widgets(_schema, _conn) do
+    [
+      %{
+        type: "tidbit",
+        title: "Average Reviews",
+        content: "4.7 / 5.0",
+        icon: "thumbs-up",
+        order: 1,
+        width: 6,
+      },
+      %{
+        type: "progress",
+        title: "Pancakes",
+        content: "Customer Satisfaction",
+        percentage: 79,
+        order: 3,
+        width: 6,
+      },
+      %{
+        type: "chart",
+        title: "This week's sales",
+        order: 8,
+        width: 12,
+        content: %{
+          x: ["Mon", "Tue", "Wed", "Thu", "Today"],
+          y: [150, 230, 75, 240, 290],
+          y_title: "USD"
+        }
+      }
+    ]
+  end
+end
+```
+
+Kaffy will collect all widgets from all admin modules and orders them based on the `:order` option if present and displays them on the dashboard page.
+
 ### Index page
 
 The `index/1` function takes a schema and must return a keyword list of fields and their options.

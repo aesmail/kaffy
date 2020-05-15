@@ -1,7 +1,7 @@
 defmodule Kaffy.MixProject do
   use Mix.Project
 
-  @version "0.4.2"
+  @version "0.5.0"
 
   def project do
     [
@@ -37,7 +37,7 @@ defmodule Kaffy.MixProject do
   end
 
   defp description() do
-    "Extremely simple yet powerful admin interface for phoenix applications"
+    "Powerfully simple admin package for phoenix applications"
   end
 
   defp package() do

@@ -250,4 +250,25 @@ defmodule Kaffy.ResourceAdmin do
   def resource_actions(resource, conn) do
     Utils.get_assigned_value_or_default(resource, :resource_actions, nil, [conn], false)
   end
+
+  def widgets(resource, conn) do
+    Utils.get_assigned_value_or_default(
+      resource,
+      :widgets,
+      Resource.widgets(resource),
+      [conn]
+    )
+  end
+
+  def collect_widgets(conn) do
+    Enum.reduce(Kaffy.Utils.contexts(), [], fn c, all ->
+      widgets =
+        Enum.reduce(Kaffy.Utils.schemas_for_context(c), [], fn {_, resource}, all ->
+          all ++ Kaffy.ResourceAdmin.widgets(resource, conn)
+        end)
+
+      all ++ widgets
+    end)
+    |> Enum.sort_by(fn w -> Map.get(w, :order, 999) end)
+  end
 end

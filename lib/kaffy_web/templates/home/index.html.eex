@@ -1,13 +1,98 @@
 <div class="container">
-    <div class="row mt-3">
-        <div class="col-md-12 text-center">
-            <h1>Welcome to Kaffy</h1>
+    <% widgets = Kaffy.ResourceAdmin.collect_widgets(@conn) %>
+
+    <%= if Enum.empty?(widgets) do %>
+        <div class="row mt-3">
+            <div class="col-md-12 text-center">
+                <h1>Kaffy's Dashboard</h1>
+            </div>
         </div>
-    </div>
-    <div class="row mt-3">
-        <div class="col-md-12 text-center">
-            <h4>Kaffy is designed to be a simple and easy to use admin interface for phoenix applications.</h4>
-            <h4>In future versions, this dashboard page should be customizable</h4>
+        <div class="row mt-3">
+            <div class="col-md-12 text-center">
+                <h4>A powerfully simple admin package for phoenix applications.</h4>
+                <h4>You can add widgets to this page by defining <code>widgets/2</code> in your admin modules.</h4>
+            </div>
         </div>
-    </div>
+    <% else %>
+        <div class="row mt-3">
+            <div class="col-md-12 text-center">
+                <h1><%= Kaffy.Utils.title() %>'s Dashboard</h1>
+            </div>
+        </div>
+
+        <div class="row row-cols-2">
+            <%= for widget <- widgets do %>
+                <%= if widget.type == "text" do %>
+                    <div class="col-<%= Map.get(widget, :width, 6) %>">
+                        <div class="card shadow m-1">
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary"><%= widget.title %></h6>
+                            </div>
+                            <div class="card-body">
+                                <%= widget.content %>
+                            </div>
+                        </div>
+                    </div>
+                <% end %>
+
+                <%= if widget.type == "chart" do %>
+                    <div class="col-<%= Map.get(widget, :width, 6) %>">
+                        <div class="card shadow m-1">
+                            <!-- Card Header - Dropdown -->
+                            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                <h6 class="m-0 font-weight-bold text-primary"><%= widget.title %></h6>
+                            </div>
+                            <!-- Card Body -->
+                            <div class="card-body">
+                                <div class="kaffy-chart chart-area">
+                                    <div class="values" style="display:none;">
+                                        <span class="x-axis"><%= Enum.join(widget.content.x, ",") %></span>
+                                        <span class="y-axis"><%= Enum.join(widget.content.y, ",") %></span>
+                                        <span class="y-title"><%= widget.content.y_title %></span>
+                                    </div>
+                                    <canvas id="<%= :crypto.strong_rand_bytes(3) |> Base.url_encode64() %>"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <% end %>
+
+                <%= if widget.type == "progress" do %>
+                    <div class="col-<%= Map.get(widget, :width, 6) %>">
+                        <div class="card shadow mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary"><%= widget.title %></h6>
+                            </div>
+                            <div class="card-body">
+                                <h4 class="small font-weight-bold"><%= widget.content %> <span class="float-right"><%= widget.percentage %>%</span></h4>
+                                <div class="progress mb-4">
+                                    <div class="progress-bar bg-danger" role="progressbar" style="width: <%= widget.percentage %>%" aria-valuenow="<%= widget.percentage %>" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <% end %>
+
+                <%= if widget.type == "tidbit" do %>
+                    <div class="col-<%= Map.get(widget, :width, 3) %>">
+                        <div class="m-1">
+                            <div class="card border-left-success shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1"><%= widget.title %></div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800"><%= widget.content %></div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-<%= Map.get(widget, :icon, "info") %> fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <% end %>
+            <% end %>
+        </div>
+    <% end %>
 </div>

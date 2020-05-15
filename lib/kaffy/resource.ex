@@ -497,4 +497,8 @@ defmodule Kaffy.Resource do
 
     Map.put(params, resource, attrs)
   end
+
+  def widgets(_resource) do
+    []
+  end
 end
