@@ -126,7 +126,7 @@ Currently, kaffy provides support for 4 types of widgets:
 - `text` widgets. Suitable for display relatively long textual information. Candidates: a short review, a specific message for the admin, etc.
 - `tidbit` widgets. Suitable for tiny bits of information (one word, or one number). Cadidates: total sales, a specific date, system status ("Healthy", "Down"), etc.
 - `progress` widgets. Suitable for measuring progres in terms of percentages. Candidates: task progress, survey results, memory usage, etc.
-- `chart` widgets. Suitable for displaying chart data with X and Y values. Candidates: any measure number over a period of time.
+- `chart` widgets. Suitable for displaying chart data with X and Y values. Candidates: any measurable number over a period of time (e.g. sales, visits, etc).
 
 Widgets have shared options:
 
