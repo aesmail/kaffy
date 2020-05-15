@@ -1,6 +1,8 @@
-### v0.5.0 (in development)
+### v0.5.1 (in development)
 
-- [feature] introduced custom widgets in the dashboard.
+### v0.5.0 (2020-05-16)
+
+- [feature] introducing custom widgets in the dashboard.
 
 ### v0.4.1 (2020-05-14)
 
