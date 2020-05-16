@@ -4,7 +4,7 @@ Extremely simple yet powerful admin interface for phoenix applications
 
 ## Demo
 
-[Check out the simple demo here](https://kaffy.gigalixirapp.com/admin/)
+[Check out the simple demo here for v0.5.0](https://kaffy.gigalixirapp.com/admin/)
 
 ## Minimum Requirements
 
@@ -299,7 +299,7 @@ Notice that:
 - The `views` field is rendered as "readonly" because it has the `:read` permission.
 - `settigns` is an embedded schema. That's why it is rendered as such.
 
-### Search and filtration
+### Search
 
 Kaffy provides very basic search capabilities.
 
@@ -557,3 +557,7 @@ A few points that encouraged the creation of Kaffy:
   - Need to modify a schema's primary key? Need to hide a certain field? No problem.
 
 
+The design and philosophy of Kaffy was inspired mainly by the following:
+
+- The built-in admin app for django.
+- The ActiveAdmin gem for rails.
