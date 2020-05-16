@@ -49,4 +49,18 @@ $(document).ready(function () {
       return false;
     });
   }
+
+  $(".kaffy-editor").each(function () {
+    var textareaId = "#" + $(this).attr('id');
+    ClassicEditor
+      .create(document.querySelector(textareaId), {
+        // toolbar: [ 'heading', '|', 'bold', 'italic', 'link' ]
+      })
+      .then(editor => {
+        window.editor = editor;
+      })
+      .catch(err => {
+        console.error(err.stack);
+      });
+  });
 });

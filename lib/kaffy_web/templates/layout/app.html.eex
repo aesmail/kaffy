@@ -357,6 +357,7 @@
 
   <!-- Custom scripts for all pages-->
   <script src="/kaffy/js/sb-admin-2.min.js"></script>
+  <script src="/kaffy/js/ckeditor.js"></script>
 
   <!-- Page level plugins -->
   <script src="/kaffy/vendor/datatables/jquery.dataTables.min.js"></script>
@@ -364,8 +365,8 @@
   <script src="/kaffy/vendor/chart.js/Chart.min.js"></script>
 
   <!-- Page level custom scripts -->
-  <script src="/kaffy/js/demo/datatables-demo.js?v=16"></script>
-  <script src="/kaffy/js/demo/chart-area-demo.js?v=16"></script>
+  <script src="/kaffy/js/demo/datatables-demo.js?v=17"></script>
+  <script src="/kaffy/js/demo/chart-area-demo.js?v=17"></script>
 
 
 </body>

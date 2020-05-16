@@ -285,6 +285,10 @@ defmodule Kaffy.Resource do
       :string ->
         text_input(form, field, opts)
 
+      :richeditor ->
+        opts = Keyword.put(opts, :class, "kaffy-editor")
+        textarea(form, field, opts)
+
       :textarea ->
         textarea(form, field, opts)
 

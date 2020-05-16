@@ -1,5 +1,7 @@
 ### v0.5.1 (in development)
 
+- [enhancement] add a rich text editor option for `:text` fields.
+
 ### v0.5.0 (2020-05-16)
 
 - [feature] introducing custom widgets in the dashboard.
