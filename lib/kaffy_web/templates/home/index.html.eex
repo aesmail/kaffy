@@ -20,10 +20,10 @@
             </div>
         </div>
 
-        <div class="row row-cols-2">
+        <div class="row row-cols-1 row-cols-md-2 row-cols-sm-1 row-cols-xs-1">
             <%= for widget <- widgets do %>
                 <%= if widget.type == "text" do %>
-                    <div class="col-<%= Map.get(widget, :width, 6) %>">
+                    <div class="col-md-<%= Map.get(widget, :width, 6) %> col-sm-12 col-xs-12">
                         <div class="card shadow m-1">
                             <div class="card-header py-3">
                                 <h6 class="m-0 font-weight-bold text-primary"><%= widget.title %></h6>
@@ -36,7 +36,7 @@
                 <% end %>
 
                 <%= if widget.type == "chart" do %>
-                    <div class="col-<%= Map.get(widget, :width, 6) %>">
+                    <div class="col-md-<%= Map.get(widget, :width, 6) %> col-sm-12 col-xs-12">
                         <div class="card shadow m-1">
                             <!-- Card Header - Dropdown -->
                             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
@@ -58,7 +58,7 @@
                 <% end %>
 
                 <%= if widget.type == "progress" do %>
-                    <div class="col-<%= Map.get(widget, :width, 6) %>">
+                    <div class="col-md-<%= Map.get(widget, :width, 6) %> col-sm-12 col-xs-12">
                         <div class="card shadow mb-4">
                             <div class="card-header py-3">
                                 <h6 class="m-0 font-weight-bold text-primary"><%= widget.title %></h6>
@@ -74,7 +74,7 @@
                 <% end %>
 
                 <%= if widget.type == "tidbit" do %>
-                    <div class="col-<%= Map.get(widget, :width, 3) %>">
+                    <div class="col-md-<%= Map.get(widget, :width, 3) %> col-sm-12 col-xs-12">
                         <div class="m-1">
                             <div class="card border-left-success shadow h-100 py-2">
                                 <div class="card-body">
