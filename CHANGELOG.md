@@ -1,7 +1,7 @@
 ### v0.5.1 (in development)
 
-- [enhancement] add a rich text editor option for `:text` fields.
-- [bugfix] dashboard widgets are broken on mobile.
+- [enhancement] add a rich text editor option for form fields (`:richtext`).
+- [bugfix] dashboard widgets were displaying improperly on small screens.
 
 ### v0.5.0 (2020-05-16)
 
