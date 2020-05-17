@@ -55,6 +55,7 @@ $(document).ready(function () {
     ClassicEditor
       .create(document.querySelector(textareaId), {
         // toolbar: [ 'heading', '|', 'bold', 'italic', 'link' ]
+        toolbar: ['heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', '|', 'indent', 'outdent', '|', 'insertTable', '|', 'undo', 'redo']
       })
       .then(editor => {
         window.editor = editor;

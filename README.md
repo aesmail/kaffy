@@ -283,7 +283,7 @@ The keys of the list must correspond to the schema fields.
 Options can be:
 
 - `:label` - must be a string.
-- `:type` - can be any ecto type in addition to `:file` and `:textarea`.
+- `:type` - can be any ecto type in addition to `:file`, `:textarea`, and `:richtext`.
 - `:rows` - an integer to indicate the number of rows for textarea fields.
 - `:choices` - a keyword list of option and values to restrict the input values that this field can accept.
 - `:permission` - can be either `:write` (field is editable) or `:read` (field is non-editable). It is `:write` by default.
@@ -292,6 +292,10 @@ Options can be:
 Result
 
 ![Customized show/edit page](demos/post_form_custom.png)
+
+Setting a field's type to `:richtext` will render a rich text editor like the following:
+
+![Rich text editor](demos/richtext.png)
 
 Notice that:
 
