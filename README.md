@@ -4,7 +4,7 @@ Extremely simple yet powerful admin interface for phoenix applications
 
 ## Demo
 
-[Check out the simple demo here for v0.5.0](https://kaffy.gigalixirapp.com/admin/)
+[Check out the simple demo here](https://kaffy.gigalixirapp.com/admin/)
 
 ## Minimum Requirements
 
