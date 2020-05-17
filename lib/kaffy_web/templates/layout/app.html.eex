@@ -28,7 +28,7 @@
   <div id="wrapper">
 
     <!-- Sidebar -->
-    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" style="overflow-y:auto;" id="accordionSidebar">
+    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" style="overflow-y:scroll;" id="accordionSidebar">
 
       <!-- Sidebar - Brand -->
       <%= link to: Kaffy.Utils.router().kaffy_home_path(@conn, :index), class: "sidebar-brand d-flex align-items-center justify-content-center" do %>

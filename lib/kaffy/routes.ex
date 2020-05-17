@@ -15,7 +15,8 @@ defmodule Kaffy.Routes do
 
   defmacro __using__(options \\ []) do
     scoped = Keyword.get(options, :scope, "/admin")
-    pipes = Keyword.get(options, :pipe_through, [:kaffy_browser])
+    custom_pipes = Keyword.get(options, :pipe_through, [])
+    pipes = [:kaffy_browser] ++ custom_pipes
 
     quote do
       pipeline :kaffy_browser do
