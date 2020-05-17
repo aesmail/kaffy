@@ -29,6 +29,9 @@ end
 use Kaffy.Routes, scope: "/admin", pipe_through: [:some_plug, :authenticate]
 # :scope defaults to "/admin"
 # :pipe_through defaults to kaffy's [:kaffy_browser]
+# when providing pipelines, they will be added after :kaffy_browser
+# so the actual pipe_through for the previous line is:
+# [:kaffy_browser, :some_plug, :authenticate]
 
 # in your endpoint.ex
 plug Plug.Static,
@@ -42,6 +45,22 @@ config :kaffy,
   otp_app: :my_app,
   ecto_repo: Bloggy.Repo,
   router: BloggyWeb.Router
+```
+
+**Breaking change in v0.6.x**
+
+If you are upgrading from v0.5.x and you provided a value for the `:pipe_through` option, you need to remove the default `:browser` pipeline from the list, keeping in mind the content of the `:kaffy_browser` pipeline outlined below.
+
+Note that providing pipelines with the `:pipe_through` option will add those pipelines to kaffy's `:kaffy_browser` pipeline which is defined as follows:
+
+```elixir
+pipeline :kaffy_browser do
+  plug :accepts, ["html", "json"]
+  plug :fetch_session
+  plug :fetch_flash
+  plug :protect_from_forgery
+  plug :put_secure_browser_headers
+end
 ```
 
 

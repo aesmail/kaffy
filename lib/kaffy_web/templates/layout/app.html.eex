@@ -28,7 +28,7 @@
   <div id="wrapper">
 
     <!-- Sidebar -->
-    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" style="overflow-y:scroll;" id="accordionSidebar">
+    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
       <!-- Sidebar - Brand -->
       <%= link to: Kaffy.Utils.router().kaffy_home_path(@conn, :index), class: "sidebar-brand d-flex align-items-center justify-content-center" do %>
@@ -65,7 +65,7 @@
                 <i class="fas fa-fw fa-bars"></i>
                 <span><%= Kaffy.Utils.context_name(context) %></span>
             </a>
-            <div id="<%= context %>" class="collapse show" aria-labelledby="<%= context %>2" data-parent="#accordionSidebar">
+            <div id="<%= context %>" class="collapse" aria-labelledby="<%= context %>" data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                     <%= for {resource, options} <- Kaffy.Utils.schemas_for_context(context) do %>
                         <%= if Kaffy.ResourceAdmin.authorized?(options, @conn) do %>
