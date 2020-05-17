@@ -1,6 +1,6 @@
 # Kaffy
 
-Extremely simple yet powerful admin interface for phoenix applications
+Powerfully simple admin package for phoenix applications.
 
 ## Demo
 

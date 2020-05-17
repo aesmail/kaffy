@@ -1,5 +1,7 @@
 ### v0.5.2 (in development)
 
+- [bugfix] side menu does not scroll when there are too many contexts/schemas.
+
 ### v0.5.1 (2020-05-17)
 
 - [enhancement] add a rich text editor option for form fields (`type: :richtext`).

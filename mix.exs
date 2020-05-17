@@ -44,7 +44,10 @@ defmodule Kaffy.MixProject do
     [
       maintainers: ["Abdullah Esmail"],
       licenses: ["MIT"],
-      links: %{"GitHub" => "https://github.com/aesmail/kaffy"}
+      links: %{
+        "GitHub" => "https://github.com/aesmail/kaffy",
+        "Demo" => "https://kaffy.gigalixirapp.com/admin/"
+      }
     ]
   end
 

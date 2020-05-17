@@ -12,6 +12,7 @@ $(document).ready(function () {
     "serverSide": true,
     "ordering": false,
     "columns": tableColumnNames,
+    "scrollX": true,
     "ajax": api_url,
     initComplete: function () {
       var dtApi = this.api();

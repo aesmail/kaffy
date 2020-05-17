@@ -275,6 +275,10 @@ defmodule KaffyWeb.ResourceController do
     end
   end
 
+  # def export(conn, %{"context" => context, "resource" => resource}) do
+  #   my_resource = Kaffy.Utils.get_resource(context, resource)
+  # end
+
   def api(conn, %{"context" => context, "resource" => resource} = params) do
     my_resource = Kaffy.Utils.get_resource(context, resource)
     fields = Kaffy.ResourceAdmin.index(my_resource)
