@@ -5,12 +5,10 @@ Chart.defaults.global.defaultFontColor = '#858796';
 $(document).ready(function () {
   $(".kaffy-chart").each(function () {
     var currentChart = $(this);
-    console.log(currentChart);
     var chartId = $(this).children("canvas").first().attr('id');
     var xAxis = $(this).children("div.values").first().children("span.x-axis").first().text().split(",");
     var yTitle = $(this).children("div.values").first().children("span.y-title").first().text();
     var yAxis = $(this).children("div.values").first().children("span.y-axis").first().text().split(",").map(function (value) { return Number(value); });
-    console.log(yAxis);
 
 
     var ctx = document.getElementById(chartId);
