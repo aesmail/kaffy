@@ -7,6 +7,8 @@ $(document).ready(function () {
     return { name: value };
   });
 
+  var selected = [];
+
   $('#dataTable').DataTable({
     "processing": true,
     "serverSide": true,
@@ -14,6 +16,12 @@ $(document).ready(function () {
     "columns": tableColumnNames,
     "scrollX": true,
     "ajax": api_url,
+    rowCallback: function (row, data) {
+
+      if ($.inArray(data.DT_RowId.toString(), selected) !== -1) {
+        $(row).addClass('selected');
+      }
+    },
     initComplete: function () {
       var dtApi = this.api();
       $(".kaffy-filter").each(function () {
@@ -26,7 +34,25 @@ $(document).ready(function () {
           column.search(val ? val : '', false, false).draw();
         });
       });
+    },
+  });
+
+  $("#dataTable tbody").on("click", "tr", function () {
+    var id = this.id;
+    var index = $.inArray(id, selected);
+
+    if (index === -1) {
+      selected.push(id);
+    } else {
+      selected.splice(index, 1);
     }
+
+    $(this).toggleClass('selected');
+  });
+
+  $(".list-action").submit(function () {
+    $("<input />").attr("type", "hidden").attr("name", "ids").attr("value", selected.join()).appendTo(this);
+    return true;
   });
 
   if ($("a#pick-raw-resource").length) {

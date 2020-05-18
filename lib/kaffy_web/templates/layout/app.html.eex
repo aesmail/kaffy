@@ -9,7 +9,7 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>Kaffy - <%= Kaffy.Utils.title() %></title>
+  <title><%= Kaffy.Utils.title() %> - Kaffy</title>
 
   <!-- Custom fonts for this template-->
   <link href="/kaffy/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -61,11 +61,11 @@
 
     <%= for context <- Kaffy.Utils.contexts() do %>
         <li class="nav-item">
-            <a class="nav-link" href="#" data-toggle="collapse" data-target="#<%= context %>" aria-expanded="false" aria-controls="<%= context %>">
+            <a class="nav-link<%= if to_string(context) != @conn.assigns[:context] do %> collapsed<% end %>" href="#" data-toggle="collapse" data-target="#<%= context %>" aria-expanded="false" aria-controls="<%= context %>">
                 <i class="fas fa-fw fa-bars"></i>
                 <span><%= Kaffy.Utils.context_name(context) %></span>
             </a>
-            <div id="<%= context %>" class="collapse" aria-labelledby="<%= context %>" data-parent="#accordionSidebar">
+            <div id="<%= context %>" class="collapse <%= if to_string(context) == @conn.assigns[:context] do %> show<% end %>" aria-labelledby="<%= context %>" data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                     <%= for {resource, options} <- Kaffy.Utils.schemas_for_context(context) do %>
                         <%= if Kaffy.ResourceAdmin.authorized?(options, @conn) do %>
@@ -365,8 +365,8 @@
   <script src="/kaffy/vendor/chart.js/Chart.min.js"></script>
 
   <!-- Page level custom scripts -->
-  <script src="/kaffy/js/demo/datatables-demo.js?v=17"></script>
-  <script src="/kaffy/js/demo/chart-area-demo.js?v=17"></script>
+  <script src="/kaffy/js/demo/datatables-demo.js?v=20"></script>
+  <script src="/kaffy/js/demo/chart-area-demo.js?v=20"></script>
 
 
 </body>

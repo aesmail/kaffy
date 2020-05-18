@@ -275,6 +275,28 @@ defmodule KaffyWeb.ResourceController do
     end
   end
 
+  def list_action(
+        conn,
+        %{"context" => context, "resource" => resource, "action_key" => action_key} = params
+      ) do
+    my_resource = Kaffy.Utils.get_resource(context, resource)
+    action_key = String.to_existing_atom(action_key)
+    ids = Map.get(params, "ids", "") |> String.split(",")
+    entries = Kaffy.ResourceQuery.fetch_list(my_resource, ids)
+    actions = Kaffy.ResourceAdmin.list_actions(my_resource, conn)
+    [action_record] = Keyword.get_values(actions, action_key)
+
+    case action_record.action.(conn, entries) do
+      :ok ->
+        put_flash(conn, :info, "Action performed successfully")
+        |> redirect(to: Kaffy.Utils.router().kaffy_resource_path(conn, :index, context, resource))
+
+      {:error, error_msg} ->
+        put_flash(conn, :error, error_msg)
+        |> redirect(to: Kaffy.Utils.router().kaffy_resource_path(conn, :index, context, resource))
+    end
+  end
+
   # def export(conn, %{"context" => context, "resource" => resource}) do
   #   my_resource = Kaffy.Utils.get_resource(context, resource)
   # end
@@ -304,6 +326,10 @@ defmodule KaffyWeb.ResourceController do
         first = to_string(first)
 
         [first | rest]
+        |> Enum.with_index()
+        |> Enum.map(fn {k, v} -> {to_string(v), k} end)
+        |> Enum.into(%{})
+        |> Map.put("DT_RowId", entry.id)
       end)
 
     columns =

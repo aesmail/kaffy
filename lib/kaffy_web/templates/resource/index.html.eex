@@ -7,6 +7,23 @@
         <i class="fas fa-plus"></i>
       <% end %>&nbsp;
       <%= Kaffy.ResourceAdmin.plural_name(@my_resource) %>
+
+      <%= if list_actions = Kaffy.ResourceAdmin.list_actions(@my_resource, @conn) do %>
+        <div class="float-right">
+          <div class="btn-group">
+            <button type="button" class="btn btn-light dropdown-toggle btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <i class="fas fa-hammer"></i> <span class="d-none d-md-inline">Actions</span>
+            </button>
+            <div class="dropdown-menu">
+              <%= for {action_key, options} <- list_actions do %>
+                <%= form_tag(Kaffy.Utils.router().kaffy_resource_path(@conn, :list_action, @context, @resource, to_string(action_key)), method: :post, class: "list-action") %>
+                  <input type="submit" name="submit" value="<%= options.name %>" class="dropdown-item" />
+                </form>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      <% end %>
     </h6>
   </div>
   <div class="card-body">

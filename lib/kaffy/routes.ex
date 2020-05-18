@@ -38,6 +38,10 @@ defmodule Kaffy.Routes do
           as: :kaffy_resource
         )
 
+        post("/:context/:resource/action/:action_key", ResourceController, :list_action,
+          as: :kaffy_resource
+        )
+
         get("/:context/:resource/new", ResourceController, :new, as: :kaffy_resource)
         get("/:context/:resource/:id", ResourceController, :show, as: :kaffy_resource)
         put("/:context/:resource/:id", ResourceController, :update, as: :kaffy_resource)

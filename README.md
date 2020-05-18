@@ -422,6 +422,8 @@ See the "Configurations" section above.
 
 ### Custom Actions
 
+#### Single Resource Action
+
 Kaffy supports performing custom actions on single resources by defining the `resource_actions/1` function.
 
 ```elixir
@@ -460,7 +462,36 @@ Actions must return one of the following:
 
 - `{:ok, record}` indicating the action was performed successfully.
 - `{:error, changeset}` indicating there was a validation error.
-- `{:error, record, custom_error}` to communicate a custom error message to the user where custom_error is a string.
+- `{:error, record, custom_error}` to communicate a custom error message to the user where `custom_error` is a string.
+
+#### List Actions
+
+Kaffy also supports actions on a group of resources. You can enable list actions by defining `list_actions/1`.
+
+```elixir
+defmodule MyApp.Products.ProductAdmin
+  def list_actions(_conn) do
+    [
+      soldout: %{name: "Mark as soldout", action: fn _, products -> list_soldout(products) end},
+      restock: %{name: "Bring back", action: fn _, products -> bring_back(products) end},
+      not_good: %{name: "Error me out", action: fn _, _ -> {:error, "Expected error"} end}
+    ]
+  end
+end
+```
+
+Result
+
+![List actions](demos/list_actions.png)
+
+`list_actions/1` takes a `conn` and must return a keyword list. 
+The keys must be atoms defining the unqiue action "keys".
+The values are maps providing a human-friendly `:name` and an `:action` that is an anonymous function with arity 2 that takes a `conn` and a list of selected records.
+
+List actions must return one of the following:
+
+- `:ok` indicating the action was performed successfully.
+- `{:error, custom_error}` to communicate a custom error message to the user where `custom_error` is a string.
 
 ### Callbacks
 

@@ -19,8 +19,7 @@
                 <h1><%= Kaffy.Utils.title() %>'s Dashboard</h1>
             </div>
         </div>
-
-        <div class="row row-cols-1 row-cols-md-2 row-cols-sm-1 row-cols-xs-1">
+        <div class="row mt-1 row-cols-1 row-cols-md-2 row-cols-sm-1 row-cols-xs-1">
             <%= for widget <- widgets do %>
                 <%= if widget.type == "text" do %>
                     <div class="col-md-<%= Map.get(widget, :width, 6) %> col-sm-12 col-xs-12">
