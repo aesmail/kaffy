@@ -1,5 +1,5 @@
 defmodule Kaffy.ResourceAdmin do
-  alias Kaffy.Resource
+  alias Kaffy.ResourceSchema
   alias Kaffy.Utils
 
   @moduledoc """
@@ -24,6 +24,7 @@ defmodule Kaffy.ResourceAdmin do
   If index/1 is not defined, Kaffy will return all the fields of the schema and their default values.
 
   Example:
+
   ```elixir
   def index(_schema) do
     [
@@ -38,7 +39,7 @@ defmodule Kaffy.ResourceAdmin do
   """
   def index(resource) do
     schema = resource[:schema]
-    Utils.get_assigned_value_or_default(resource, :index, Resource.fields(schema))
+    Utils.get_assigned_value_or_default(resource, :index, ResourceSchema.fields(schema))
   end
 
   @doc """
@@ -61,6 +62,7 @@ defmodule Kaffy.ResourceAdmin do
   their default types based on the schema.
 
   Example:
+
   ```elixir
   def form_fields(_schema) do
     [
@@ -76,7 +78,7 @@ defmodule Kaffy.ResourceAdmin do
   """
   def form_fields(resource) do
     schema = resource[:schema]
-    Utils.get_assigned_value_or_default(resource, :form_fields, Resource.fields(schema))
+    Utils.get_assigned_value_or_default(resource, :form_fields, ResourceSchema.fields(schema))
   end
 
   @doc """
@@ -85,6 +87,7 @@ defmodule Kaffy.ResourceAdmin do
   If `search_fields/1` is not defined, Kaffy will return all the `:string` fields of the schema.
 
   Example:
+
   ```elixir
   def search_fields(_schema) do
     [:title, :slug, :body]
@@ -95,7 +98,7 @@ defmodule Kaffy.ResourceAdmin do
     Utils.get_assigned_value_or_default(
       resource,
       :search_fields,
-      Resource.search_fields(resource)
+      ResourceSchema.search_fields(resource)
     )
   end
 
@@ -105,6 +108,7 @@ defmodule Kaffy.ResourceAdmin do
   If `ordering/1` is not defined, Kaffy will return `[desc: :id]`.
 
   Example:
+
   ```elixir
   def ordering(_schema) do
     [asc: :title]
@@ -124,6 +128,7 @@ defmodule Kaffy.ResourceAdmin do
   If `authorized?/2` is not defined, Kaffy will return true.
 
   Example:
+
   ```elixir
   def authorized?(_schema, _conn) do
     true
@@ -142,6 +147,7 @@ defmodule Kaffy.ResourceAdmin do
   and if that's not defined, `Ecto.Changeset.change/2` will be called.
 
   Example:
+
   ```elixir
   def create_changeset(schema, attrs) do
     MyApp.Blog.Post.create_changeset(schema, attrs)
@@ -175,6 +181,7 @@ defmodule Kaffy.ResourceAdmin do
   and if that's not defined, `Ecto.Changeset.change/2` will be called.
 
   Example:
+
   ```elixir
   def update_changeset(schema, attrs) do
     MyApp.Blog.Post.create_changeset(schema, attrs)
@@ -211,6 +218,7 @@ defmodule Kaffy.ResourceAdmin do
   If you have "Post" and you want to display "Article" for example.
 
   Example:
+
   ```elixir
   def singular_name(_schema) do
     "Article"
@@ -236,6 +244,7 @@ defmodule Kaffy.ResourceAdmin do
   name and add an "s" to it (e.g. Posts).
 
   Example:
+
   ```elixir
   def plural_name(_schema) do
     "Categories"
@@ -259,7 +268,7 @@ defmodule Kaffy.ResourceAdmin do
     Utils.get_assigned_value_or_default(
       resource,
       :widgets,
-      Resource.widgets(resource),
+      ResourceSchema.widgets(resource),
       [conn]
     )
   end

@@ -63,7 +63,7 @@
   <script src="/kaffy/vendor/datatables/dataTables.bootstrap4.min.js"></script>
 
   <!-- Page level custom scripts -->
-  <script src="/kaffy/js/demo/datatables-demo.js?v=15"></script>
+  <script src="/kaffy/js/demo/datatables-demo.js?v=20"></script>
 
 </body>
 

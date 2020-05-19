@@ -83,7 +83,7 @@ defmodule KaffyWeb.ResourceController do
   def update(conn, %{"context" => context, "resource" => resource, "id" => id} = params) do
     my_resource = Kaffy.Utils.get_resource(context, resource)
     schema = my_resource[:schema]
-    params = Kaffy.Resource.decode_map_fields(resource, schema, params)
+    params = Kaffy.ResourceParams.decode_map_fields(resource, schema, params)
 
     resource_name = Kaffy.ResourceAdmin.singular_name(my_resource) |> String.capitalize()
 
@@ -168,7 +168,7 @@ defmodule KaffyWeb.ResourceController do
 
   def create(conn, %{"context" => context, "resource" => resource} = params) do
     my_resource = Kaffy.Utils.get_resource(context, resource)
-    params = Kaffy.Resource.decode_map_fields(resource, my_resource[:schema], params)
+    params = Kaffy.ResourceParams.decode_map_fields(resource, my_resource[:schema], params)
     changes = Map.get(params, resource, %{})
     resource_name = Kaffy.ResourceAdmin.singular_name(my_resource)
 
@@ -311,7 +311,7 @@ defmodule KaffyWeb.ResourceController do
       Enum.map(entries, fn entry ->
         rows =
           Enum.reduce(fields, [], fn field, e ->
-            field_value = Kaffy.Resource.kaffy_field_value(entry, field)
+            field_value = Kaffy.ResourceSchema.kaffy_field_value(entry, field)
             [field_value | e]
           end)
           |> Enum.reverse()

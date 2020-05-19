@@ -5,8 +5,9 @@ defmodule Kaffy.ResourceCallbacks do
 
   def create_callbacks(conn, resource, changes) do
     changeset = Kaffy.ResourceAdmin.create_changeset(resource, changes)
+    repo = Kaffy.Utils.repo()
 
-    Kaffy.Utils.repo().transaction(fn repo ->
+    repo.transaction(fn ->
       result =
         with {:ok, changeset} <- before_create(conn, resource, changeset),
              {:ok, changeset} <- before_save(conn, resource, changeset),
@@ -24,8 +25,9 @@ defmodule Kaffy.ResourceCallbacks do
 
   def update_callbacks(conn, resource, entry, changes) do
     changeset = Kaffy.ResourceAdmin.update_changeset(resource, entry, changes)
+    repo = Kaffy.Utils.repo()
 
-    Kaffy.Utils.repo().transaction(fn repo ->
+    repo.transaction(fn ->
       result =
         with {:ok, changeset} <- before_update(conn, resource, changeset),
              {:ok, changeset} <- before_save(conn, resource, changeset),
@@ -42,7 +44,9 @@ defmodule Kaffy.ResourceCallbacks do
   end
 
   def delete_callbacks(conn, resource, entry) do
-    Kaffy.Utils.repo().transaction(fn repo ->
+    repo = Kaffy.Utils.repo()
+
+    repo.transaction(fn ->
       result =
         with {:ok, changeset} <- before_delete(conn, resource, entry),
              {:ok, entry} <- Kaffy.Utils.repo().delete(changeset),

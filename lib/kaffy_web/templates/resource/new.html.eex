@@ -1,4 +1,4 @@
-<%= for error <- Kaffy.Resource.display_errors(@changeset) do %>
+<%= for error <- Kaffy.ResourceError.display_errors(@changeset) do %>
     <div><%= error %></div>
 <% end %>
 
@@ -8,8 +8,8 @@
     <%= f = form_for(@changeset, Kaffy.Utils.router().kaffy_resource_path(@conn, :create, @context, @resource), method: :post, multipart: true) %>
         <%= for field <- Kaffy.ResourceAdmin.form_fields(@my_resource) do %>
             <div class="form-group">
-                <%= Kaffy.Resource.form_label(f, field) %>
-                <%= Kaffy.Resource.form_field(@changeset, f, field, class: "form-control", conn: @conn) %>
+                <%= Kaffy.ResourceForm.form_label(f, field) %>
+                <%= Kaffy.ResourceForm.form_field(@changeset, f, field, class: "form-control", conn: @conn) %>
             </div>
         <% end %>
         <div class="form-group">
