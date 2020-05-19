@@ -4,6 +4,7 @@
 
 - [bugfix] sometimes the primary key field (id) is treated as an association.
 - [bugfix] the popup for selecting a "belongs_to" record was not displaying any records.
+- [bugfix] use `fn/0` instead of `fn/1` with `Ecto.Repo.transaction/2` to support ecto 2.x.
 
 ### v0.6.0 (2020-05-18)
 
