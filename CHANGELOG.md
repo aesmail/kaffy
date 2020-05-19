@@ -1,4 +1,9 @@
-### v0.6.1 (in development)
+### v0.6.2 (in development)
+
+### v0.6.1 (2020-05-19)
+
+- [bugfix] sometimes the primary key field (id) is treated as an association.
+- [bugfix] the popup for selecting a "belongs_to" record was not displaying any records.
 
 ### v0.6.0 (2020-05-18)
 
