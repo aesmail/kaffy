@@ -2,7 +2,7 @@
 
 ### v0.6.1 (2020-05-19)
 
-###### incompatible with v0.6.0
+###### compatible with v0.6.0
 
 - [bugfix] sometimes the primary key field (id) is treated as an association.
 - [bugfix] the popup for selecting a "belongs_to" record was not displaying any records.
