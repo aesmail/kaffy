@@ -469,7 +469,7 @@ Actions must return one of the following:
 Kaffy also supports actions on a group of resources. You can enable list actions by defining `list_actions/1`.
 
 ```elixir
-defmodule MyApp.Products.ProductAdmin
+defmodule MyApp.Products.ProductAdmin do
   def list_actions(_conn) do
     [
       soldout: %{name: "Mark as soldout", action: fn _, products -> list_soldout(products) end},
