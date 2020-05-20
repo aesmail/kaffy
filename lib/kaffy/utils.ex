@@ -151,7 +151,10 @@ defmodule Kaffy.Utils do
         end
 
       resources = Keyword.put_new(resources, context_name, schemas: [])
-      put_in(resources, [context_name, :schemas, schema_name], schema_options)
+      resources = put_in(resources, [context_name, :schemas, schema_name], schema_options)
+      existing_schemas = get_in(resources, [context_name, :schemas]) |> Enum.sort()
+      put_in(resources, [context_name, :schemas], existing_schemas)
     end)
+    |> Enum.sort()
   end
 end
