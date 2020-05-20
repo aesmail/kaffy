@@ -139,7 +139,7 @@ defmodule Kaffy.Utils do
 
       schema_name =
         schema_name_string
-        |> String.downcase()
+        |> Macro.underscore()
         |> String.to_atom()
 
       schema_admin = String.to_atom("#{context_module}.#{schema_name_string}Admin")
