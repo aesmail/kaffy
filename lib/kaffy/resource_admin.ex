@@ -39,7 +39,7 @@ defmodule Kaffy.ResourceAdmin do
   """
   def index(resource) do
     schema = resource[:schema]
-    Utils.get_assigned_value_or_default(resource, :index, ResourceSchema.fields(schema))
+    Utils.get_assigned_value_or_default(resource, :index, ResourceSchema.index_fields(schema))
   end
 
   @doc """
@@ -78,7 +78,12 @@ defmodule Kaffy.ResourceAdmin do
   """
   def form_fields(resource) do
     schema = resource[:schema]
-    Utils.get_assigned_value_or_default(resource, :form_fields, ResourceSchema.fields(schema))
+
+    Utils.get_assigned_value_or_default(
+      resource,
+      :form_fields,
+      ResourceSchema.form_fields(schema)
+    )
   end
 
   @doc """

@@ -19,9 +19,18 @@ defmodule Kaffy.ResourceSchema do
     end
   end
 
+  def index_fields(schema) do
+    fields(schema) -- fields_to_be_removed(schema)
+  end
+
+  def form_fields(schema) do
+    to_be_removed = fields_to_be_removed(schema) ++ [:id, :inserted_at, :updated_at]
+    IO.inspect(to_be_removed)
+    fields(schema) -- to_be_removed
+  end
+
   def fields(schema) do
-    to_be_removed = fields_to_be_removed(schema)
-    all_fields = get_all_fields(schema) -- to_be_removed
+    all_fields = get_all_fields(schema)
     reorder_fields(all_fields, schema)
   end
 
@@ -31,7 +40,7 @@ defmodule Kaffy.ResourceSchema do
   end
 
   defp fields_to_be_removed(schema) do
-    # if schema defines belongs_to assocations, remove the respective *_id fields.
+    # if schema defines belongs_to assocations, remove assoc fields and keep their actual *_id fields.
     schema.__changeset__()
     |> Enum.reduce([], fn {field, type}, all ->
       case type do
@@ -48,7 +57,6 @@ defmodule Kaffy.ResourceSchema do
           all
       end
     end)
-    |> Kernel.++(excluded_fields(schema))
   end
 
   defp reorder_fields(fields_list, schema) do
