@@ -72,7 +72,7 @@ end
 
 ### Configurations
 
-If you don't specify a `resources` option in your configs, Kaffy will try to auto-detect your schemas and your admin modules. Admin modules should be in the same namespace as their respective schemas in order for kaffy to detect them. For exmaple, if you have a schema `MyApp.Products.Product`, its admin module should be `MyApp.Products.ProductAdmin`.
+If you don't specify a `resources` option in your configs, Kaffy will try to auto-detect your schemas and your admin modules. Admin modules should be in the same namespace as their respective schemas in order for kaffy to detect them. For example, if you have a schema `MyApp.Products.Product`, its admin module should be `MyApp.Products.ProductAdmin`.
 
 Otherwise, if you'd like to explicitly specify your schemas and their admin modules, you can do like the following:
 
@@ -455,7 +455,7 @@ Result
 ![Single actions](demos/resource_actions.png)
 
 `resource_actions/1` takes a `conn` and must return a keyword list. 
-The keys must be atoms defining the unqiue action "keys".
+The keys must be atoms defining the unique action "keys".
 The values are maps providing a human-friendly `:name` and an `:action` that is an anonymous function with arity 2 that takes a `conn` and the record.
 
 Actions must return one of the following:
@@ -485,7 +485,7 @@ Result
 ![List actions](demos/list_actions.png)
 
 `list_actions/1` takes a `conn` and must return a keyword list. 
-The keys must be atoms defining the unqiue action "keys".
+The keys must be atoms defining the unique action "keys".
 The values are maps providing a human-friendly `:name` and an `:action` that is an anonymous function with arity 2 that takes a `conn` and a list of selected records.
 
 List actions must return one of the following:
