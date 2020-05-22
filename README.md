@@ -338,6 +338,21 @@ defmodule MyApp.Blog.PostAdmin do
 end
 ```
 
+Kaffy allows to search for fields across associations. The following tells kaffy to search posts by title and body and category's name and description:
+
+```elixir
+# Post has a belongs_to :category association
+defmodule MyApp.Blog.PostAdmin do
+  def search_fields(_schema) do
+    [
+      :title,
+      :body,
+      category: [:name, :description]
+    ]
+  end
+end
+```
+
 This function takes a schema and returns a list of schema fields that you want to search. 
 All the fields must be of type `:string` or `:text`.
 
