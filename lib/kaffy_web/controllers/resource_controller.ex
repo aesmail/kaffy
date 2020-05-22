@@ -52,7 +52,7 @@ defmodule KaffyWeb.ResourceController do
   def show(conn, %{"context" => context, "resource" => resource, "id" => id}) do
     my_resource = Kaffy.Utils.get_resource(context, resource)
     schema = my_resource[:schema]
-    resource_name = Kaffy.ResourceAdmin.singular_name(my_resource) |> String.capitalize()
+    resource_name = Kaffy.ResourceAdmin.singular_name(my_resource)
 
     case can_proceed?(my_resource, conn) do
       false ->

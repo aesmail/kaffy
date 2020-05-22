@@ -69,7 +69,7 @@
                 <div class="bg-white py-2 collapse-inner rounded">
                     <%= for {resource, options} <- Kaffy.Utils.schemas_for_context(context) do %>
                         <%= if Kaffy.ResourceAdmin.authorized?(options, @conn) do %>
-                            <%= link Kaffy.ResourceAdmin.plural_name(options), to: Kaffy.Utils.router().kaffy_resource_path(@conn, :index, context, resource), class: "collapse-item" %>
+                            <%= link Kaffy.ResourceAdmin.plural_name(options), to: Kaffy.Utils.router().kaffy_resource_path(@conn, :index, context, resource), class: "collapse-item", style: "white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" %>
                         <% end %>
                     <% end %>
                 </div>

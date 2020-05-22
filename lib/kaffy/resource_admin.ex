@@ -236,6 +236,10 @@ defmodule Kaffy.ResourceAdmin do
       |> to_string()
       |> String.split(".")
       |> Enum.at(-1)
+      |> Macro.underscore()
+      |> String.split("_")
+      |> Enum.map(fn s -> String.capitalize(s) end)
+      |> Enum.join(" ")
 
     Utils.get_assigned_value_or_default(resource, :singular_name, default)
   end

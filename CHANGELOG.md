@@ -1,5 +1,6 @@
-### v0.6.3 (in development)
+### v0.7.0 (in development)
 
+- [enhancement] improve how autodetected schema names are formatted.
 
 ### v0.6.2 (2020-05-20)
 
