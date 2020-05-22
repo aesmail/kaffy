@@ -51,12 +51,16 @@
         <% end %>
       </li>
 
-      <li class="nav-item">
-        <%= link to: Kaffy.Utils.router().kaffy_task_path(@conn, :index), class: "nav-link" do %>
-            <i class="fas fa-fw fa-tasks"></i>
-            <span>Tasks</span>
-        <% end %>
-      </li>
+      <% tasks = Kaffy.ResourceAdmin.tasks_info() %>
+
+      <%= if not Enum.empty?(tasks) do %>
+        <li class="nav-item">
+          <%= link to: Kaffy.Utils.router().kaffy_task_path(@conn, :index), class: "nav-link" do %>
+              <i class="fas fa-fw fa-tasks"></i>
+              <span>Tasks</span>
+          <% end %>
+        </li>
+      <% end %>
 
       <!-- Divider -->
       <hr class="sidebar-divider">
