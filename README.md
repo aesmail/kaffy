@@ -650,6 +650,8 @@ In case the `action` function crashes, the task will be brought back up again in
 
 Note that since scheduled tasks are run with `GenServer`s, they are stored and kept in memory. Having too many scheduled tasks under low memory conditions can cause an out of memory exception.
 
+Scheduled tasks should be used for simple, non-critical operations.
+
 ### Random features
 
 - If you have a schema with a `belongs_to` association and this association has too many records to be included in a `<select>` box, Kaffy will automatically change the field from a `<select>` box to a text box and opens a new where the association records are paginated and filterable so you can select the necessary record with ease.
