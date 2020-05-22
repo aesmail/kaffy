@@ -1,6 +1,7 @@
 ### v0.7.0 (in development)
 
 - [enhancement] improve how autodetected schema names are formatted.
+- [enhancement] fix a few typos in README (thanks @areski).
 
 ### v0.6.2 (2020-05-20)
 
