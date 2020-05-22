@@ -645,7 +645,7 @@ defmodule MyApp.Products.ProductAdmin do
 end
 ```
 
-Result
+Once you create your scheduled tasks, a new "Tasks" menu item will show up (below the Dashboard item) listing all your tasks with some tiny bits of information about each task like the following image:
 
 ![Simple scheduled tasks](demos/simple_scheduled_tasks.png)
 
