@@ -1,6 +1,25 @@
-# Kaffy
+## Introduction
 
-Powerfully simple admin package for phoenix applications.
+Kaffy was created out of a need to have a powerfully simple, flexible, and customizable admin interface 
+without the need to touch the current codebase. It was inspired by django's lovely built-in `admin` app and rails' powerful `activeadmin` gem.
+
+## Sections
+
+- [Live Demo](#demo)
+- [Minimum Requirements](#minimum-requirements)
+- [Installation](#installation)
+- [Custom Configuratinos](#configurations)
+- [Customize the Dashboard Page](#dashboard-page)
+- [Customize the Index Page](#index-page)
+- [Customize the Form Page](#form-page)
+- [Searching Records](#search)
+- [Authorizing Access To Resources](#authorization)
+- [Custom Changesets](#changesets)
+- [Customizing Resource Names](#singular-vs-plural)
+- [Custom Actions](#custom-actions)
+- [Custom Callbacks When Saving Records](#callbacks)
+- [Simple Scheduled Tasks](#scheduled-tasks)
+- [The Driving Points Behind Kaffy's Development](#the-driving-points)
 
 ## Demo
 
@@ -275,9 +294,9 @@ end
 ```
 
 
-### Show/edit page
+### Form Page
 
-Kaffy treats the show and edit pages as one.
+Kaffy treats the show and edit pages as one, the form page.
 
 To customize the fields shown in this page, define a `form_fields/1` function in your admin module.
 
@@ -437,7 +456,7 @@ See the "Configurations" section above.
 
 ### Custom Actions
 
-#### Single Resource Action
+#### Single Resource Actions
 
 Kaffy supports performing custom actions on single resources by defining the `resource_actions/1` function.
 
@@ -652,17 +671,9 @@ Note that since scheduled tasks are run with `GenServer`s, they are stored and k
 
 Scheduled tasks should be used for simple, non-critical operations.
 
-### Random features
+## The Driving Points
 
-- If you have a schema with a `belongs_to` association and this association has too many records to be included in a `<select>` box, Kaffy will automatically change the field from a `<select>` box to a text box and opens a new where the association records are paginated and filterable so you can select the necessary record with ease.
-
-## Why another admin interface
-
-Kaffy was created out of a need to have a minimum, flexible, and customizable admin interface 
-without the need to touch the current codebase. It should work out of the box just by adding some
-configs in your `config.exs` file (with the exception of adding a one liner to your `router.ex` file).
-
-A few points that encouraged the creation of Kaffy:
+A few points that encouraged the creation and development of Kaffy:
 
 - Taking contexts into account.
   - Supporting contexts makes the admin interface better organized.
@@ -682,11 +693,5 @@ A few points that encouraged the creation of Kaffy:
   - Currently kaffy only depends on phoenix and ecto.
 - Simple authorization.
   - I need to limit access for some admins to some schemas.
-- Minimum assumptions.
-  - Need to modify a schema's primary key? Need to hide a certain field? No problem.
-
-
-The design and philosophy of Kaffy was inspired mainly by the following:
-
-- The built-in admin app for django.
-- The ActiveAdmin gem for rails.
+- Sensible, modifiable, default assumptions.
+  - When the package assumes something, this assumption should be sensible and modifiable when needed.
