@@ -159,7 +159,7 @@ defmodule KaffyWeb.ResourceController do
         unauthorized_access(conn)
 
       true ->
-        changeset = Kaffy.ResourceAdmin.create_changeset(my_resource, %{})
+        changeset = Kaffy.ResourceAdmin.create_changeset(my_resource, %{}) |> Map.put(:errors, [])
 
         render(conn, "new.html",
           layout: {KaffyWeb.LayoutView, "app.html"},
