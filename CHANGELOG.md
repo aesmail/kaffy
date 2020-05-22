@@ -1,5 +1,6 @@
 ### v0.7.0 (in development)
 
+- [feature] search across assocations.
 - [enhancement] improve how autodetected schema names are formatted.
 - [enhancement] fix a few typos in README (thanks @areski).
 

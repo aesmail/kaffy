@@ -87,8 +87,16 @@ defmodule Kaffy.ResourceQuery do
           term = String.replace(search, ["%", "_"], "")
           term = "%#{term}%"
 
-          Enum.reduce(search_fields, query, fn f, q ->
-            from(s in q, or_where: ilike(field(s, ^f), ^term))
+          Enum.reduce(search_fields, query, fn
+            {association, fields}, q ->
+              query = from(s in q, join: a in assoc(s, ^association))
+
+              Enum.reduce(fields, query, fn f, current_query ->
+                from([..., r] in current_query, or_where: ilike(field(r, ^f), ^term))
+              end)
+
+            f, q ->
+              from(s in q, or_where: ilike(field(s, ^f), ^term))
           end)
       end
 
