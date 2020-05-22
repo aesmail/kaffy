@@ -41,6 +41,7 @@ defmodule KaffyWeb.ResourceController do
         fields = Kaffy.ResourceAdmin.index(my_resource)
 
         render(conn, "index.html",
+          layout: {KaffyWeb.LayoutView, "app.html"},
           context: context,
           resource: resource,
           fields: fields,
@@ -63,6 +64,7 @@ defmodule KaffyWeb.ResourceController do
           changeset = Ecto.Changeset.change(entry)
 
           render(conn, "show.html",
+            layout: {KaffyWeb.LayoutView, "app.html"},
             changeset: changeset,
             context: context,
             resource: resource,
@@ -101,6 +103,7 @@ defmodule KaffyWeb.ResourceController do
             conn = put_flash(conn, :info, "Saved #{resource} successfully")
 
             render(conn, "show.html",
+              layout: {KaffyWeb.LayoutView, "app.html"},
               changeset: changeset,
               context: context,
               resource: resource,
@@ -119,6 +122,7 @@ defmodule KaffyWeb.ResourceController do
               )
 
             render(conn, "show.html",
+              layout: {KaffyWeb.LayoutView, "app.html"},
               changeset: changeset,
               context: context,
               resource: resource,
@@ -133,6 +137,7 @@ defmodule KaffyWeb.ResourceController do
             changeset = Ecto.Changeset.change(entry)
 
             render(conn, "show.html",
+              layout: {KaffyWeb.LayoutView, "app.html"},
               changeset: changeset,
               context: context,
               resource: resource,
@@ -157,6 +162,7 @@ defmodule KaffyWeb.ResourceController do
         changeset = Ecto.Changeset.change(my_resource[:schema].__struct__)
 
         render(conn, "new.html",
+          layout: {KaffyWeb.LayoutView, "app.html"},
           changeset: changeset,
           context: context,
           resource: resource,
@@ -193,6 +199,7 @@ defmodule KaffyWeb.ResourceController do
 
           {:error, %Ecto.Changeset{} = changeset} ->
             render(conn, "new.html",
+              layout: {KaffyWeb.LayoutView, "app.html"},
               changeset: changeset,
               context: context,
               resource: resource,
@@ -206,6 +213,7 @@ defmodule KaffyWeb.ResourceController do
             conn
             |> put_flash(:error, error)
             |> render("new.html",
+              layout: {KaffyWeb.LayoutView, "app.html"},
               changeset: changeset,
               context: context,
               resource: resource,

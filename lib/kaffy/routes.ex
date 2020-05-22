@@ -31,6 +31,7 @@ defmodule Kaffy.Routes do
         pipe_through(unquote(pipes))
 
         get("/", HomeController, :index, as: :kaffy_home)
+        get("/tasks", TaskController, :index, as: :kaffy_task)
         get("/:context/:resource", ResourceController, :index, as: :kaffy_resource)
         post("/:context/:resource", ResourceController, :create, as: :kaffy_resource)
 

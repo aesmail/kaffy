@@ -592,6 +592,64 @@ Result
 ![After create callback](demos/callback_after_create.png)
 
 
+### Scheduled Tasks
+
+Kaffy supports simple scheduled tasks. Tasks are functions that are run periodically. Behind the scenes, they are put inside `GenServer`s and supervised with a `DynamicSupervisor`.
+
+To create scheduled tasks, simply define a `scheduled_tasks/1` function in your admin module:
+
+```elixir
+defmodule MyApp.Products.ProductAdmin do
+  def scheduled_tasks(_) do
+    [
+      %{
+        name: "Cache Product Count",
+        initial_value: 0,
+        every: 15,
+        action: fn _v ->
+          count = Bakery.Products.cache_product_count()
+          # "count" will be passed to this function in its next run.
+          {:ok, count}
+        end
+      },
+      %{
+        name: "Delete Fake Products",
+        every: 60,
+        initial_value: nil,
+        action: fn _ ->
+          Bakery.Products.delete_fake_products()
+          {:ok, nil}
+        end
+      }
+    ]
+  end
+end
+```
+
+Result
+
+![Simple scheduled tasks](demos/simple_scheduled_tasks.png)
+
+The `scheduled_tasks/1` function takes a schema and must return a list of tasks.
+
+A task is a map with the following keys:
+
+- `:name` to hold a short description for the task.
+- `:initial_value` to pass to the task's action in its first run.
+- `:every` to indicate the number of seconds between each run.
+- `:action` to hold an anonymous function with arity/1.
+
+The `initial_value` is passed to the `action` function in its first run.
+
+The `action` function must return one of the following values:
+
+- `{:ok, value}` which indicates a successful run. The `value` will be passed to the `action` function in its next run.
+- `{:error, value}` which indicates a failed run. The `value` will be saved and passed again to the `action` function in its next run.
+
+In case the `action` function crashes, the task will be brought back up again in its initial state that is defined in the `scheduled_tasks/1` function and the "Started" time will change to indicate the new starting time. This will also reset the successful and failed run counts to 0.
+
+Note that since scheduled tasks are run with `GenServer`s, they are stored and kept in memory. Having too many scheduled tasks under low memory conditions can cause an out of memory exception.
+
 ### Random features
 
 - If you have a schema with a `belongs_to` association and this association has too many records to be included in a `<select>` box, Kaffy will automatically change the field from a `<select>` box to a text box and opens a new where the association records are paginated and filterable so you can select the necessary record with ease.

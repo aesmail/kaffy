@@ -1,7 +1,11 @@
-### v0.7.0 (in development)
+### v0.7.0 (2020-05-22)
 
-- [feature] search across assocations.
+###### compatible with v0.6.x
+
+- [feature] introducing simple scheduled tasks.
+- [enhancement] search across assocations.
 - [enhancement] improve how autodetected schema names are formatted.
+- [enhancement] clicking on the upper left title goes to the website's root "/" (used to go to the dashboard page, which already has a link in the menu).
 - [enhancement] fix a few typos in README (thanks @areski).
 
 ### v0.6.2 (2020-05-20)
