@@ -1,4 +1,4 @@
-<thead>
+<thead class="thead-dark">
     <tr>
         <%= for field <- @fields do %>
             <th><%= Kaffy.ResourceSchema.kaffy_field_name(@my_resource[:schema], field) %></th>
@@ -25,14 +25,6 @@
         </tr>
     <% end %>
 </thead>
-
-<tfoot>
-    <tr>
-        <%= for field <- @fields do %>
-            <th><%= Kaffy.ResourceSchema.kaffy_field_name(@my_resource[:schema], field) %></th>
-        <% end %>
-    </tr>
-</tfoot>
 
 <tbody>
 </tbody>
