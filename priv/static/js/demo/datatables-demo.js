@@ -16,6 +16,7 @@ $(document).ready(function () {
     "columns": tableColumnNames,
     "scrollX": true,
     "ajax": api_url,
+    "dom": '<f<t><"row index-table-footer" <"col-sm-12 col-md-5" i> <"col-sm-12 col-md-5" p> <"col-sm-12 col-md-2" l> >>',
     rowCallback: function (row, data) {
 
       if ($.inArray(data.DT_RowId.toString(), selected) !== -1) {

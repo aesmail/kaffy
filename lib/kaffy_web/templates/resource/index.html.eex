@@ -29,7 +29,7 @@
   <div class="card-body">
     <div>
       <div id="column-names" style="display:none;"><%= Kaffy.ResourceSchema.display_string_fields(@fields, []) %></div>
-      <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+      <table class="table table-striped" id="dataTable" width="100%" cellspacing="0">
         <%= render KaffyWeb.ResourceView, "_list_table.html", conn: @conn, fields: @fields, context: @context, resource: @resource, my_resource: @my_resource %>
       </table>
     </div>

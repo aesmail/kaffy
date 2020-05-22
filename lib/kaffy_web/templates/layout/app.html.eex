@@ -20,6 +20,9 @@
 
   <link href="/kaffy/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
 
+  <!-- Custom Kaffy styles-->
+  <link href="/kaffy/css/kaffy.css" rel="stylesheet">
+
 </head>
 
 <body id="page-top">
