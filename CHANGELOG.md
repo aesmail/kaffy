@@ -1,5 +1,7 @@
 ### v0.7.1 (in development)
 
+- [enhancement] do not show the "Tasks" menu item if there are no tasks (thanks @areski).
+
 ### v0.7.0 (2020-05-22)
 
 ###### compatible with v0.6.x
