@@ -99,7 +99,7 @@ defmodule KaffyWeb.ResourceController do
 
         case Kaffy.ResourceCallbacks.update_callbacks(conn, my_resource, entry, changes) do
           {:ok, entry} ->
-            changeset = Ecto.Changeset.change(entry)
+            changeset = Kaffy.ResourceAdmin.update_changeset(my_resource, entry, %{})
             conn = put_flash(conn, :info, "Saved #{resource} successfully")
 
             render(conn, "show.html",
@@ -159,7 +159,7 @@ defmodule KaffyWeb.ResourceController do
         unauthorized_access(conn)
 
       true ->
-        changeset = Ecto.Changeset.change(my_resource[:schema].__struct__)
+        changeset = Kaffy.ResourceAdmin.create_changeset(my_resource, %{})
 
         render(conn, "new.html",
           layout: {KaffyWeb.LayoutView, "app.html"},
