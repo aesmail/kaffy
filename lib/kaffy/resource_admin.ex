@@ -231,17 +231,19 @@ defmodule Kaffy.ResourceAdmin do
   ```
   """
   def singular_name(resource) do
-    default =
-      resource[:schema]
-      |> to_string()
-      |> String.split(".")
-      |> Enum.at(-1)
-      |> Macro.underscore()
-      |> String.split("_")
-      |> Enum.map(fn s -> String.capitalize(s) end)
-      |> Enum.join(" ")
-
+    default = humanize_term(resource[:schema])
     Utils.get_assigned_value_or_default(resource, :singular_name, default)
+  end
+
+  def humanize_term(term) do
+    term
+    |> to_string()
+    |> String.split(".")
+    |> Enum.at(-1)
+    |> Macro.underscore()
+    |> String.split("_")
+    |> Enum.map(fn s -> String.capitalize(s) end)
+    |> Enum.join(" ")
   end
 
   @doc """

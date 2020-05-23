@@ -117,7 +117,7 @@ defmodule Kaffy.ResourceSchema do
   end
 
   def kaffy_field_name(_schema, field) when is_atom(field) do
-    to_string(field) |> String.capitalize()
+    Kaffy.ResourceAdmin.humanize_term(field)
   end
 
   def kaffy_field_value(schema, {field, options}) do
