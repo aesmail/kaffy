@@ -1,4 +1,10 @@
-### v0.7.1 (in development)
+### v0.7.2 (in development)
+
+- TBD
+
+### v0.7.1 (2020-05-23)
+
+###### compatible with v0.7.0
 
 - [bugfix] kaffy was ignoring the default/custom changeset functions when creating/updating records.
 - [enhancement] do not show the "Tasks" menu item if there are no tasks (thanks @areski).
