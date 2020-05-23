@@ -137,7 +137,7 @@ defmodule Kaffy.ResourceForm do
             true -> value
           end
 
-        textarea(form, field, [value: value, rows: 4] ++ opts)
+        textarea(form, field, [value: value, rows: 4, placeholder: "JSON Content"] ++ opts)
 
       :file ->
         file_input(form, field, opts)
