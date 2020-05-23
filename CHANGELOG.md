@@ -1,6 +1,6 @@
 ### v0.7.2 (in development)
 
-- TBD
+- [enhancement] a placeholder value for :map textarea fields to indicate that JSON content is expected.
 
 ### v0.7.1 (2020-05-23)
 
