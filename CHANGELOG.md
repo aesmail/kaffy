@@ -1,6 +1,7 @@
 ### v0.7.2 (in development)
 
 - [enhancement] a placeholder value for :map textarea fields to indicate that JSON content is expected.
+- [enhancement] enhanced "humanization" of field names in index page.
 
 ### v0.7.1 (2020-05-23)
 
