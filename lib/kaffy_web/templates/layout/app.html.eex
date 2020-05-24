@@ -315,7 +315,7 @@
                 <div class="alert alert-danger"><%= get_flash(@conn, :error) %></div>
             <% end %>
 
-            <%= render(@view_module, @view_template, assigns) %>
+            <%= @inner_content %>
         </div>
         <!-- /.container-fluid -->
 
