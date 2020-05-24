@@ -1,14 +1,12 @@
 defmodule Kaffy.ResourceForm do
   use Phoenix.HTML
 
-  def form_label(form, {field, options}) do
-    options = options || %{}
-    label_text = Map.get(options, :label, field)
-    form_label(form, label_text)
-  end
+  def form_label_string({field, options}), do: Map.get(options, :label, field)
+  def form_label_string(field) when is_atom(field), do: field
 
   def form_label(form, field) do
-    label(form, field)
+    label_text = form_label_string(field)
+    label(form, label_text)
   end
 
   def bare_form_field(resource, form, {field, options}) do

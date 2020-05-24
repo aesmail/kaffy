@@ -20,22 +20,41 @@ defmodule Kaffy.ResourceSchema do
   end
 
   def index_fields(schema) do
-    fields(schema) -- fields_to_be_removed(schema)
+    Keyword.drop(fields(schema), fields_to_be_removed(schema))
   end
 
   def form_fields(schema) do
     to_be_removed = fields_to_be_removed(schema) ++ [:id, :inserted_at, :updated_at]
-    fields(schema) -- to_be_removed
+    Keyword.drop(fields(schema), to_be_removed)
   end
 
   def fields(schema) do
-    all_fields = get_all_fields(schema)
-    reorder_fields(all_fields, schema)
+    schema
+    |> get_all_fields()
+    |> reorder_fields(schema)
   end
 
   defp get_all_fields(schema) do
     schema.__changeset__()
-    |> Enum.map(fn {k, _} -> k end)
+    |> Enum.map(fn {k, _} -> {k, default_field_options(schema, k)} end)
+  end
+
+  def default_field_options(schema, field) do
+    type = field_type(schema, field)
+    label = Kaffy.ResourceForm.form_label_string(field)
+    merge_field_options(%{label: label, type: type})
+  end
+
+  def merge_field_options(options) do
+    default = %{
+      create: :editable,
+      update: :editable,
+      label: nil,
+      type: nil,
+      choices: nil
+    }
+
+    Map.merge(default, options || %{})
   end
 
   defp fields_to_be_removed(schema) do
@@ -58,13 +77,16 @@ defmodule Kaffy.ResourceSchema do
     end)
   end
 
-  defp reorder_fields(fields_list, schema) do
+  defp reorder_fields(fields_list, _schema) do
+    # this is a "nice" feature to re-order the default fields to put the specified fields at the top/bottom of the form
     fields_list
+    |> reorder_field(:email, :first)
     |> reorder_field(:name, :first)
     |> reorder_field(:title, :first)
-    |> reorder_field(:id, :first)
-    |> reorder_field(Kaffy.ResourceSchema.embeds(schema), :last)
-    |> reorder_field([:inserted_at, :updated_at], :last)
+
+    # |> reorder_field(:id, :first) # this is now hidden by default
+    # |> reorder_field(Kaffy.ResourceSchema.embeds(schema), :last)
+    # |> reorder_field([:inserted_at, :updated_at], :last) # this is now hidden by default
   end
 
   defp reorder_field(fields_list, [], _), do: fields_list
@@ -74,13 +96,13 @@ defmodule Kaffy.ResourceSchema do
     reorder_field(fields_list, rest, position)
   end
 
-  defp reorder_field(fields_list, field, position) do
-    if field in fields_list do
-      fields_list = fields_list -- [field]
+  defp reorder_field(fields_list, field_name, position) do
+    if field_name in Keyword.keys(fields_list) do
+      {field_options, fields_list} = Keyword.pop(fields_list, field_name)
 
       case position do
-        :first -> [field] ++ fields_list
-        :last -> fields_list ++ [field]
+        :first -> [{field_name, field_options}] ++ fields_list
+        :last -> fields_list ++ [{field_name, field_options}]
       end
     else
       fields_list
