@@ -185,7 +185,9 @@ defmodule KaffyWeb.ResourceController do
             case Map.get(params, "submit") do
               "Save" ->
                 put_flash(conn, :info, "Created a new #{resource_name} successfully")
-                |> redirect_to_resource(context, resource, entry)
+                |> redirect(
+                  to: Kaffy.Utils.router().kaffy_resource_path(conn, :index, context, resource)
+                )
 
               _ ->
                 put_flash(conn, :info, "Created a new #{resource_name} successfully")
