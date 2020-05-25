@@ -58,14 +58,8 @@ defmodule Kaffy.ResourceForm do
       !is_nil(choices) ->
         select(form, field, choices, class: "custom-select")
 
-      permission == :readonly ->
-        content_tag(
-          :div,
-          label(form, field, Kaffy.ResourceSchema.kaffy_field_value(changeset.data, field))
-        )
-
       true ->
-        build_html_input(changeset.data, form, field, type, opts)
+        build_html_input(changeset.data, form, field, type, opts, permission == :readonly)
     end
   end
 
@@ -74,9 +68,10 @@ defmodule Kaffy.ResourceForm do
     build_html_input(changeset.data, form, field, type, opts)
   end
 
-  defp build_html_input(schema, form, field, type, opts) do
+  defp build_html_input(schema, form, field, type, opts, readonly \\ false) do
     data = schema
     {conn, opts} = Keyword.pop(opts, :conn)
+    opts = Keyword.put(opts, :disabled, readonly)
     schema = schema.__struct__
 
     case type do
