@@ -125,8 +125,27 @@ defmodule Kaffy.ResourceForm do
       :decimal ->
         text_input(form, field, opts)
 
-      :boolean ->
-        checkbox(form, field)
+      t when t in [:boolean, :boolean_checkbox] ->
+        checkbox_opts = Keyword.put(opts, :class, "custom-control-input")
+        label_opts = Keyword.put(opts, :class, "custom-control-label")
+
+        [
+          {:safe, ~s(<div class="custom-control custom-checkbox">)},
+          checkbox(form, field, checkbox_opts),
+          label(form, field, label_opts),
+          {:safe, "</div>"}
+        ]
+
+      :boolean_switch ->
+        checkbox_opts = Keyword.put(opts, :class, "custom-control-input")
+        label_opts = Keyword.put(opts, :class, "custom-control-label")
+
+        [
+          {:safe, ~s(<div class="custom-control custom-switch">)},
+          checkbox(form, field, checkbox_opts),
+          label(form, field, label_opts),
+          {:safe, "</div>"}
+        ]
 
       :map ->
         value = Map.get(data, field, "")
