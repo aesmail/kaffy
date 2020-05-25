@@ -46,14 +46,19 @@ defmodule Kaffy.ResourceForm do
         opts
       end
 
-    permission = Map.get(options, :permission, :write)
+    permission =
+      case is_nil(changeset.data.id) do
+        true -> Map.get(options, :create, :editable)
+        false -> Map.get(options, :update, :editable)
+      end
+
     choices = Map.get(options, :choices)
 
     cond do
       !is_nil(choices) ->
         select(form, field, choices, class: "custom-select")
 
-      permission == :read ->
+      permission == :readonly ->
         content_tag(
           :div,
           label(form, field, Kaffy.ResourceSchema.kaffy_field_value(changeset.data, field))
@@ -221,18 +226,17 @@ defmodule Kaffy.ResourceForm do
 
             fields = Kaffy.ResourceSchema.fields(assoc)
 
-            string_fields =
-              Enum.filter(fields, fn f ->
-                Kaffy.ResourceSchema.field_type(assoc, f) == :string
-              end)
+            string_fields = Enum.filter(fields, fn {_f, options} -> options.type == :string end)
 
             popular_strings =
-              Enum.filter(string_fields, fn f -> f in [:name, :title] end) |> Enum.at(0)
+              string_fields
+              |> Enum.filter(fn {f, _} -> f in [:name, :title] end)
+              |> Enum.at(0)
 
             string_field =
               case is_nil(popular_strings) do
                 true -> Enum.at(string_fields, 0)
-                false -> popular_strings
+                false -> elem(popular_strings, 0)
               end
 
             select(
