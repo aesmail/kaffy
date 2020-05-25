@@ -125,9 +125,7 @@ defmodule Kaffy.ResourceForm do
       :decimal ->
         text_input(form, field, opts)
 
-      :boolean ->
-
-      :boolean_checkbox ->
+      t when t in [:boolean, :boolean_checkbox] ->
         checkbox_opts = Keyword.put(opts, :class, "custom-control-input")
         label_opts = Keyword.put(opts, :class, "custom-control-label")
 
