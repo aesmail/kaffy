@@ -71,7 +71,7 @@ defmodule Kaffy.ResourceForm do
   defp build_html_input(schema, form, field, type, opts, readonly \\ false) do
     data = schema
     {conn, opts} = Keyword.pop(opts, :conn)
-    opts = Keyword.put(opts, :disabled, readonly)
+    opts = Keyword.put(opts, :readonly, readonly)
     schema = schema.__struct__
 
     case type do
