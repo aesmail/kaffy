@@ -327,4 +327,32 @@ defmodule Kaffy.ResourceAdmin do
       GenServer.call(p, :info)
     end)
   end
+
+  def custom_links(resource, location \\ nil) do
+    links = Utils.get_assigned_value_or_default(resource, :custom_links, [])
+
+    case location do
+      nil -> links
+      :top -> Enum.filter(links, fn l -> Map.get(l, :location, :sub) == :top end)
+      :sub -> Enum.filter(links, fn l -> Map.get(l, :location, :sub) == :sub end)
+    end
+    |> Enum.sort_by(fn l -> Map.get(l, :order, 999) end)
+  end
+
+  def collect_links(location) do
+    contexts = Kaffy.Utils.contexts()
+
+    Enum.reduce(contexts, [], fn c, all ->
+      resources = Kaffy.Utils.schemas_for_context(c)
+
+      Enum.reduce(resources, all, fn {_r, options}, all ->
+        links =
+          Kaffy.ResourceAdmin.custom_links(options)
+          |> Enum.filter(fn link -> Map.get(link, :location, :sub) == location end)
+
+        all ++ links
+      end)
+    end)
+    |> Enum.sort_by(fn c -> Map.get(c, :order, 999) end)
+  end
 end

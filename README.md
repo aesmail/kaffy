@@ -36,7 +36,7 @@ without the need to touch the current codebase. It was inspired by django's love
 ```elixir
 def deps do
   [
-    {:kaffy, "~> 0.7.0"}
+    {:kaffy, "~> 0.8.0"}
   ]
 end
 ```
@@ -224,6 +224,30 @@ end
 ```
 
 Kaffy will collect all widgets from all admin modules and orders them based on the `:order` option if present and displays them on the dashboard page.
+
+### Side Menu
+
+#### Custom Links
+
+Kaffy provides support for adding custom links to the side navigation menu.
+
+```elixir
+defmodule MyApp.Products.ProductAdmin do
+  def custom_links(_schema) do
+    [
+      %{name: "Source Code", url: "https://example.com/repo/issues", order: 2, location: :top},
+      %{name: "Products On Site", url: "https://example.com/products", location: :sub},
+    ]
+  end
+end
+```
+
+`custom_links/1` takes a schema and should return a list of maps with the following keys:
+
+- `:name` to display as the text for the link.
+- `:url` to contain the actual URL.
+- `:order` to hold the displayed order of this link. All `:sub` links are ordered under the schema menu item directly before the following schema.
+- `:location` can be either `:sub` or `:top`. `:sub` means it's under the schema sub-item. `:top` means it's displayed at the top of the menu below the "Dashboard" link. Links are ordered based on the `:order` value. The default value for `:location` is `:sub`.
 
 ### Index page
 

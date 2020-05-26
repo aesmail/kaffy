@@ -3,7 +3,8 @@
 - [enhancement] a placeholder value for :map textarea fields to indicate that JSON content is expected.
 - [enhancement] enhanced "humanization" of field names in index page.
 - [enhancement] removed `:permission` field option in favor of `:create` and `:update` options for more control and customization.
-- [enhancement] improved checkbox UI (thanks @areski).
+- [enhancement] improved checkbox form control UI (thanks @areski).
+- [enhancement] add custom links to the side menu.
 
 ### v0.7.1 (2020-05-23)
 
