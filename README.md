@@ -307,7 +307,7 @@ defmodule MyApp.Blog.PostAdmin do
       title: nil,
       status: %{choices: [{"Publish", "publish"}, {"Pending", "pending"}]},
       body: %{type: :textarea, rows: 4},
-      views: %{permission: :read},
+      views: %{create: :hidden, update: :readonly},
       settings: %{label: "Post Settings"}
     ]
   end
@@ -324,22 +324,24 @@ Options can be:
 - `:type` - can be any ecto type in addition to `:file`, `:textarea`, and `:richtext`.
 - `:rows` - an integer to indicate the number of rows for textarea fields.
 - `:choices` - a keyword list of option and values to restrict the input values that this field can accept.
-- `:permission` - can be either `:write` (field is editable) or `:read` (field is non-editable). It is `:write` by default.
+- `:create` - can be `:editable` which means it can be edited when creating a new record, or `:readonly` which means this field is visible when creating a new record but cannot be edited, or `:hidden` which means this field shouldn't be visible when creating a new record. It is `:editable` by default.
+- `:update` - can be `:editable` which means it can be edited when updating an existing record, or `:readonly` which means this field is visible when updating a record but cannot be edited, or `:hidden` which means this field shouldn't be visible when updating record. It is `:editable` by default.
 
 
 Result
 
 ![Customized show/edit page](demos/post_form_custom.png)
 
-Setting a field's type to `:richtext` will render a rich text editor like the following:
-
-![Rich text editor](demos/richtext.png)
-
 Notice that:
 
 - Even though the `status` field is of type `:string`, it is rendered as a `<select>` element with choices.
-- The `views` field is rendered as "readonly" because it has the `:read` permission.
+- The `views` field is rendered as "readonly" because it was set as `:readonly` for the update form.
 - `settigns` is an embedded schema. That's why it is rendered as such.
+
+
+Setting a field's type to `:richtext` will render a rich text editor like the following:
+
+![Rich text editor](demos/richtext.png)
 
 ### Search
 

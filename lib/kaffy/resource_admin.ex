@@ -84,6 +84,15 @@ defmodule Kaffy.ResourceAdmin do
       :form_fields,
       ResourceSchema.form_fields(schema)
     )
+    |> set_default_field_options(schema)
+  end
+
+  defp set_default_field_options(fields, schema) do
+    Enum.map(fields, fn {f, o} ->
+      default_options = Kaffy.ResourceSchema.default_field_options(schema, f)
+      final_options = Map.merge(default_options, o || %{})
+      {f, final_options}
+    end)
   end
 
   @doc """

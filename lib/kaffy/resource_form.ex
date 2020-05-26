@@ -1,14 +1,12 @@
 defmodule Kaffy.ResourceForm do
   use Phoenix.HTML
 
-  def form_label(form, {field, options}) do
-    options = options || %{}
-    label_text = Map.get(options, :label, field)
-    form_label(form, label_text)
-  end
+  def form_label_string({field, options}), do: Map.get(options, :label, field)
+  def form_label_string(field) when is_atom(field), do: field
 
   def form_label(form, field) do
-    label(form, field)
+    label_text = form_label_string(field)
+    label(form, label_text)
   end
 
   def bare_form_field(resource, form, {field, options}) do
@@ -48,21 +46,20 @@ defmodule Kaffy.ResourceForm do
         opts
       end
 
-    permission = Map.get(options, :permission, :write)
+    permission =
+      case is_nil(changeset.data.id) do
+        true -> Map.get(options, :create, :editable)
+        false -> Map.get(options, :update, :editable)
+      end
+
     choices = Map.get(options, :choices)
 
     cond do
       !is_nil(choices) ->
         select(form, field, choices, class: "custom-select")
 
-      permission == :read ->
-        content_tag(
-          :div,
-          label(form, field, Kaffy.ResourceSchema.kaffy_field_value(changeset.data, field))
-        )
-
       true ->
-        build_html_input(changeset.data, form, field, type, opts)
+        build_html_input(changeset.data, form, field, type, opts, permission == :readonly)
     end
   end
 
@@ -71,9 +68,10 @@ defmodule Kaffy.ResourceForm do
     build_html_input(changeset.data, form, field, type, opts)
   end
 
-  defp build_html_input(schema, form, field, type, opts) do
+  defp build_html_input(schema, form, field, type, opts, readonly \\ false) do
     data = schema
     {conn, opts} = Keyword.pop(opts, :conn)
+    opts = Keyword.put(opts, :readonly, readonly)
     schema = schema.__struct__
 
     case type do
@@ -242,18 +240,17 @@ defmodule Kaffy.ResourceForm do
 
             fields = Kaffy.ResourceSchema.fields(assoc)
 
-            string_fields =
-              Enum.filter(fields, fn f ->
-                Kaffy.ResourceSchema.field_type(assoc, f) == :string
-              end)
+            string_fields = Enum.filter(fields, fn {_f, options} -> options.type == :string end)
 
             popular_strings =
-              Enum.filter(string_fields, fn f -> f in [:name, :title] end) |> Enum.at(0)
+              string_fields
+              |> Enum.filter(fn {f, _} -> f in [:name, :title] end)
+              |> Enum.at(0)
 
             string_field =
               case is_nil(popular_strings) do
                 true -> Enum.at(string_fields, 0)
-                false -> popular_strings
+                false -> elem(popular_strings, 0)
               end
 
             select(
