@@ -98,17 +98,24 @@ defmodule KaffyWeb.ResourceController do
         changes = Map.get(params, resource, %{})
 
         case Kaffy.ResourceCallbacks.update_callbacks(conn, my_resource, entry, changes) do
-          {:ok, _entry} ->
+          {:ok, entry} ->
             conn = put_flash(conn, :info, "#{resource_name} saved successfully")
-            fields = Kaffy.ResourceAdmin.index(my_resource)
 
-            render(conn, "index.html",
-              layout: {KaffyWeb.LayoutView, "app.html"},
-              context: context,
-              resource: resource,
-              fields: fields,
-              my_resource: my_resource
-            )
+            save_button = Map.get(params, "submit", "Save")
+
+            case save_button do
+              "Save" ->
+                conn
+                |> put_flash(:info, "#{resource_name} saved successfully")
+                |> redirect(
+                  to: Kaffy.Utils.router().kaffy_resource_path(conn, :index, context, resource)
+                )
+
+              _ ->
+                conn
+                |> put_flash(:info, "#{resource_name} saved successfully")
+                |> redirect_to_resource(context, resource, entry)
+            end
 
           {:error, %Ecto.Changeset{} = changeset} ->
             conn =
@@ -191,9 +198,7 @@ defmodule KaffyWeb.ResourceController do
 
               _ ->
                 put_flash(conn, :info, "Created a new #{resource_name} successfully")
-                |> redirect(
-                  to: Kaffy.Utils.router().kaffy_resource_path(conn, :new, context, resource)
-                )
+                |> redirect_to_resource(context, resource, entry)
             end
 
           {:error, %Ecto.Changeset{} = changeset} ->

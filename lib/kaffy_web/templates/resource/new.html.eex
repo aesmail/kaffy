@@ -17,7 +17,7 @@
         <div class="form-group">
             <%= link "Back", to: Kaffy.Utils.router().kaffy_resource_path(@conn, :index, @context, @resource), class: "btn btn-light" %> &nbsp;
             <input type="submit" name="submit" value="Save" class="btn btn-primary" />
-            <input type="submit" name="submit" value="Save and add another" class="btn btn-info" />
+            <input type="submit" name="submit" value="Save and continue editing" class="btn btn-info" />
         </div>
     </form>
 </div>
