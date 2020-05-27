@@ -81,7 +81,9 @@ end
 
 ## What You Get
 
-![Post list page](demos/post_index.png)
+![Dashboard Page](demos/dashboard.png)
+
+![Resource List Page](demos/list_page.png)
 
 ## Customizations
 
