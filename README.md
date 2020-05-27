@@ -57,18 +57,14 @@ plug Plug.Static,
   at: "/kaffy",
   from: :kaffy,
   gzip: false,
-  only: ~w(css img js scss vendor)
+  only: ~w(css img js)
 
 # in your config/config.exs
 config :kaffy,
   otp_app: :my_app,
-  ecto_repo: Bloggy.Repo,
-  router: BloggyWeb.Router
+  ecto_repo: MyApp.Repo,
+  router: MyAppWeb.Router
 ```
-
-**Breaking change in v0.6.x**
-
-If you are upgrading from v0.5.x and you provided a value for the `:pipe_through` option, you need to remove the default `:browser` pipeline from the list, keeping in mind the content of the `:kaffy_browser` pipeline outlined below.
 
 Note that providing pipelines with the `:pipe_through` option will add those pipelines to kaffy's `:kaffy_browser` pipeline which is defined as follows:
 

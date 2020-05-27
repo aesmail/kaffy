@@ -1,7 +1,4 @@
 <h1 class="mt-4">New <%= Kaffy.ResourceAdmin.singular_name(@my_resource) %></h1>
-<ol class="breadcrumb mb-4">
-    <li class="breadcrumb-item active"><%= @context %> / <%= link @resource, to: Kaffy.Utils.router().kaffy_resource_path(@conn, :index, @context, @resource) %> / new</li>
-</ol>
 
 <%= for error <- Kaffy.ResourceError.display_errors(@changeset) do %>
     <div><%= error %></div>
