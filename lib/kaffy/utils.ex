@@ -15,7 +15,7 @@ defmodule Kaffy.Utils do
 
   def get_version_of(package) do
     {:ok, version} = :application.get_key(package, :vsn)
-    version
+    to_string(version)
   end
 
   def phoenix_1_4?() do

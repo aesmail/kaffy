@@ -1,47 +1,27 @@
-<div class="container">
-    <% tasks = Kaffy.ResourceAdmin.tasks_info() %>
+<h1 class="mt-4">Tasks</h1>
 
-    <%= if Enum.empty?(tasks) do %>
-        <div class="row mt-3">
-            <div class="col-md-12 text-center">
-                <h1>Kaffy's Tasks</h1>
-            </div>
-        </div>
-        <div class="row mt-3">
-            <div class="col-md-12 text-center">
-                <h4>You can add tasks by defining <code>scheduled_tasks/1</code> in your admin modules.</h4>
-            </div>
-        </div>
-    <% else %>
-        <div class="row mt-3">
-            <div class="col-md-12 text-center">
-                <h1><%= Kaffy.Utils.title() %>'s Tasks</h1>
-            </div>
-        </div>
-        <div class="row mt-3 col-md-12">
-            <table class="table table-striped">
-                <tr>
-                    <th>Name</th>
-                    <th>Runs Every (seconds)</th>
-                    <th>Successful Runs</th>
-                    <th>Failed Runs</th>
-                    <th>Started (UTC)</th>
-                    <th>Last Successful Run (UTC)</th>
-                    <th>Last Failed Run (UTC)</th>
-                </tr>
+<div class="row mt-3 col-md-12">
+    <table class="table table-striped">
+        <tr>
+            <th>Name</th>
+            <th>Runs Every (seconds)</th>
+            <th>Successful Runs</th>
+            <th>Failed Runs</th>
+            <th>Started (UTC)</th>
+            <th>Last Successful Run (UTC)</th>
+            <th>Last Failed Run (UTC)</th>
+        </tr>
 
-                <%= for task <- tasks do %>
-                    <tr>
-                        <td><%= task.name %></td>
-                        <td><%= task.every %></td>
-                        <td><%= task.successful %></td>
-                        <td><%= task.failure %></td>
-                        <td><%= task.started_at && DateTime.truncate(task.started_at, :second) %></td>
-                        <td><%= task.last_successful && DateTime.truncate(task.last_successful, :second) %></td>
-                        <td><%= task.last_failure && DateTime.truncate(task.last_failure, :second) %></td>
-                    </tr>
-                <% end %>
-            </table>
-        </div>
-    <% end %>
+        <%= for task <- Kaffy.ResourceAdmin.tasks_info() do %>
+            <tr>
+                <td><%= task.name %></td>
+                <td><%= task.every %></td>
+                <td><%= task.successful %></td>
+                <td><%= task.failure %></td>
+                <td><%= task.started_at && DateTime.truncate(task.started_at, :second) %></td>
+                <td><%= task.last_successful && DateTime.truncate(task.last_successful, :second) %></td>
+                <td><%= task.last_failure && DateTime.truncate(task.last_failure, :second) %></td>
+            </tr>
+        <% end %>
+    </table>
 </div>

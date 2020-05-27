@@ -1,8 +1,11 @@
+<h1 class="mt-4">New <%= Kaffy.ResourceAdmin.singular_name(@my_resource) %></h1>
+<ol class="breadcrumb mb-4">
+    <li class="breadcrumb-item active"><%= @context %> / <%= link @resource, to: Kaffy.Utils.router().kaffy_resource_path(@conn, :index, @context, @resource) %> / new</li>
+</ol>
+
 <%= for error <- Kaffy.ResourceError.display_errors(@changeset) do %>
     <div><%= error %></div>
 <% end %>
-
-<h2>New <%= @resource_name %></h2>
 
 <div>
     <%= f = form_for(@changeset, Kaffy.Utils.router().kaffy_resource_path(@conn, :create, @context, @resource), method: :post, multipart: true) %>
@@ -15,9 +18,10 @@
             <% end %>
         <% end %>
         <div class="form-group">
-            <%= link "Back", to: Kaffy.Utils.router().kaffy_resource_path(@conn, :index, @context, @resource), class: "btn btn-light" %> &nbsp;
-            <input type="submit" name="submit" value="Save" class="btn btn-primary" />
-            <input type="submit" name="submit" value="Save and continue editing" class="btn btn-info" />
+            <%= link "Back", to: Kaffy.Utils.router().kaffy_resource_path(@conn, :index, @context, @resource), class: "btn btn-sm btn-light" %> &nbsp;
+            <input type="submit" name="submit" value="Save" class="btn btn-sm btn-primary" />
+            <input type="submit" name="submit" value="Save and add another" class="btn btn-sm btn-primary" />
+            <input type="submit" name="submit" value="Save and continue editing" class="btn btn-sm btn-primary" />
         </div>
     </form>
 </div>

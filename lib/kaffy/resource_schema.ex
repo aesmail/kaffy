@@ -83,10 +83,11 @@ defmodule Kaffy.ResourceSchema do
     |> reorder_field(:email, :first)
     |> reorder_field(:name, :first)
     |> reorder_field(:title, :first)
+    |> reorder_field(:id, :first)
+    |> reorder_field(:inserted_at, :last)
+    |> reorder_field(:updated_at, :last)
 
-    # |> reorder_field(:id, :first) # this is now hidden by default
     # |> reorder_field(Kaffy.ResourceSchema.embeds(schema), :last)
-    # |> reorder_field([:inserted_at, :updated_at], :last) # this is now hidden by default
   end
 
   defp reorder_field(fields_list, [], _), do: fields_list

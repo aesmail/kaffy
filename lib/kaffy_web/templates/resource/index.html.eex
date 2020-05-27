@@ -1,12 +1,14 @@
+<h1 class="mt-4"><%= Kaffy.ResourceAdmin.plural_name(@my_resource) %></h1>
+
 <div id="kaffy-api-url" style="display:none;"><%= Kaffy.Utils.router().kaffy_api_resource_path(@conn, :api, @context, @resource) %></div>
 
 <div class="card shadow mb-4">
   <div class="card-header py-3">
     <h6 class="m-0 font-weight-bold text-primary">
-      <%= link to: Kaffy.Utils.router().kaffy_resource_path(@conn, :new, @context, @resource), class: "btn btn-primary btn-sm btn-circle" do %>
+      <%= link to: Kaffy.Utils.router().kaffy_resource_path(@conn, :new, @context, @resource), class: "btn btn-light btn-sm btn-circle" do %>
         <i class="fas fa-plus"></i>
-      <% end %>&nbsp;
-      <%= Kaffy.ResourceAdmin.plural_name(@my_resource) %>
+        New <%= Kaffy.ResourceAdmin.singular_name(@my_resource) %>
+      <% end %>
 
       <%= if list_actions = Kaffy.ResourceAdmin.list_actions(@my_resource, @conn) do %>
         <div class="float-right">
