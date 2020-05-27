@@ -13,6 +13,21 @@ defmodule Kaffy.Utils do
     env(:ecto_repo)
   end
 
+  def get_version_of(package) do
+    {:ok, version} = :application.get_key(package, :vsn)
+    version
+  end
+
+  def phoenix_1_4?() do
+    version = get_version_of(:phoenix)
+    String.starts_with?(version, "1.4.")
+  end
+
+  def phoenix_1_5?() do
+    version = get_version_of(:phoenix)
+    String.starts_with?(version, "1.5.")
+  end
+
   def router do
     Module.concat(env(:router), Helpers)
   end
