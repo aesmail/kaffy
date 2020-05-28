@@ -26,7 +26,8 @@ defmodule Kaffy.ResourceQuery do
       )
 
     current_page = Kaffy.Utils.repo().all(paged)
-    all_count = from(r in all, select: count(r.id)) |> Kaffy.Utils.repo().one()
+
+    all_count = cached_total_count(resource[:schema])
     {all_count, current_page}
   end
 
@@ -44,17 +45,24 @@ defmodule Kaffy.ResourceQuery do
     |> Kaffy.Utils.repo().all()
   end
 
-  def total_count(resource) do
-    schema = resource[:schema]
+  def total_count(schema) do
+    result =
+      from(s in schema, select: fragment("count(*)"))
+      |> Kaffy.Utils.repo().one()
 
-    from(s in schema, select: count(s.id))
-    |> Kaffy.Utils.repo().one()
+    Cachex.put!(
+      :cache_kaffy,
+      String.to_atom("total_count_#{schema}"),
+      result,
+      ttl: :timer.minutes(5)
+    )
+
+    result
   end
 
-  def total_pages(resource, params \\ %{}) do
-    per_page = Map.get(params, "limit", "100") |> String.to_integer()
-    total = total_count(resource)
-    :math.ceil(total / per_page)
+  def cached_total_count(schema) do
+    Cachex.get!(:cache_kaffy, String.to_atom("total_count_#{schema}")) ||
+      total_count(schema)
   end
 
   defp get_filter_fields(params) do
