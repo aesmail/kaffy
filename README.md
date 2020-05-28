@@ -1,6 +1,6 @@
 ## Introduction
 
-Kaffy was created out of a need to have a powerfully simple, flexible, and customizable admin interface 
+Kaffy was created out of a need to have a powerfully simple, flexible, and customizable admin interface
 without the need to touch the current codebase. It was inspired by django's lovely built-in `admin` app and rails' powerful `activeadmin` gem.
 
 ## Sections
@@ -233,8 +233,8 @@ Kaffy provides support for adding custom links to the side navigation menu.
 defmodule MyApp.Products.ProductAdmin do
   def custom_links(_schema) do
     [
-      %{name: "Source Code", url: "https://example.com/repo/issues", order: 2, location: :top},
-      %{name: "Products On Site", url: "https://example.com/products", location: :sub},
+      %{name: "Source Code", url: "https://example.com/repo/issues", order: 2, location: :top, icon: "paperclip"},
+      %{name: "Products On Site", url: "https://example.com/products", location: :sub, open: "_blank"},
     ]
   end
 end
@@ -245,7 +245,9 @@ end
 - `:name` to display as the text for the link.
 - `:url` to contain the actual URL.
 - `:order` to hold the displayed order of this link. All `:sub` links are ordered under the schema menu item directly before the following schema.
-- `:location` can be either `:sub` or `:top`. `:sub` means it's under the schema sub-item. `:top` means it's displayed at the top of the menu below the "Dashboard" link. Links are ordered based on the `:order` value. The default value for `:location` is `:sub`.
+- `:location` can be either `:sub` or `:top`. `:sub` means it's under the schema sub-item. `:top` means it's displayed at the top of the menu below the "Dashboard" link. Links are ordered based on the `:order` value. The default value is `:sub`.
+- `:icon` is the icon displayed next to the link. Any FontAwesome-valid icon is valid here. For example: `paperclip`.
+- `:target` to contain the target to open the link `_blank`, `_self`. `_blank` will open the link in a new window/tab, `_self` will open the link in the same window. The default value is `_self`.
 
 ### Index page
 
@@ -396,7 +398,7 @@ defmodule MyApp.Blog.PostAdmin do
 end
 ```
 
-This function takes a schema and returns a list of schema fields that you want to search. 
+This function takes a schema and returns a list of schema fields that you want to search.
 All the fields must be of type `:string` or `:text`.
 
 If this function is not defined, Kaffy will return all `:string` and `:text` fields by default.
@@ -475,7 +477,7 @@ Result
 
 ![Singular vs Plural](demos/singular_plural.png)
 
-Notice the "Posts" above the "Terms". This is the context name and it can be changed in the `configs.exs` file. 
+Notice the "Posts" above the "Terms". This is the context name and it can be changed in the `configs.exs` file.
 See the "Configurations" section above.
 
 ### Custom Actions
@@ -512,7 +514,7 @@ Result
 
 ![Single actions](demos/resource_actions.png)
 
-`resource_actions/1` takes a `conn` and must return a keyword list. 
+`resource_actions/1` takes a `conn` and must return a keyword list.
 The keys must be atoms defining the unique action "keys".
 The values are maps providing a human-friendly `:name` and an `:action` that is an anonymous function with arity 2 that takes a `conn` and the record.
 
@@ -542,7 +544,7 @@ Result
 
 ![List actions](demos/list_actions.png)
 
-`list_actions/1` takes a `conn` and must return a keyword list. 
+`list_actions/1` takes a `conn` and must return a keyword list.
 The keys must be atoms defining the unique action "keys".
 The values are maps providing a human-friendly `:name` and an `:action` that is an anonymous function with arity 2 that takes a `conn` and a list of selected records.
 

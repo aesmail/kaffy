@@ -65,8 +65,10 @@
 
                             <%= for custom_link <- Kaffy.ResourceAdmin.collect_links(:top) do %>
                                 <li class="nav-item">
-                                    <%= link to: custom_link.url, class: "nav-link" do %>
-                                        <div class="sb-nav-link-icon"><i class="fas fa-fw fa-link"></i></div>
+                                    <%= link to: custom_link.url, class: "nav-link", target: custom_link.target do %>
+                                        <div class="sb-nav-link-icon">
+                                            <i class="fas fa-<%= Map.get(custom_link, :icon, "link") %>"></i>
+                                        </div>
                                         <span><%= custom_link.name %></span>
                                     <% end %>
                                 </li>
@@ -87,7 +89,12 @@
                                             <%= if Kaffy.ResourceAdmin.authorized?(options, @conn) do %>
                                                 <%= link Kaffy.ResourceAdmin.plural_name(options), to: Kaffy.Utils.router().kaffy_resource_path(@conn, :index, context, resource), class: "nav-link", style: "white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" %>
                                                 <%= for custom_link <- Kaffy.ResourceAdmin.custom_links(options, :sub) do %>
-                                                    <%= link custom_link.name, to: custom_link.url, class: "nav-link", style: "white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" %>
+                                                    <%= link to: custom_link.url, class: "nav-link", target: custom_link.target do %>
+                                                        <div class="sb-nav-link-icon">
+                                                            <i class="fas fa-<%= Map.get(custom_link, :icon, "link") %>"></i>
+                                                        </div>
+                                                        <span><%= custom_link.name %></span>
+                                                    <% end %>
                                                 <% end %>
                                             <% end %>
                                         <% end %>
