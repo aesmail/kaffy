@@ -329,8 +329,7 @@
 
             <%= if Kaffy.Utils.phoenix_1_4?() do %>
               <%= render(@view_module, @view_template, assigns) %>
-            <% end %>
-            <%= if Kaffy.Utils.phoenix_1_5?() do %>
+            <% else %>
               <%= @inner_content %>
             <% end %>
         </div>
