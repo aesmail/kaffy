@@ -67,7 +67,7 @@
                                 <li class="nav-item">
                                     <%= link to: custom_link.url, class: "nav-link", target: custom_link.target do %>
                                         <div class="sb-nav-link-icon">
-                                            <i class="fas fa-<%= Map.get(custom_link, :icon, "link") %>"></i>
+                                            <i class="fas fa-<%= custom_link.icon %>"></i>
                                         </div>
                                         <span><%= custom_link.name %></span>
                                     <% end %>
@@ -91,7 +91,7 @@
                                                 <%= for custom_link <- Kaffy.ResourceAdmin.custom_links(options, :sub) do %>
                                                     <%= link to: custom_link.url, class: "nav-link", target: custom_link.target do %>
                                                         <div class="sb-nav-link-icon">
-                                                            <i class="fas fa-<%= Map.get(custom_link, :icon, "link") %>"></i>
+                                                            <i class="fas fa-<%= custom_link.icon %>"></i>
                                                         </div>
                                                         <span><%= custom_link.name %></span>
                                                     <% end %>
