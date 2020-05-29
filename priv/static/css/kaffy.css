@@ -5,6 +5,8 @@
 
 .table .thead-dark th {
     color: #fff;
+     background-color: #4e73df;
+     border-color: #4f64a1;
 }
 
 .table-striped tbody tr:nth-of-type(2n+1) {

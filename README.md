@@ -78,13 +78,6 @@ pipeline :kaffy_browser do
 end
 ```
 
-
-## What You Get
-
-![Dashboard Page](demos/dashboard.png)
-
-![Resource List Page](demos/list_page.png)
-
 ## Customizations
 
 ### Configurations
