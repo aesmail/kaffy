@@ -36,7 +36,7 @@ without the need to touch the current codebase. It was inspired by django's love
 ```elixir
 def deps do
   [
-    {:kaffy, "~> 0.8.0"}
+    {:kaffy, "~> 0.7.0"}
   ]
 end
 ```
