@@ -299,6 +299,17 @@ defmodule Kaffy.ResourceAdmin do
         Enum.reduce(Kaffy.Utils.schemas_for_context(c), [], fn {_, resource}, all ->
           all ++ Kaffy.ResourceAdmin.widgets(resource, conn)
         end)
+        |> Enum.map(fn widget ->
+          width = Map.get(widget, :width)
+          type = widget.type
+
+          cond do
+            is_nil(width) and type == "tidbit" -> Map.put(widget, :width, 3)
+            is_nil(width) and type == "chart" -> Map.put(widget, :width, 12)
+            is_nil(width) and type == "flash" -> Map.put(widget, :width, 4)
+            true -> Map.put_new(widget, :width, 6)
+          end
+        end)
 
       all ++ widgets
     end)

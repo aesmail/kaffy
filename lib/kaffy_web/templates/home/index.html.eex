@@ -1,17 +1,3 @@
-<!--
-<div class="row" id="proBanner">
-    <div class="col-12">
-    <span class="d-flex align-items-center purchase-popup">
-        <p>Like what you see? Check out our premium version for more.</p>
-        <a href="https://github.com/BootstrapDash/PurpleAdmin-Free-Admin-Template" target="_blank" class="btn ml-auto download-button">Download Free Version</a>
-        <a href="https://www.bootstrapdash.com/product/purple-bootstrap-4-admin-template/" target="_blank" class="btn purchase-button">Upgrade To Pro</a>
-        <i class="mdi mdi-close" id="bannerClose"></i>
-    </span>
-    </div>
-</div>
--->
-
-
 <div class="page-header">
     <h3 class="page-title">Dashboard </h3>
     <nav aria-label="breadcrumb">
@@ -23,42 +9,37 @@
     </nav>
 </div>
 
-<div class="row">
-    <div class="col-md-6 grid-margin stretch-card">
-        <div class="card shadow">
-            <div class="card-body">
-                <h5 class="card-title">A Long Text</h5>
-                <p class="card-text text-justify">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse congue ex id ex vestibulum vulputate. Vivamus at erat eu sapien congue volutpat non sit amet nibh. Nullam lacinia mi ac malesuada blandit. Aenean ac imperdiet arcu. Sed non vehicula erat, non convallis nibh. Nulla eget hendrerit metus. Integer et egestas nunc. Morbi quis dapibus sapien, et posuere dui. Duis non posuere nibh, faucibus sodales mauris. Donec eget suscipit risus. Vivamus at tellus risus. Quisque mollis dictum ante, in mattis est accumsan non. Phasellus vel tincidunt risus. Duis ipsum diam, consequat in rhoncus eu, varius id sapien. Vivamus tempor quis dolor quis consectetur.</p>
-            </div>
+<% widgets = Kaffy.ResourceAdmin.collect_widgets(@conn) %>
+
+<%= if Enum.empty?(widgets) do %>
+
+    <div class="row mt-3">
+        <div class="col-md-12 text-center">
+            <h4>A powerfully simple admin package for phoenix applications.</h4>
+            <h4>You can add widgets to this page by defining <code>widgets/2</code> in your admin modules.</h4>
         </div>
     </div>
-    <div class="col-md-6 grid-margin stretch-card">
-        <div class="card shadow border-left-success">
-            <div class="card-body">
-                <h5 class="card-title">Shorter Text</h5>
-                <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse congue ex id ex vestibulum vulputate. Vivamus at erat eu sapien congue volutpat non sit amet nibh. Nullam lacinia mi ac malesuada blandit. Aenean ac imperdiet arcu. Sed non vehicula erat, non convallis nibh. Nulla eget hendrerit metus. Integer et egestas nunc.</p>
-            </div>
-        </div>
+
+<% else %>
+
+    <div class="row mt-1 row-cols-1 row-cols-md-2 row-cols-sm-1 row-cols-xs-1">
+        <%= for widget <- widgets do %>
+            <%= if widget.type == "text" do %>
+                <%= render KaffyWeb.HomeView, "_text.html", widget: widget %>
+            <% end %>
+
+            <%= if widget.type == "chart" do %>
+                <%= render KaffyWeb.HomeView, "_bar.html", widget: widget %>
+            <% end %>
+
+            <%= if widget.type == "progress" do %>
+                <%= render KaffyWeb.HomeView, "_progress.html", widget: widget %>
+            <% end %>
+
+            <%= if widget.type == "tidbit" do %>
+                <%= render KaffyWeb.HomeView, "_tidbit.html", widget: widget %>
+            <% end %>
+        <% end %>
     </div>
-</div>
 
-<div class="row">
-    <%= for _ <- (1..4) do %>
-        <%= render KaffyWeb.HomeView, "_tidbit.html" %>
-    <% end %>
-</div>
-
-<div class="row">
-    <%= for _x <- (1..4) do %>
-        <%= render KaffyWeb.HomeView, "_card.html" %>
-    <% end %>
-</div>
-
-<div class="row">
-    <%= render KaffyWeb.HomeView, "_bar.html" %>
-    <%= render KaffyWeb.HomeView, "_pie.html" %>
-</div>
-
-<div class="row">
-    <%= render KaffyWeb.ResourceView, "_table.html" %>
-</div>
+<% end %>

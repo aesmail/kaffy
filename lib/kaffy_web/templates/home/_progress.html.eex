@@ -1,0 +1,15 @@
+<div class="col-md-<%= @widget.width %> grid-margin stretch-card">
+    <div class="card shadow">
+        <div class="card-header">
+            <h4><%= @widget.title %></h4>
+        </div>
+        <div class="card-body">
+            <p class="font-weight-bold text-black"><%= @widget.content %></p>
+            <div class="progress">
+                <div class="progress-bar bg-danger" role="progressbar" style="width: <%= @widget.percentage %>%" aria-valuenow="<%= @widget.percentage %>" aria-valuemin="0" aria-valuemax="100">
+                    <%= @widget.percentage %>%
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
