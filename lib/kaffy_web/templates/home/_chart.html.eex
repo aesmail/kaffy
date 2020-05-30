@@ -1,0 +1,17 @@
+<div class="col-md-<%= @widget.width %> grid-margin stretch-card">
+    <div class="card shadow">
+        <div class="card-body kaffy-chart">
+            <div class="values" style="display:none;">
+                <span class="x-axis"><%= Enum.join(@widget.content.x, ",") %></span>
+                <span class="y-axis"><%= Enum.join(@widget.content.y, ",") %></span>
+                <span class="y-title"><%= @widget.content.y_title %></span>
+            </div>
+            <div class="clearfix">
+                <h4 class="card-title float-left"><%= @widget.title %></h4>
+            </div>
+            <%# <div class="kaffy-chart-container" style="position:relative;height:200px;"> %>
+                <canvas id="<%= :crypto.strong_rand_bytes(6) |> Base.url_encode64() %>" class="mt-2"></canvas>
+            <%# </div> %>
+        </div>
+    </div>
+</div>

@@ -29,7 +29,7 @@
             <% end %>
 
             <%= if widget.type == "chart" do %>
-                <%= render KaffyWeb.HomeView, "_bar.html", widget: widget %>
+                <%= render KaffyWeb.HomeView, "_chart.html", widget: widget %>
             <% end %>
 
             <%= if widget.type == "progress" do %>
