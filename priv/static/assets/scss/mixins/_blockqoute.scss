@@ -1,0 +1,8 @@
+// BlockQuote Mixins //
+
+@mixin blockquote($color) {
+  border-color: $color;
+  .blockquote-footer {
+    color: $color;
+  }
+}

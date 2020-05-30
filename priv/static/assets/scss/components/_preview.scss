@@ -1,0 +1,122 @@
+/* Preview */
+
+.preview-list {
+  .preview-item {
+    @include display-flex;
+    @include flex-direction(row);
+    @include align-items(flex-start);
+    padding: .75rem 1.5rem;
+    font-size: .875rem;
+    &:last-child {
+      border-bottom: 0;
+    }
+    &:hover {
+      background: $dropdown-link-hover-bg;
+    }
+    .form-check {
+      margin-top: 8px;
+      margin-right: 1rem;
+    }
+    .preview-thumbnail {
+      color: color(white);
+      position: relative;
+      img,
+      .preview-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 100%;
+      }
+      .preview-icon {
+        padding: 6px;
+        text-align: center;
+        @include display-flex;
+        @include align-items(center);
+        @include justify-content(center);
+        i {
+          font-size: 1.125rem;
+          margin: 0;
+          .rtl & {
+            @extend .ml-0;
+          }
+        }
+      }
+      .badge {
+        border: 2px solid color(white);
+        border-radius: 100%;
+        bottom: 5px;
+        display: block;
+        height: 14px;
+        left: -5px;
+        padding: 0;
+        position: absolute;
+        width: 14px;
+        &.badge-online {
+          @extend .badge-success;
+        }
+        &.badge-offline {
+          @extend .badge-info;
+        }
+        &.badge-busy {
+          @extend .badge-warning;
+        }
+      }
+    }
+    .preview-item-content {
+      line-height: 1;
+      padding-left: 15px;
+      &:first-child {
+        padding-left: 0;
+      }
+      p {
+        margin-bottom: 10px;
+        .content-category {
+          font-family: 'source-sans-pro-semibold', sans-serif;
+          padding-right: 15px;
+          border-right: 1px solid $border-color;
+          @extend .text-muted;
+        }
+      }
+      .rtl & {
+        padding-left: 0;
+        padding-right: 1rem;
+        margin-right: 0;
+        margin-left: auto;
+      }
+    }
+    .preview-actions {
+      @include display-flex;
+      @include flex-direction(row);
+      i {
+        width: 29px;
+        color: color(gray-lightest);
+        height: 29px;
+        border: 2px solid color(gray-lightest);
+        border-radius: 100%;
+        padding: 3px 6px;
+        display: inline-block;
+        &:first-child {
+          margin-right: 10px;
+        }
+      }
+    }
+  }
+  &.comment-preview {
+    .preview-item {
+      padding: .87rem 0;
+      &:first-child {
+        padding-top: 0;
+      }
+      p {
+        line-height: 27px;
+      }
+    }
+  }
+  &.bordered {
+    .preview-item {
+      border-bottom: 1px solid $border-color;
+      &:last-child {
+        border-bottom: 0;
+      }
+    }
+  }
+}

@@ -1,0 +1,19 @@
+// Functions
+@function social-color($key: "twitter") {
+  @return map-get($social-colors, $key);
+}
+
+@function theme-gradient-color($key: "primary") {
+  @return map-get($theme-gradient-colors, $key);
+}
+// Social Color
+@each $color, $value in $social-colors {
+  .text-#{$color} {
+    @include text-color(social-color($color));
+  }
+}
+@each $color, $value in $social-colors {
+  .bg-#{$color} {
+    background: social-color($color);
+  }
+}

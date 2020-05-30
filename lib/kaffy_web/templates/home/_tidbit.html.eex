@@ -1,0 +1,8 @@
+<div class="col-md-3 grid-margin stretch-card">
+    <div class="card shadow border-left-success">
+        <div class="card-body">
+            <p class="font-weight-normal mb-1 text-success"><strong>Weekly Sales</strong> <i class="mdi mdi-chart-line mdi-20px float-right"></i></p>
+            <h2 class="mt-1">$15,0000</h2>
+        </div>
+    </div>
+</div>

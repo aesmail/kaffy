@@ -1,0 +1,20 @@
+#resizable-grid {
+  .drag-item {
+    position: relative;
+    .dismiss {
+      position: absolute;
+      top: 7px;
+      right: 25px;
+      font-size: 15px;
+      font-weight: bold;
+      color: lighten(theme-color(danger), 10%);
+      background: lighten(color(gray-light), 40%);
+      height: 15px;
+      width: 16px;
+      line-height: 13px;
+      cursor: pointer;
+      text-align: center;
+      @include border-radius(100%);
+    }
+  }
+}

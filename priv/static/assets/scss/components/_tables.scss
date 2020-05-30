@@ -1,0 +1,46 @@
+/* Tables */
+
+.table {
+  margin-bottom: 0;
+
+  thead {
+    th {
+      border-top: 0;
+      border-bottom-width: 1px;
+      font-family: $type1-medium;
+      font-weight: initial;
+
+      i {
+        margin-left: 0.325rem;
+      }
+    }
+  }
+
+  th,
+  td {
+    vertical-align: middle;
+    font-size: $default-font-size;
+    line-height: 1;
+    white-space: nowrap;
+
+    img {
+      width: 36px;
+      height: 36px;
+      border-radius: 100%;
+    }
+
+    .badge {
+      margin-bottom: 0;
+    }
+  }
+
+  &.table-borderless {
+    border: none;
+
+    tr,
+    td,
+    th {
+      border: none;
+    }
+  }
+}

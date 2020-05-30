@@ -1,0 +1,81 @@
+@mixin social-button($color) {
+    background: $color;
+    color: $white;
+  
+    &:hover,
+    &:focus {
+      background: darken($color, 10%);
+      color: $white;
+    }
+    &.btn-social-icon-text {
+      padding: 0 1.5rem 0 0;
+      background: lighten($color, 10%);
+      i {
+        background: $color;
+        padding: .75rem;
+        display: inline-block;
+        margin-right: 1.5rem;
+      }
+    }
+}
+@mixin social-outline-button($color) {
+  border: 1px solid $color;
+  color: $color;
+  &:hover {
+    background: $color;
+    color: $white;
+  }
+}
+@mixin button-inverse-variant($color, $color-hover: $white) {
+    background-color: rgba($color, 0.2);
+    background-image: none;
+    border-color: rgba($color, 0);
+    &:not(.btn-inverse-light) {
+      color: $color;      
+    }
+    @include hover {
+      color: $color-hover;
+      background-color: $color;
+      border-color: $color;
+    }
+  
+    &.focus,
+    &:focus {
+      box-shadow: 0 0 0 3px rgba($color, .5);
+    }
+  
+    &.disabled,
+    &:disabled {
+      color: $color;
+      background-color: transparent;
+    }
+  
+    &.active,
+    &:active,
+    .show > &.dropdown-toggle {
+      color: $color-hover;
+      background-color: $color;
+      border-color: $color;
+    }
+}
+@mixin button-gradient-variant($value) {
+    background: $value;
+    border: 0;
+    &:not([disabled]):not(.disabled):active,
+    &:not([disabled]):not(.disabled).active,
+    .show > &.dropdown-toggle {
+      background: $value;
+    }
+    &:hover {
+      opacity: .8;
+    }
+    &:not(.btn-gradient-light) {
+      color: $white;      
+      &:hover,
+      &:focus,
+      &:active {
+        color: $white;
+      }
+    }
+    @include transition(opacity .3s ease);
+}

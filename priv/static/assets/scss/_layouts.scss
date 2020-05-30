@@ -1,0 +1,185 @@
+/* Layouts */
+
+.navbar {
+  &.fixed-top {
+    + .page-body-wrapper {
+      padding-top: $navbar-height;
+    }
+  }
+}
+
+// Sidebar Icon Only
+.sidebar-icon-only {
+  @media (min-width: 992px) {
+    .navbar {
+      .navbar-brand-wrapper {
+        width: $sidebar-width-icon;
+        .brand-logo {
+          display: none;
+        }
+        .brand-logo-mini {
+          display: inline-block;
+        }
+      }
+      .navbar-menu-wrapper {
+        width: calc(100% - #{$sidebar-width-icon});
+      }
+    }
+    .sidebar {
+      width: $sidebar-width-icon;
+      .nav {
+        overflow: visible;
+        .nav-item {
+          position: relative;
+          padding: 0;
+          .nav-link {
+            display: block;
+            text-align: center;
+            .menu-title,
+            .badge,.menu-sub-title {
+              display: none;
+            }
+            .menu-title {
+              @include border-radius(0 5px 5px 0px);
+              @at-root #{selector-append(".rtl", &)} {
+                @include border-radius(5px 0 0 5px);
+              }
+            }
+            i {
+              &.menu-icon {
+                margin-right: 0;
+                margin-left: 0;
+              }
+              &.menu-arrow {
+                display: none;
+              }
+            }
+            &[aria-expanded] {
+              .menu-title{
+                @include border-radius(0 5px 0 0px);
+                @at-root #{selector-append(".rtl", &)} {
+                  @include border-radius(5px 0 0 0);
+                }
+              }
+            }
+          }
+          &.nav-profile {
+            display: none;
+          }
+          &.nav-category {
+            display: none;
+          }
+          &.nav-doc {
+            margin: 0;
+            i {
+              display: block;
+            }
+          }
+          .collapse {
+            display: none;
+          }
+          &.hover-open {
+              .nav-link {
+                .menu-title {
+                  @include display-flex;
+                  @include align-items(center);
+                  background: $icon-only-menu-bg-light;
+                  padding: 0.5rem 1.4rem;
+                  left: $sidebar-width-icon;
+                  position: absolute;
+                  text-align: left;
+                  top: 0;
+                  bottom: 0;
+                  width: $icon-only-collapse-width;
+                  z-index: 1;
+                  line-height: 1.8;
+                  @at-root #{selector-append(".rtl", &)} {
+                    left: auto;
+                    right: $sidebar-width-icon;
+                    text-align: left;
+                  }
+                  &:after {
+                    display: none;
+                  }
+                }
+              }
+              .collapse,
+              .collapsing {
+                display: block;
+                padding: .5rem 0;
+                background: $icon-only-menu-bg-light;
+                @include border-radius(0 0 5px 0);
+                position: absolute;
+                left: $sidebar-width-icon;
+                width: $icon-only-collapse-width;
+                @at-root #{selector-append(".rtl", &)} {
+                    left: auto;
+                    right:$sidebar-width-icon;
+                    @include border-radius(0 0 0 5px);
+                }
+              }
+            }
+        }
+        &.sub-menu {
+          padding: $sidebar-icon-only-submenu-padding;
+          .nav-item {
+            .nav-link {
+              text-align: left;
+              padding-left: 20px;
+            }
+          }
+          @at-root #{selector-append(".rtl", &)} {
+            .nav-item {
+              margin-right: auto;
+              margin-left: 0;
+              .nav-link {
+                text-align: right;
+                &:before{
+                  left: 0;
+                  right: unset;
+                }
+              }
+            }
+          }
+        }
+      }
+      .sidebar-actions {
+        display: none;
+      }
+    }
+
+    .main-panel {
+      width: calc(100% - #{$sidebar-width-icon});
+    }
+  }
+}
+
+//RTL layout
+.rtl {
+  direction: rtl;
+  text-align: right;
+
+  .sidebar {
+    .nav {
+      padding-right: 0;
+    }
+  }
+
+  .product-chart-wrapper,
+  .sidebar-fixed .nav,
+  .table-responsive,
+  ul.chats {
+    &::-webkit-scrollbar {
+      width: 0.5em;
+    }
+
+    &::-webkit-scrollbar-track {
+      -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: darkgrey;
+      outline: 1px solid slategrey;
+    }
+  }
+}

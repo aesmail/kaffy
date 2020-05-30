@@ -1,0 +1,170 @@
+/* Lists */
+
+ul,
+ol,
+dl {
+  padding-left: 1rem;
+  font-size: $default-font-size;
+  li {
+    line-height: 1.8;
+  }
+}
+
+.list-ticked,
+.list-arrow,
+.list-star {
+  list-style: none;
+  padding: 0;
+  li {
+    padding-left: 1.5rem;
+    &:before {
+      font-family: "Material Design Icons";
+      margin-left: -1.5rem;
+      width: 1.5rem;
+      margin-right: .5rem;
+    }
+  }
+}
+
+.list-ticked {
+  li {
+    &:before {
+      content: '\F12D';
+      color: theme-color(danger);
+    }
+  }
+}
+
+.list-arrow {
+  li {
+    &:before {
+      content: '\F142';
+      color: theme-color(success);
+    }
+  }
+}
+
+.list-star {
+  li {
+    &:before {
+      content: '\F4CE';
+      color: theme-color(warning);
+    }
+  }
+}
+
+.gradient-bullet-list {
+  padding-left: 0;
+  .rtl & {
+    padding-right: 0;
+  }
+  li {
+    position: relative;
+    list-style-type: none;
+    padding-left: 25px;
+    line-height: 1;
+    padding-bottom: 25px;
+    &:before,
+    &:after {
+      content:"";
+      position: absolute;
+    }
+    &:before {
+      top: 0;
+      left: 0;
+      width: 15px;
+      height: 15px;
+      border-radius: 100%;
+    }
+    &:after {
+      width: 11px;
+      height: 11px;
+      top: 2px;
+      left: 2px;
+      background: $card-bg;
+      border-radius: 100%;
+    }
+    &:nth-child(1) {
+      &:before {
+        background: theme-gradient-color(danger);        
+      }
+    }
+    &:nth-child(2) {
+      &:before {
+        background: theme-gradient-color(info);        
+      }
+    }
+    &:nth-child(3) {
+      &:before {
+        background: theme-gradient-color(warning);        
+      }
+    }
+    &:nth-child(4) {
+      &:before {
+        background: theme-gradient-color(success);        
+      }
+    }
+    &:nth-child(5) {
+      &:before {
+        background: theme-gradient-color(primary);        
+      }
+    }
+  }
+}
+
+.bullet-line-list {
+  padding-left: 30px;
+  margin-bottom: 0;
+  position: relative;
+  list-style-type: none;
+
+  .rtl & {
+    padding-right: 0px;
+  }
+
+  li {
+    position: relative;
+    line-height: 1;
+    padding-bottom: 10px;
+
+    &:before {
+      content: "";
+      position: absolute;
+      border-radius: 100%;
+      width: 12px;
+      height: 12px;
+      left: -28px;
+      top: 6px;
+      border: 3px solid theme-color(primary);
+      margin-right: 15px;
+      z-index: 2;
+      background: $bullet-line-list-shape-bg;
+    }
+
+    &:after {
+      content: "";
+      border: 1px solid $border-color;
+      position: absolute;
+      bottom: 0;
+      left: -23px;
+      height: 100%;
+    }
+
+    &:first-child {
+      &:after {
+        content: "";
+        height: 80%;
+      }
+    }
+
+    &:last-child {
+      padding-bottom: 0;
+
+      &:after {
+        content: "";
+        top: 0;
+        height: 30%;
+      }
+    }
+  }
+}

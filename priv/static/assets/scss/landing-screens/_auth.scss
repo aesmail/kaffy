@@ -1,0 +1,47 @@
+/* Auth */
+
+.auth {
+	.auth-form-light {
+		background: $white;
+		select {
+			color: $input-placeholder-color;
+		}
+		.input-group {
+			.form-control {
+				&:focus,
+				&:active {
+					border-color: $border-color;
+				}
+			}
+		}
+	}
+	.brand-logo {
+		margin-bottom: 2rem;
+		img {
+			width: 150px;
+		}
+	}
+	form {
+		.form-group {
+			margin-bottom: 1.5rem;
+			label {
+				font-size: .8125rem;
+			}
+			.form-control {
+				background: transparent;
+				border-radius: 0;
+				font-size: .9375rem;
+			}
+		}
+		.auth-form-btn {
+			height: 50px;
+			line-height: 1.5;
+		}
+		.auth-link {
+			font-size: $default-font-size;
+			&:hover {
+				color: initial;
+			}
+		}
+	}
+}

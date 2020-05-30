@@ -1,0 +1,31 @@
+.page-body-wrapper {
+  min-height: calc(100vh - #{$navbar-height});
+  @include display-flex();
+  @include flex-direction(row);
+  padding-left: 0;
+  padding-right: 0;
+
+  &.full-page-wrapper {
+    width: 100%;
+    min-height: 100vh;
+  }
+}
+
+.main-panel {
+  transition: width $action-transition-duration $action-transition-timing-function, margin $action-transition-duration $action-transition-timing-function;
+  width: calc(100% - #{$sidebar-width-lg});
+  min-height: calc(100vh - #{$navbar-height});
+  @include display-flex();
+  @include flex-direction(column);
+  @media (max-width: 991px) {
+    margin-left: 0;
+    width: 100%;
+  }
+}
+
+.content-wrapper {
+  background: $content-bg;
+  padding: 2.75rem 2.25rem;
+  width: 100%;
+  @include flex-grow(1);
+}

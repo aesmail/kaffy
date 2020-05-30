@@ -1,0 +1,272 @@
+/* Dashboard */
+
+.card-statistics {
+  .highlight-icon {
+    height: 53px;
+    width: 53px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50px;
+
+    i {
+      font-size: 27px;
+    }
+  }
+
+  .card-col {
+    border-right: 1px solid $border-color;
+
+    &:last-child {
+      border-right: none;
+    }
+
+    @include media-breakpoint-down(sm) {
+      padding-left: 0;
+      padding-right: 0;
+      position: relative;
+      border: none;
+
+      &:first-child,
+      &:nth-child(2),
+      &:nth-child(3) {
+
+        &:after,
+        &:before {
+          content: "";
+          position: absolute;
+          background: $border-color;
+        }
+      }
+
+      &:first-child {
+        &:before {
+          bottom: 0;
+          width: 94.2%;
+          height: 1px;
+          right: 0;
+        }
+
+        &:after {
+          bottom: 0;
+          width: 1px;
+          height: 100%;
+          right: 0;
+        }
+      }
+
+      &:nth-child(2) {
+        &:before {
+          bottom: 0;
+          width: 94.2%;
+          height: 1px;
+          left: 0;
+        }
+      }
+
+      &:nth-child(3) {
+        &:before {
+          width: 1px;
+          height: 100%;
+          right: 0;
+        }
+      }
+    }
+  }
+}
+
+.card-revenue-table {
+  .revenue-item {
+    border-bottom: 1px solid $border-color;
+    @extend .py-3;
+
+    &:last-child {
+      border-bottom: 0;
+      @extend .pb-0;
+    }
+
+    &:first-child {
+      @extend .pt-0;
+    }
+
+    .revenue-desc {
+      margin-right: auto;
+      width: 80%;
+
+      p {
+        margin-bottom: 0;
+      }
+    }
+
+    .revenue-amount {
+      margin-left: auto;
+      width: 40%;
+
+      p {
+        font-size: 1.25rem;
+        font-family: $type-1;
+        font-weight: 600;
+        text-align: right;
+
+        .rtl & {
+          text-align: left;
+        }
+      }
+    }
+  }
+}
+
+.card-revenue {
+  background: linear-gradient(120deg, #556cdc, #128bfc, #18bef1);
+  background-size: cover;
+  color: color(white);
+
+  .highlight-text {
+    font-size: 1.875rem;
+    font-family: $type-1;
+    font-weight: 500;
+  }
+
+  .badge {
+    background-color: rgba(color(white), .2);
+    font-size: 1.125rem;
+    padding: 0.5rem 1.25rem;
+  }
+}
+
+.product-chart-wrapper {
+  height: 92%;
+}
+
+#dashboardTrendingProgress {
+  width: 60px;
+}
+
+.dashboard-bar-chart-legend {
+  .col {
+    text-align: center;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+
+    .bg {
+      margin-left: auto;
+      margin-right: auto;
+      height: 5px;
+      width: 30px;
+      display: block;
+      margin-top: 5px;
+    }
+
+    &:nth-child(1) {
+      .bg {
+        background: theme-color(info);
+      }
+    }
+
+    &:nth-child(2) {
+      .bg {
+        background: theme-color(primary);
+      }
+    }
+
+    &:nth-child(3) {
+      .bg {
+        background: theme-color(danger);
+      }
+    }
+  }
+}
+
+.intro-banner {
+  background: #dbe4ec;
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  border-radius: 2px;
+
+  .banner-image {
+    width: 24%;
+    max-width: 100%;
+
+    img {
+      display: block;
+      margin: auto;
+    }
+  }
+
+  .content-area {
+    width: 58%;
+    color: $black;
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+  }
+}
+
+.sales-mini-tabs {
+  border-bottom: none;
+
+  .nav-item {
+    .nav-link {
+      border: none;
+      font-weight: 500;
+      padding: 5px 15px;
+      border-radius: 2px;
+      transition-duration: 0.7s;
+      transition-property: "color";
+
+      &.active {
+        font-weight: 600;
+        background: lighten($card-bg-varient, 4%);
+        color: theme-color(primary);
+      }
+    }
+  }
+}
+
+.purchase-popup {
+  @extend .grid-margin;
+  background: #fff;
+  padding: 15px 20px;
+  @include border-radius(3px);
+
+  .btn {
+    margin-right: 20px;
+    font-weight: 500;
+    color: $white;
+    @include border-radius(5px);
+    @include transition-duration(0.2s);
+
+    &.download-button {
+      background: rgba(249, 249, 249, 0.7);
+      color: #969292;
+      border: 1px solid darken(#e4e4e4,5%);
+    }
+
+    &.purchase-button {
+      background-color: rgba(172, 50 ,228, 0.9);
+      @include background-image(theme-gradient-color(primary));
+      color: $white;
+      border: none;
+      line-height: 1;
+      vertical-align: middle;
+    }
+  }
+
+  p {
+    margin-bottom: auto;
+    margin-top: auto;
+    color: darken(#e4e4e4,40%);
+    font-weight: 400;
+    vertical-align: middle;
+    line-height: 1;
+  }
+
+  i {
+    vertical-align: middle;
+    line-height: 1;
+    margin: auto 0;
+    color: darken(#e4e4e4,20%);
+  }
+}
