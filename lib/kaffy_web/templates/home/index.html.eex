@@ -24,6 +24,25 @@
 </div>
 
 <div class="row">
+    <div class="col-md-6 grid-margin stretch-card">
+        <div class="card shadow">
+            <div class="card-body">
+                <h5 class="card-title">A Long Text</h5>
+                <p class="card-text text-justify">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse congue ex id ex vestibulum vulputate. Vivamus at erat eu sapien congue volutpat non sit amet nibh. Nullam lacinia mi ac malesuada blandit. Aenean ac imperdiet arcu. Sed non vehicula erat, non convallis nibh. Nulla eget hendrerit metus. Integer et egestas nunc. Morbi quis dapibus sapien, et posuere dui. Duis non posuere nibh, faucibus sodales mauris. Donec eget suscipit risus. Vivamus at tellus risus. Quisque mollis dictum ante, in mattis est accumsan non. Phasellus vel tincidunt risus. Duis ipsum diam, consequat in rhoncus eu, varius id sapien. Vivamus tempor quis dolor quis consectetur.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 grid-margin stretch-card">
+        <div class="card shadow border-left-success">
+            <div class="card-body">
+                <h5 class="card-title">Shorter Text</h5>
+                <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse congue ex id ex vestibulum vulputate. Vivamus at erat eu sapien congue volutpat non sit amet nibh. Nullam lacinia mi ac malesuada blandit. Aenean ac imperdiet arcu. Sed non vehicula erat, non convallis nibh. Nulla eget hendrerit metus. Integer et egestas nunc.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
     <%= for _ <- (1..4) do %>
         <%= render KaffyWeb.HomeView, "_tidbit.html" %>
     <% end %>
