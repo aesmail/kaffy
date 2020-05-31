@@ -378,7 +378,7 @@ defmodule KaffyWeb.ResourceController do
         f -> %{name: f}
       end)
 
-    total_count = Kaffy.ResourceQuery.cached_total_count(my_resource[:schema])
+    total_count = Kaffy.ResourceQuery.cached_total_count(my_resource[:schema], true)
 
     final_result = %{
       raw: Map.get(params, "raw", "0") |> String.to_integer(),
