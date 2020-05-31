@@ -109,6 +109,7 @@
     <!-- endinject -->
     <!-- Plugin js for this page -->
     <script src="/kaffy/assets/vendors/chart.js/Chart.min.js"></script>
+    <script src="/kaffy/assets/vendors/js/ckeditor.js"></script>
     <!-- End plugin js for this page -->
     <!-- inject:js -->
     <script src="/kaffy/assets/js/off-canvas.js"></script>

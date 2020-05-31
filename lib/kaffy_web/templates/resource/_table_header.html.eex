@@ -1,0 +1,29 @@
+<tr>
+    <th>
+        <input class="kaffy-resource-checkbox" type="checkbox" id="kaffy-select-all" name="all-resources" value="" />
+    </th>
+    <%= for field <- @fields do %>
+        <th><%= Kaffy.ResourceSchema.kaffy_field_name(@my_resource[:schema], field) |> String.upcase() %></th>
+    <% end %>
+</tr>
+
+<%= if Kaffy.ResourceSchema.has_field_filters?(@my_resource) do %>
+    <tr>
+        <th class="bg-light"></th>
+        <%= for {field, index} <- Enum.with_index(@fields) do %>
+            <% {field, filters} = Kaffy.ResourceSchema.kaffy_field_filters(@my_resource[:schema], field) %>
+            <%= if filters do %>
+                <th class="bg-light">
+                    <select class="kaffy-filter custom-select" id="kaffy-field-<%= index %>" data-field-name="<%= field %>">
+                        <option value="">All</option>
+                        <%= for {human, machine} <- filters do %>
+                            <option value="<%= machine %>"<%= if Map.get(@params, to_string(field)) == to_string(machine) do %> selected<% end %>><%= human %></option>
+                        <% end %>
+                    </select>
+                </th>
+            <% else %>
+                <th class="bg-light"></th>
+            <% end %>
+        <% end %>
+    </tr>
+<% end %>

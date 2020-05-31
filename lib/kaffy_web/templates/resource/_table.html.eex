@@ -1,62 +1,22 @@
-<div class="col-12 grid-margin">
-    <div class="card shadow">
-        <div class="card-body">
-        <h4 class="card-title">Recent Tickets</h4>
-            <div class="table-responsive table-striped">
-                <table class="table">
-                    <thead>
-                        <tr>
-                        <th> Assignee </th>
-                        <th> Subject </th>
-                        <th> Status </th>
-                        <th> Last Update </th>
-                        <th> Tracking ID </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                        <td>
-                            <img src="/kaffy/assets/images/faces/face1.jpg" class="mr-2" alt="image"> David Grey </td>
-                        <td> Fund is not recieved </td>
-                        <td>
-                            <label class="badge badge-success">DONE</label>
-                        </td>
-                        <td> Dec 5, 2017 </td>
-                        <td> WD-12345 </td>
-                        </tr>
-                        <tr>
-                        <td>
-                            <img src="/kaffy/assets/images/faces/face2.jpg" class="mr-2" alt="image"> Stella Johnson </td>
-                        <td> High loading time </td>
-                        <td>
-                            <label class="badge badge-warning">PROGRESS</label>
-                        </td>
-                        <td> Dec 12, 2017 </td>
-                        <td> WD-12346 </td>
-                        </tr>
-                        <tr>
-                        <td>
-                            <img src="/kaffy/assets/images/faces/face3.jpg" class="mr-2" alt="image"> Marina Michel </td>
-                        <td> Website down for one week </td>
-                        <td>
-                            <label class="badge badge-info">ON HOLD</label>
-                        </td>
-                        <td> Dec 16, 2017 </td>
-                        <td> WD-12347 </td>
-                        </tr>
-                        <tr>
-                        <td>
-                            <img src="/kaffy/assets/images/faces/face4.jpg" class="mr-2" alt="image"> John Doe </td>
-                        <td> Loosing control on server </td>
-                        <td>
-                            <label class="badge badge-danger">REJECTED</label>
-                        </td>
-                        <td> Dec 3, 2017 </td>
-                        <td> WD-12348 </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
+<table class="table table-striped">
+    <thead>
+        <%= render KaffyWeb.ResourceView, "_table_header.html", my_resource: @my_resource, fields: @fields, params: @params %>
+    </thead>
+
+    <tbody>
+        <%= for entry <- @entries do %>
+            <tr>
+                <td>
+                    <input class="kaffy-resource-checkbox" type="checkbox" name="resource" value="<%= entry.id %>" />
+                </td>
+                <%= for {field, index} <- Enum.with_index(@fields) do %>
+                    <%= if index == 0 do %>
+                        <td><%= link Kaffy.ResourceSchema.kaffy_field_value(entry, field), to: Kaffy.Utils.router().kaffy_resource_path(@conn, :show, @context, @resource, entry) %></td>
+                    <% else %>
+                        <td><%= Kaffy.ResourceSchema.kaffy_field_value(entry, field) %></td>
+                    <% end %>
+                <% end %>
+            </tr>
+        <% end %>
+    </tbody>
+</table>

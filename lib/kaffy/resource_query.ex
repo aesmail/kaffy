@@ -4,14 +4,14 @@ defmodule Kaffy.ResourceQuery do
   import Ecto.Query
 
   def list_resource(resource, params \\ %{}) do
-    per_page = Map.get(params, "length", "10") |> String.to_integer()
-    # page = Map.get(params, "page", "1") |> String.to_integer()
-    search = Map.get(params, "search", %{}) |> Map.get("value", "") |> String.trim()
+    per_page = Map.get(params, "limit", "100") |> String.to_integer()
+    page = Map.get(params, "page", "1") |> String.to_integer()
+    search = Map.get(params, "search", "") |> String.trim()
     search_fields = Kaffy.ResourceAdmin.search_fields(resource)
-    filtered_fields = get_filter_fields(params)
+    filtered_fields = get_filter_fields(params, resource)
     default_ordering = Kaffy.ResourceAdmin.ordering(resource)
     ordering = Map.get(params, "ordering", default_ordering)
-    current_offset = Map.get(params, "start", "0") |> String.to_integer()
+    current_offset = (page - 1) * per_page
     schema = resource[:schema]
 
     {all, paged} =
@@ -57,13 +57,14 @@ defmodule Kaffy.ResourceQuery do
     :math.ceil(total / per_page)
   end
 
-  defp get_filter_fields(params) do
-    columns = Map.get(params, "columns", %{})
+  defp get_filter_fields(params, resource) do
+    schema_fields =
+      Kaffy.ResourceSchema.fields(resource[:schema]) |> Enum.map(fn {k, _} -> to_string(k) end)
 
-    Enum.map(columns, fn {_key, column} ->
-      field_name = get_in(column, ["name"])
-      field_value = get_in(column, ["search", "value"])
-      %{name: field_name, value: field_value}
+    filtered_fields = Enum.filter(params, fn {k, _} -> k in schema_fields end)
+
+    Enum.map(filtered_fields, fn {name, value} ->
+      %{name: name, value: value}
     end)
   end
 

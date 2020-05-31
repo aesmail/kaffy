@@ -2,6 +2,60 @@ $(document).ready(function () {
   Chart.defaults.global.defaultFontFamily = '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
   Chart.defaults.global.defaultFontColor = '#292b2c';
 
+  $(".kaffy-editor").each(function () {
+    var textareaId = "#" + $(this).attr('id');
+    ClassicEditor
+      .create(document.querySelector(textareaId), {
+        // toolbar: [ 'heading', '|', 'bold', 'italic', 'link' ]
+        toolbar: ['heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', '|', 'indent', 'outdent', '|', 'insertTable', '|', 'undo', 'redo']
+      })
+      .then(editor => {
+        window.editor = editor;
+      })
+      .catch(err => {
+        console.error(err.stack);
+      });
+  });
+
+  $(".kaffy-filter").change(function () {
+    var selectFilter = $(this);
+    var fieldName = selectFilter.data('field-name');
+    var fieldValue = selectFilter.val();
+    var filterForm = $("#kaffy-filters-form");
+    filterForm.children("input#custom-filter-" + fieldName).val(fieldValue);
+    filterForm.submit();
+  });
+
+  $(".list-action").submit(function () {
+    var actionForm = $(this);
+    var selected = $.map($("input.kaffy-resource-checkbox:checked"), function (e) {
+      return $(e).val();
+    });
+
+    $("input.kaffy-resource-checkbox:checked").each(function () {
+      $("<input />").attr("type", "hidden").attr("name", "ids").attr("value", selected.join()).appendTo(actionForm);
+    });
+
+    return true;
+  });
+
+  $('#kaffy-search-field').on('keypress', function (e) {
+    if (e.which === 13) {
+      var value = $(this).val();
+      var filterForm = $("#kaffy-filters-form");
+      filterForm.children("input#kaffy-filter-search").val(value);
+      filterForm.submit();
+    }
+  });
+
+  $("#kaffy-search-form").submit(function (event) {
+    var value = $("#kaffy-search-field").val();
+    var filterForm = $("#kaffy-filters-form");
+    filterForm.children("input#kaffy-filter-search").val(value);
+    filterForm.submit();
+    event.preventDefault();
+  });
+
   $(".kaffy-chart").each(function () {
     var currentChart = $(this);
     var chartId = currentChart.children("canvas").first().attr('id');
