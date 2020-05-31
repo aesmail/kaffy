@@ -14,7 +14,7 @@ defmodule Kaffy.ResourceQuery do
     current_offset = (page - 1) * per_page
     schema = resource[:schema]
 
-    {all, paged} =
+    {_all, paged} =
       build_query(
         schema,
         search_fields,
@@ -50,19 +50,12 @@ defmodule Kaffy.ResourceQuery do
       from(s in schema, select: fragment("count(*)"))
       |> Kaffy.Utils.repo().one()
 
-    Cachex.put!(
-      :cache_kaffy,
-      String.to_atom("total_count_#{schema}"),
-      result,
-      ttl: :timer.minutes(5)
-    )
-
+    Kaffy.Cache.Client.add_cache(schema, "count", result, 600)
     result
   end
 
   def cached_total_count(schema) do
-    Cachex.get!(:cache_kaffy, String.to_atom("total_count_#{schema}")) ||
-      total_count(schema)
+    Kaffy.Cache.Client.get_cache(schema, "count") || total_count(schema)
   end
 
   defp get_filter_fields(params, resource) do
