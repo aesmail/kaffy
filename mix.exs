@@ -23,7 +23,7 @@ defmodule Kaffy.MixProject do
   def application do
     [
       mod: {Kaffy.Application, []},
-      extra_applications: [:logger]
+      extra_applications: [:logger, :cachex]
     ]
   end
 
@@ -33,6 +33,7 @@ defmodule Kaffy.MixProject do
       {:phoenix, "~> 1.4"},
       {:phoenix_html, "~> 2.11"},
       {:ecto, "~> 3.0"},
+      {:cachex, "~> 3.2"},
       {:ex_doc, ">= 0.0.0", only: :dev, runtime: false}
     ]
   end
