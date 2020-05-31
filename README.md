@@ -57,7 +57,7 @@ plug Plug.Static,
   at: "/kaffy",
   from: :kaffy,
   gzip: false,
-  only: ~w(css img js)
+  only: ~w(css img js scss vendor)
 
 # in your config/config.exs
 config :kaffy,
