@@ -7,9 +7,7 @@ defmodule Kaffy.Cache.Client do
 
   @impl true
   def init(_) do
-    IO.puts("creating table...")
-    result = Kaffy.Cache.Table.create_table()
-    IO.inspect(result)
+    Kaffy.Cache.Table.create_table()
     {:ok, %{}}
   end
 

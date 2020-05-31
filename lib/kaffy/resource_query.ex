@@ -50,7 +50,10 @@ defmodule Kaffy.ResourceQuery do
       from(s in schema, select: fragment("count(*)"))
       |> Kaffy.Utils.repo().one()
 
-    Kaffy.Cache.Client.add_cache(schema, "count", result, 600)
+    if result > 100_000 do
+      Kaffy.Cache.Client.add_cache(schema, "count", result, 600)
+    end
+
     result
   end
 
