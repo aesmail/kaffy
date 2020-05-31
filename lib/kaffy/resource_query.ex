@@ -27,7 +27,8 @@ defmodule Kaffy.ResourceQuery do
 
     current_page = Kaffy.Utils.repo().all(paged)
 
-    all_count = cached_total_count(resource[:schema])
+    do_cache = if search == "" and Enum.empty?(filtered_fields), do: true, else: false
+    all_count = cached_total_count(schema, do_cache)
     {all_count, current_page}
   end
 
@@ -57,7 +58,9 @@ defmodule Kaffy.ResourceQuery do
     result
   end
 
-  def cached_total_count(schema) do
+  def cached_total_count(schema, false), do: total_count(schema)
+
+  def cached_total_count(schema, true) do
     Kaffy.Cache.Client.get_cache(schema, "count") || total_count(schema)
   end
 
