@@ -12,6 +12,7 @@ without the need to touch the current codebase. It was inspired by django's love
 - [Customize the Dashboard Page](#dashboard-page)
 - [Customize the Index Page](#index-page)
 - [Customize the Form Page](#form-page)
+- [Embedded Schemas and JSON Fields](#embedded-schemas-and-json-fields)
 - [Searching Records](#search)
 - [Authorizing Access To Resources](#authorization)
 - [Custom Changesets](#changesets)
@@ -359,6 +360,10 @@ Notice that:
 Setting a field's type to `:richtext` will render a rich text editor like the following:
 
 ![Rich text editor](demos/richtext.png)
+
+### Embedded Schemas and JSON Fields
+
+Kaffy has support for ecto's [embedded schemas](https://hexdocs.pm/ecto/Ecto.Schema.html#embedded_schema/1) and json fields. When you define a field as a `:map`, Kaffy will automatically display a textarea with a placeholder to hint that JSON content is expected. When you have an embedded schema, Kaffy will try to render each field inline with the form of the parent schema.
 
 ### Search
 
