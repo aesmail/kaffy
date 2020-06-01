@@ -4,11 +4,9 @@
             <h4><%= @widget.title %></h4>
         </div>
         <div class="card-body">
-            <p class="font-weight-bold text-black"><%= @widget.content %></p>
+            <p class="font-weight-bold text-black"><%= @widget.content %> <span class="float-right"><%= @widget.percentage %>%</span></p>
             <div class="progress">
-                <div class="progress-bar bg-danger" role="progressbar" style="width: <%= @widget.percentage %>%" aria-valuenow="<%= @widget.percentage %>" aria-valuemin="0" aria-valuemax="100">
-                    <%= @widget.percentage %>%
-                </div>
+                <div class="progress-bar bg-danger" role="progressbar" style="width: <%= @widget.percentage %>%" aria-valuenow="<%= @widget.percentage %>" aria-valuemin="0" aria-valuemax="100"></div>
             </div>
         </div>
     </div>
