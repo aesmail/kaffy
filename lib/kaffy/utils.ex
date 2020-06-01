@@ -97,6 +97,23 @@ defmodule Kaffy.Utils do
     Keyword.has_key?(functions, func)
   end
 
+  def show_dashboard?() do
+    env(:hide_dashboard, false) == false
+  end
+
+  def home_page(conn) do
+    case env(:home_page, kaffy: :dashboard) do
+      [kaffy: :dashboard] ->
+        router().kaffy_dashboard_path(conn, :dashboard)
+
+      [schema: [context, resource]] ->
+        router().kaffy_resource_path(conn, :index, context, resource)
+
+      [page: slug] ->
+        router().kaffy_page_path(conn, :index, slug)
+    end
+  end
+
   defp env(key, default \\ nil) do
     Application.get_env(:kaffy, key, default)
   end

@@ -10,6 +10,8 @@
 - [enhancement] pagination, filtration, and searching are now bookmarkable with querystring parameters.
 - [enhancement] `count` query result is now cached if the table has more than 100,000 records (thanks @areski).
 - [enhancement] add custom pages.
+- [enhancement] add option to hide the dashboard menu item.
+- [enhancement] add option to change the root url to be something other than the dashboard.
 
 ### v0.7.1 (2020-05-23)
 

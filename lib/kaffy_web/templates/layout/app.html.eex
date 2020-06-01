@@ -13,8 +13,12 @@
     <div class="container-scroller">
       <nav class="navbar default-layout-navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
         <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
-          <a class="navbar-brand brand-logo" href="index.html"><img src="/kaffy/assets/images/logo.png" alt="logo" /></a>
-          <a class="navbar-brand brand-logo-mini" href="index.html"><img src="/kaffy/assets/images/logo-mini.png" alt="logo" /></a>
+          <%= link to: Kaffy.Utils.router().kaffy_home_path(@conn, :index), class: "navbar-brand brand-logo" do %>
+            <img src="/kaffy/assets/images/logo.png" alt="logo" />
+          <% end %>
+          <%= link to: Kaffy.Utils.router().kaffy_home_path(@conn, :index), class: "navbar-brand brand-logo-mini" do %>
+            <img src="/kaffy/assets/images/logo-mini.png" alt="logo" />
+          <% end %>
         </div>
         <div class="navbar-menu-wrapper d-flex align-items-stretch">
           <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
@@ -31,12 +35,14 @@
         <nav class="sidebar sidebar-offcanvas" id="sidebar">
           <ul class="nav">
 
-            <li class="nav-item<%= if @conn.assigns[:context] == nil do %> active<% end %>">
-              <%= link to: Kaffy.Utils.router().kaffy_home_path(@conn, :index), class: "nav-link" do %>
-                <span class="menu-title">Dashboard</span>
-                <i class="mdi mdi-home menu-icon"></i>
-              <% end %>
-            </li>
+            <%= if Kaffy.Utils.show_dashboard?() do %>
+              <li class="nav-item<%= if @conn.assigns[:context] == nil do %> active<% end %>">
+                <%= link to: Kaffy.Utils.router().kaffy_dashboard_path(@conn, :dashboard), class: "nav-link" do %>
+                  <span class="menu-title">Dashboard</span>
+                  <i class="mdi mdi-home menu-icon"></i>
+                <% end %>
+              </li>
+            <% end %>
 
             <% tasks = Kaffy.ResourceAdmin.tasks_info() %>
 
