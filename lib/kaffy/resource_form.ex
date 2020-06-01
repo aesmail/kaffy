@@ -242,14 +242,18 @@ defmodule Kaffy.ResourceForm do
 
             string_fields = Enum.filter(fields, fn {_f, options} -> options.type == :string end)
 
+            IO.puts("popular_strings:")
+
             popular_strings =
               string_fields
               |> Enum.filter(fn {f, _} -> f in [:name, :title] end)
               |> Enum.at(0)
 
+            IO.puts("final choice:")
+
             string_field =
               case is_nil(popular_strings) do
-                true -> Enum.at(string_fields, 0)
+                true -> Enum.at(string_fields, 0) |> elem(0)
                 false -> elem(popular_strings, 0)
               end
 
