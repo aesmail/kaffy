@@ -1,7 +1,5 @@
 defmodule Kaffy.Cache.Table do
-  @moduledoc """
-  Module that implement a simple caching system with key expiration
-  """
+  @moduledoc false
 
   @table_name :kaffy_cache
   @expire_suffix "_expires"
