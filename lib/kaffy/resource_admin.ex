@@ -316,6 +316,27 @@ defmodule Kaffy.ResourceAdmin do
     |> Enum.sort_by(fn w -> Map.get(w, :order, 999) end)
   end
 
+  def custom_pages(resource, conn) do
+    Utils.get_assigned_value_or_default(resource, :custom_pages, [], [conn])
+  end
+
+  def collect_pages(conn) do
+    Enum.reduce(Kaffy.Utils.contexts(), [], fn c, all ->
+      all ++
+        Enum.reduce(Kaffy.Utils.schemas_for_context(c), [], fn {_, resource}, all ->
+          all ++ Kaffy.ResourceAdmin.custom_pages(resource, conn)
+        end)
+    end)
+    |> Enum.sort_by(fn p -> Map.get(p, :order, 999) end)
+  end
+
+  def find_page(conn, slug) do
+    conn
+    |> collect_pages()
+    |> Enum.filter(fn p -> p.slug == slug end)
+    |> Enum.at(0)
+  end
+
   def scheduled_tasks(resource) do
     Utils.get_assigned_value_or_default(resource, :scheduled_tasks, [])
   end

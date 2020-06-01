@@ -32,6 +32,7 @@ defmodule Kaffy.Routes do
 
         get("/", HomeController, :index, as: :kaffy_home)
         get("/tasks", TaskController, :index, as: :kaffy_task)
+        get("/p/:slug", PageController, :index, as: :kaffy_page)
         get("/:context/:resource", ResourceController, :index, as: :kaffy_resource)
         post("/:context/:resource", ResourceController, :create, as: :kaffy_resource)
 

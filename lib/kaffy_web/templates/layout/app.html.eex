@@ -58,6 +58,25 @@
               </li>
             <% end %>
 
+            <% custom_pages = Kaffy.ResourceAdmin.collect_pages(@conn) %>
+
+            <%= if !Enum.empty?(custom_pages) do %>
+              <li class="nav-item">
+                <a class="nav-link" href="#kaffy-pages" data-toggle="collapse" aria-expanded="false" aria-controls="kaffy-pages">
+                    <span class="menu-title">Pages</span>
+                    <i class="menu-arrow"></i>
+                    <i class="mdi mdi-menu menu-icon"></i>
+                </a>
+                <div class="collapse" id="kaffy-pages">
+                  <ul class="nav flex-column sub-menu">
+                    <%= for custom_page <- custom_pages do %>
+                      <li class="nav-item"><%= link custom_page.name, to: Kaffy.Utils.router().kaffy_page_path(@conn, :index, custom_page.slug), class: "nav-link" %></li>
+                    <% end %>
+                  </ul>
+                </div>
+              </li>
+            <% end %>
+
             <%= for context <- Kaffy.Utils.contexts() do %>
                 <li class="nav-item<%= if @conn.assigns[:context] == to_string(context) do %> active<% end %>">
                     <a class="nav-link" href="#<%= context %>-context" data-toggle="collapse" aria-expanded="false" aria-controls="<%= context %>-context">
