@@ -341,56 +341,6 @@ defmodule KaffyWeb.ResourceController do
   #   my_resource = Kaffy.Utils.get_resource(context, resource)
   # end
 
-  def api(conn, %{"context" => context, "resource" => resource} = params) do
-    my_resource = Kaffy.Utils.get_resource(context, resource)
-    fields = Kaffy.ResourceAdmin.index(my_resource)
-
-    {filtered_count, entries} = Kaffy.ResourceQuery.list_resource(my_resource, params)
-
-    records =
-      Enum.map(entries, fn entry ->
-        rows =
-          Enum.reduce(fields, [], fn field, e ->
-            field_value = Kaffy.ResourceSchema.kaffy_field_value(entry, field)
-            [field_value | e]
-          end)
-          |> Enum.reverse()
-
-        [first | rest] = rows
-
-        {:safe, first} =
-          link(first,
-            to: Kaffy.Utils.router().kaffy_resource_path(conn, :show, context, resource, entry.id)
-          )
-
-        first = to_string(first)
-
-        [first | rest]
-        |> Enum.with_index()
-        |> Enum.map(fn {k, v} -> {to_string(v), k} end)
-        |> Enum.into(%{})
-        |> Map.put("DT_RowId", entry.id)
-      end)
-
-    columns =
-      Enum.map(fields, fn
-        {f, _} -> %{name: f}
-        f -> %{name: f}
-      end)
-
-    total_count = Kaffy.ResourceQuery.cached_total_count(my_resource[:schema], true)
-
-    final_result = %{
-      raw: Map.get(params, "raw", "0") |> String.to_integer(),
-      recordsTotal: total_count,
-      columnDefs: columns,
-      recordsFiltered: filtered_count,
-      data: records
-    }
-
-    json(conn, final_result)
-  end
-
   defp can_proceed?(resource, conn) do
     Kaffy.ResourceAdmin.authorized?(resource, conn)
   end
