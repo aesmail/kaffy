@@ -228,7 +228,7 @@ defmodule MyApp.Products.ProductAdmin do
   def custom_links(_schema) do
     [
       %{name: "Source Code", url: "https://example.com/repo/issues", order: 2, location: :top, icon: "paperclip"},
-      %{name: "Products On Site", url: "https://example.com/products", location: :sub, open: "_blank"},
+      %{name: "Products On Site", url: "https://example.com/products", location: :sub, target: "_blank"},
     ]
   end
 end
@@ -241,7 +241,7 @@ end
 - `:order` to hold the displayed order of this link. All `:sub` links are ordered under the schema menu item directly before the following schema.
 - `:location` can be either `:sub` or `:top`. `:sub` means it's under the schema sub-item. `:top` means it's displayed at the top of the menu below the "Dashboard" link. Links are ordered based on the `:order` value. The default value is `:sub`.
 - `:icon` is the icon displayed next to the link. Any FontAwesome-valid icon is valid here. For example: `paperclip`.
-- `:target` to contain the target to open the link `_blank`, `_self`. `_blank` will open the link in a new window/tab, `_self` will open the link in the same window. The default value is `_self`.
+- `:target` to contain the target to open the link: `_blank` or `_self`. `_blank` will open the link in a new window/tab, `_self` will open the link in the same window. The default value is `_self`.
 
 ### Index page
 
