@@ -38,6 +38,26 @@
               <% end %>
             </li>
 
+            <% tasks = Kaffy.ResourceAdmin.tasks_info() %>
+
+            <%= if not Enum.empty?(tasks) do %>
+              <li class="nav-item">
+                <%= link to: Kaffy.Utils.router().kaffy_task_path(@conn, :index), class: "nav-link" do %>
+                    <span class="menu-title">Tasks</span>
+                    <i class="mdi mdi-clock-outline menu-icon"></i>
+                <% end %>
+              </li>
+            <% end %>
+
+            <%= for custom_link <- Kaffy.ResourceAdmin.collect_links(:top) do %>
+              <li class="nav-item">
+                <%= link to: custom_link.url, class: "nav-link", target: custom_link.target do %>
+                  <span class="menu-title"><%= custom_link.name %></span>
+                  <i class="mdi mdi-<%= custom_link.icon %> menu-icon"></i>
+                <% end %>
+              </li>
+            <% end %>
+
             <%= for context <- Kaffy.Utils.contexts() do %>
                 <li class="nav-item<%= if @conn.assigns[:context] == to_string(context) do %> active<% end %>">
                     <a class="nav-link" href="#<%= context %>-context" data-toggle="collapse" aria-expanded="false" aria-controls="<%= context %>-context">
