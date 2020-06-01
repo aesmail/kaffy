@@ -58,7 +58,7 @@
                         <i class="menu-arrow"></i>
                         <i class="mdi mdi-menu menu-icon"></i>
                     </a>
-                    <div class="collapse <%= if @conn.assigns[:context] == to_string(context) do %>show<% end %>" id="<%= context %>-context">
+                    <div class="collapse<%= if @conn.assigns[:context] == to_string(context) do %> show<% end %>" id="<%= context %>-context">
                       <ul class="nav flex-column sub-menu">
                         <%= for {resource, options} <- Kaffy.Utils.schemas_for_context(context) do %>
                             <%= if Kaffy.ResourceAdmin.authorized?(options, @conn) do %>

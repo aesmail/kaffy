@@ -242,14 +242,10 @@ defmodule Kaffy.ResourceForm do
 
             string_fields = Enum.filter(fields, fn {_f, options} -> options.type == :string end)
 
-            IO.puts("popular_strings:")
-
             popular_strings =
               string_fields
               |> Enum.filter(fn {f, _} -> f in [:name, :title] end)
               |> Enum.at(0)
-
-            IO.puts("final choice:")
 
             string_field =
               case is_nil(popular_strings) do
@@ -260,7 +256,7 @@ defmodule Kaffy.ResourceForm do
             select(
               form,
               field,
-              Enum.map(options, fn o -> {Map.get(o, string_field, "ERROR"), o.id} end),
+              Enum.map(options, fn o -> {Map.get(o, string_field, "Resource ##{o.id}"), o.id} end),
               class: "custom-select"
             )
         end
