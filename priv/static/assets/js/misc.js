@@ -77,6 +77,25 @@ var lightColor = getComputedStyle(document.body).getPropertyValue('--light');
     flatpickr(".flatpickr-wrap-datetime", {
       wrap: true,
       enableTime: true,
+      time_24hr: true
+    });
+    flatpickr(".flatpickr-wrap-date", {
+      wrap: true,
+      enableTime: false,
+      time_24hr: true
+    });
+    flatpickr(".flatpickr-wrap-time", {
+      wrap: true,
+      enableTime: true,
+      noCalendar: true,
+      time_24hr: true
+    });
+    flatpickr(".flatpickr-wrap-datetime-usec", {
+      wrap: true,
+      time_24hr: true,
+      enableSeconds: true,
+      enableTime: true,
+      dateFormat: "Z"
     });
 
   });

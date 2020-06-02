@@ -163,45 +163,59 @@ defmodule Kaffy.ResourceForm do
         select(form, field, opts)
 
       :date ->
-        # TODO
-        date_select(form, field, opts)
+        flatpickr_date(form, field, opts)
 
       :time ->
-        # TODO
-        time_select(form, field, opts)
+        flatpickr_time(form, field, opts)
 
       :naive_datetime ->
         flatpickr_datetime(form, field, opts)
 
       :naive_datetime_usec ->
-        flatpickr_datetime(form, field, opts)
+        flatpickr_datetime_usec(form, field, opts)
 
       :utc_datetime ->
         flatpickr_datetime(form, field, opts)
 
       :utc_datetime_usec ->
-        flatpickr_datetime(form, field, opts)
+        flatpickr_datetime_usec(form, field, opts)
 
       _ ->
         text_input(form, field, opts)
     end
   end
 
+  defp flatpickr_time(form, field, opts) do
+    flatpickr_generic(form, field, opts, "Select Date...", "flatpickr-wrap-time", "🕒")
+  end
+
+  defp flatpickr_date(form, field, opts) do
+    flatpickr_generic(form, field, opts, "Select Date...", "flatpickr-wrap-date", "🗓️")
+  end
+
   defp flatpickr_datetime(form, field, opts) do
+    flatpickr_generic(form, field, opts, "Select Datetime...", "flatpickr-wrap-datetime")
+  end
+
+  defp flatpickr_datetime_usec(form, field, opts) do
+    flatpickr_generic(form, field, opts, "Select Datetime...", "flatpickr-wrap-datetime-usec")
+  end
+
+  defp flatpickr_generic(form, field, opts, placeholder, fp_class, icon \\ "📅") do
     opts = Keyword.put(opts, :class, "flatpickr-input")
     opts = Keyword.put(opts, :class, "form-control")
     opts = Keyword.put(opts, :id, "inlineFormInputGroup")
-    opts = Keyword.put(opts, :placeholder, "Select Date...")
+    opts = Keyword.put(opts, :placeholder, placeholder)
     opts = Keyword.put(opts, :"data-input", "")
 
     [
       {:safe, ~s(
-            <div class="input-group mb-2 flatpickr flatpickr-wrap-datetime">
+            <div class="input-group mb-2 flatpickr #{fp_class}">
               <div class="input-group-prepend">
                 <div class="input-group-text" data-clear>❌</div>
               </div>
               <div class="input-group-prepend">
-                <div class="input-group-text" data-toggle>📅</div>
+                <div class="input-group-text" data-toggle>#{icon}</div>
               </div>
           )},
       text_input(form, field, opts),
