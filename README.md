@@ -1,3 +1,5 @@
+![What You Get](demos/kaffy_index.png)
+
 ## Introduction
 
 Kaffy was created out of a need to have a powerfully simple, flexible, and customizable admin interface
@@ -9,6 +11,7 @@ without the need to touch the current codebase. It was inspired by django's love
 - [Minimum Requirements](#minimum-requirements)
 - [Installation](#installation)
 - [Custom Configuratinos](#configurations)
+- [Customize the Side Menu](#side-menu)
 - [Customize the Dashboard Page](#dashboard-page)
 - [Customize the Index Page](#index-page)
 - [Customize the Form Page](#form-page)
@@ -37,7 +40,7 @@ without the need to touch the current codebase. It was inspired by django's love
 ```elixir
 def deps do
   [
-    {:kaffy, "~> 0.7.0"}
+    {:kaffy, "~> 0.8.0"}
   ]
 end
 ```
@@ -58,7 +61,7 @@ plug Plug.Static,
   at: "/kaffy",
   from: :kaffy,
   gzip: false,
-  only: ~w(css img js scss vendor)
+  only: ~w(assets)
 
 # in your config/config.exs
 config :kaffy,
@@ -91,6 +94,8 @@ Otherwise, if you'd like to explicitly specify your schemas and their admin modu
 # config.exs
 config :kaffy,
   admin_title: "My Awesome App",
+  hide_dashboard: false,
+  home_page: [kaffy: :dashboard],
   ecto_repo: MyApp.Repo,
   router: MyAppWeb.Router,
   resources: [
@@ -111,6 +116,13 @@ config :kaffy,
     ]
   ]
 ```
+
+You can set the `:hide_dashboard` option to true to hide the dashboard link from the side menu.
+To change the home page, change the `:home_page` option to one of the following:
+
+- `[kaffy: :dashboard]` for the default dashboard page.
+- `[schema: ["blog", "post"]]` to make the home page the index page for the `Post` schema under the 'Blog' context.
+- `[page: "my-custom-page"]` to make the custom page with the `:slug` "my-custom-page" the home page. See the Custom Pages section below.
 
 Note that, for auto-detection to work properly, schemas in different contexts should have different direct "prefix" namespaces. That is:
 
@@ -149,7 +161,7 @@ resources: [
 
 Kaffy supports dashboard customizations through `widgets`.
 
-![Dashboard page widgets](demos/dashboard_page.png)
+![Dashboard page widgets](demos/kaffy_dashboard.png)
 
 Currently, kaffy provides support for 4 types of widgets:
 
@@ -243,6 +255,42 @@ end
 - `:icon` is the icon displayed next to the link. Any FontAwesome-valid icon is valid here. For example: `paperclip`.
 - `:target` to contain the target to open the link: `_blank` or `_self`. `_blank` will open the link in a new window/tab, `_self` will open the link in the same window. The default value is `_self`.
 
+
+### Custom Pages
+
+Kaffy allows you to add custom pages like the following:
+
+[Custom Pages](demos/kaffy_custom_pages.png)
+
+To add custom pages, you need to define the `custom_pages/2` function in your admin module:
+
+```elixir
+defmodule MyApp.Products.ProductAdmin do
+  def custom_pages(_schema, _conn) do
+    [
+      %{
+        slug: "my-own-thing",
+        name: "Secret Place",
+        view: MyAppWeb.ProductView,
+        template: "custom_product.html",
+        assigns: [custom_message: "one two three"],
+        order: 2
+      }
+    ]
+  end
+end
+```
+
+The `custom_pages/2` function takes a schema and a conn and must return a list of maps corresponding to pages.
+The maps have the following keys:
+
+- `:slug` to indicate the url of the page, e.g., `/admin/p/my-own-thing`.
+- `:name` for the name of the link on the side menu.
+- `:view` to set the view from your own app.
+- `:template` to set the custom template you want to render in Kaffy's layout.
+- `:assigns` (optional) to hold the assigns for the template. Default to an empty list.
+- `:order` is the order of the page among other pages in the side menu.
+
 ### Index page
 
 The `index/1` function takes a schema and must return a keyword list of fields and their options.
@@ -266,7 +314,7 @@ end
 
 Result
 
-![Customized index page](demos/post_index_custom.png)
+![Customized index page](demos/kaffy_index.png)
 
 Notice that the keyword list keys don't necessarily have to be schema fields as long as you provide a `:value` option.
 
@@ -298,7 +346,7 @@ end
 
 Result
 
-![Product filters](demos/product_filters.png)
+![Product filters](demos/kaffy_filters.png)
 
 If you need to change the order of the records, define `ordering/1`:
 
@@ -348,7 +396,7 @@ Options can be:
 
 Result
 
-![Customized show/edit page](demos/post_form_custom.png)
+![Customized show/edit page](demos/kaffy_form.png)
 
 Notice that:
 
@@ -357,9 +405,7 @@ Notice that:
 - `settigns` is an embedded schema. That's why it is rendered as such.
 
 
-Setting a field's type to `:richtext` will render a rich text editor like the following:
-
-![Rich text editor](demos/richtext.png)
+Setting a field's type to `:richtext` will render a rich text editor.
 
 ### Embedded Schemas and JSON Fields
 
@@ -401,10 +447,6 @@ All the fields must be of type `:string` or `:text`.
 
 If this function is not defined, Kaffy will return all `:string` and `:text` fields by default.
 
-Result
-
-![Customized show/edit page](demos/post_search.png)
-
 ### Authorization
 
 Kaffy supports basic authorization for individual schemas by defining `authorized?/2`.
@@ -422,10 +464,6 @@ end
 If it returns `false`, the request is redirected to the dashboard with an unauthorized message.
 
 Note that the resource is also removed from the resources list if `authorized?/2` returns false.
-
-Result
-
-![Authorization](demos/post_authorized.png)
 
 ### Changesets
 
@@ -471,13 +509,6 @@ defmodule MyApp.Blog.PostAdmin do
 end
 ```
 
-Result
-
-![Singular vs Plural](demos/singular_plural.png)
-
-Notice the "Posts" above the "Terms". This is the context name and it can be changed in the `configs.exs` file.
-See the "Configurations" section above.
-
 ### Custom Actions
 
 #### Single Resource Actions
@@ -510,7 +541,7 @@ defmodule MyApp.Blog.ProductAdmin
 
 Result
 
-![Single actions](demos/resource_actions.png)
+![Single actions](demos/kaffy_resource_actions.png)
 
 `resource_actions/1` takes a `conn` and must return a keyword list.
 The keys must be atoms defining the unique action "keys".
@@ -540,7 +571,7 @@ end
 
 Result
 
-![List actions](demos/list_actions.png)
+![List actions](demos/kaffy_list_actions.png)
 
 `list_actions/1` takes a `conn` and must return a keyword list.
 The keys must be atoms defining the unique action "keys".
@@ -628,13 +659,6 @@ defmodule MyApp.Blog.PostAdmin do
 end
 ```
 
-Result
-
-![Before create callback](demos/callback_before_create.png)
-
-![After create callback](demos/callback_after_create.png)
-
-
 ### Scheduled Tasks
 
 Kaffy supports simple scheduled tasks. Tasks are functions that are run periodically. Behind the scenes, they are put inside `GenServer`s and supervised with a `DynamicSupervisor`.
@@ -671,7 +695,7 @@ end
 
 Once you create your scheduled tasks, a new "Tasks" menu item will show up (below the Dashboard item) listing all your tasks with some tiny bits of information about each task like the following image:
 
-![Simple scheduled tasks](demos/simple_scheduled_tasks.png)
+![Simple scheduled tasks](demos/kaffy_tasks.png)
 
 The `scheduled_tasks/1` function takes a schema and must return a list of tasks.
 
