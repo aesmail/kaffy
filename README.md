@@ -27,7 +27,7 @@ without the need to touch the current codebase. It was inspired by django's love
 
 ## Demo
 
-![Check out the simple demo here](https://kaffy.gigalixirapp.com/admin/)
+[Check out the simple demo here](https://kaffy.gigalixirapp.com/admin/)
 
 ## Minimum Requirements
 
