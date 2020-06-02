@@ -27,7 +27,7 @@ without the need to touch the current codebase. It was inspired by django's love
 
 ## Demo
 
-[Check out the simple demo here](https://kaffy.gigalixirapp.com/admin/)
+![Check out the simple demo here](https://kaffy.gigalixirapp.com/admin/)
 
 ## Minimum Requirements
 
@@ -260,7 +260,7 @@ end
 
 Kaffy allows you to add custom pages like the following:
 
-[Custom Pages](demos/kaffy_custom_pages.png)
+![Custom Pages](demos/kaffy_custom_pages.png)
 
 To add custom pages, you need to define the `custom_pages/2` function in your admin module:
 
