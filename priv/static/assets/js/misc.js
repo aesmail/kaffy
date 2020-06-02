@@ -77,18 +77,21 @@ var lightColor = getComputedStyle(document.body).getPropertyValue('--light');
     flatpickr(".flatpickr-wrap-datetime", {
       wrap: true,
       enableTime: true,
-      time_24hr: true
+      time_24hr: true,
+      dateFormat: "Y-m-d H:i:S",
     });
     flatpickr(".flatpickr-wrap-date", {
       wrap: true,
       enableTime: false,
-      time_24hr: true
+      time_24hr: true,
+      dateFormat: "Y-m-d",
     });
     flatpickr(".flatpickr-wrap-time", {
       wrap: true,
       enableTime: true,
       noCalendar: true,
-      time_24hr: true
+      time_24hr: true,
+      dateFormat: "H:i:S",
     });
     flatpickr(".flatpickr-wrap-datetime-usec", {
       wrap: true,
