@@ -15,6 +15,9 @@
     <!-- endinject -->
     <!-- Layout styles -->
     <link rel="stylesheet" href="/kaffy/assets/css/style.css">
+    <link rel="stylesheet" href="/kaffy/assets/vendors/flatpickr/flatpickr.min.css">
+
+    <link rel="stylesheet" href="/kaffy/assets/css/kaffy.css">
     <!-- End layout styles -->
     <link rel="shortcut icon" href="/kaffy/assets/images/favicon.png" />
   </head>
@@ -90,6 +93,7 @@
               <%= @inner_content %>
             <% end %>
           </div>
+
           <!-- content-wrapper ends -->
           <!-- partial:partials/_footer.html -->
           <footer class="footer">
@@ -107,6 +111,8 @@
     <!-- plugins:js -->
     <script src="/kaffy/assets/vendors/js/vendor.bundle.base.js"></script>
     <!-- endinject -->
+    <script src="/kaffy/assets/vendors/flatpickr/flatpickr.min.js"></script>
+
     <!-- Plugin js for this page -->
     <script src="/kaffy/assets/vendors/chart.js/Chart.min.js"></script>
     <script src="/kaffy/assets/vendors/js/ckeditor.js"></script>

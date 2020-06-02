@@ -167,4 +167,26 @@ defmodule Kaffy.Utils do
     end)
     |> Enum.sort()
   end
+
+  @doc """
+  Convert date string to utc_datetime
+
+
+  TODO: We will need to handle the date type bellow:
+  :date           -> ~D[2010-04-17]
+  :time           -> ~T[14:00:00]
+  :time_usec      -> ~T[14:00:00.000000]
+  :utc_datetime   -> ~U[2010-04-17T14:00:00Z]
+  :utc_datetime_usec -> ~U[2010-04-17T14:00:00.000000Z]
+  :naive_datetime -> ~N[2010-04-17 14:00:00]
+  :naive_datetime_usec -> ~N[2010-04-17 14:00:00.000000]
+
+  """
+  def string_to_utc_datetime(date_string) do
+    # date_string = "2020-06-10 12:00"
+    date_string = date_string |> String.replace(" ", "T")
+    date_string = "#{date_string}:00Z"
+    {:ok, utc_datetime, _} = DateTime.from_iso8601(date_string)
+    utc_datetime
+  end
 end
