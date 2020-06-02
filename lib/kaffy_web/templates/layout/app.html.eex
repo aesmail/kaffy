@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="/kaffy/assets/vendors/mdi/css/materialdesignicons.min.css">
     <link rel="stylesheet" href="/kaffy/assets/vendors/css/vendor.bundle.base.css">
     <link rel="stylesheet" href="/kaffy/assets/css/style.css">
+    <link rel="stylesheet" href="/kaffy/assets/vendors/flatpickr/flatpickr.min.css">
+    <link rel="stylesheet" href="/kaffy/assets/css/kaffy.css">
     <link rel="shortcut icon" href="/kaffy/assets/images/favicon.png" />
   </head>
   <body>
@@ -134,6 +136,7 @@
     </div>
 
     <script src="/kaffy/assets/vendors/js/vendor.bundle.base.js"></script>
+    <script src="/kaffy/assets/vendors/flatpickr/flatpickr.min.js"></script>
     <script src="/kaffy/assets/vendors/chart.js/Chart.min.js"></script>
     <script src="/kaffy/assets/vendors/js/ckeditor.js"></script>
     <script src="/kaffy/assets/js/off-canvas.js"></script>

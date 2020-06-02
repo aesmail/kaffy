@@ -159,30 +159,54 @@ defmodule Kaffy.ResourceForm do
       :file ->
         file_input(form, field, opts)
 
-      :date ->
-        date_select(form, field, opts)
-
-      :time ->
-        time_select(form, field, opts)
-
       :select ->
         select(form, field, opts)
 
+      :date ->
+        # TODO
+        date_select(form, field, opts)
+
+      :time ->
+        # TODO
+        time_select(form, field, opts)
+
       :naive_datetime ->
-        datetime_select(form, field, opts)
+        flatpickr_datetime(form, field, opts)
 
       :naive_datetime_usec ->
-        datetime_select(form, field, opts)
+        flatpickr_datetime(form, field, opts)
 
       :utc_datetime ->
-        datetime_select(form, field, opts)
+        flatpickr_datetime(form, field, opts)
 
       :utc_datetime_usec ->
-        datetime_select(form, field, opts)
+        flatpickr_datetime(form, field, opts)
 
       _ ->
         text_input(form, field, opts)
     end
+  end
+
+  defp flatpickr_datetime(form, field, opts) do
+    opts = Keyword.put(opts, :class, "flatpickr-input")
+    opts = Keyword.put(opts, :class, "form-control")
+    opts = Keyword.put(opts, :id, "inlineFormInputGroup")
+    opts = Keyword.put(opts, :placeholder, "Select Date...")
+    opts = Keyword.put(opts, :"data-input", "")
+
+    [
+      {:safe, ~s(
+            <div class="input-group mb-2 flatpickr flatpickr-wrap-datetime">
+              <div class="input-group-prepend">
+                <div class="input-group-text" data-clear>❌</div>
+              </div>
+              <div class="input-group-prepend">
+                <div class="input-group-text" data-toggle>📅</div>
+              </div>
+          )},
+      text_input(form, field, opts),
+      {:safe, "</div>"}
+    ]
   end
 
   defp text_or_assoc(conn, schema, form, field, opts) do
