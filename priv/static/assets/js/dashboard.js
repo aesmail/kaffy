@@ -56,6 +56,26 @@ $(document).ready(function () {
     event.preventDefault();
   });
 
+  $("a#pick-raw-resource").click(function () {
+    var link = $(this).attr("href");
+    window.open(link, "_blank");
+    return false;
+  });
+
+  if ($("div#pick-resource").length) {
+    $("body").on("click", "td a", function () {
+      var link = $(this);
+      var theParent = $(window.opener.document);
+      var field_name = $("#pick-field-name").html();
+      var path_parts = link.attr("href").split("/");
+      var record_id = path_parts[path_parts.length - 1];
+      var field_id = "input#" + field_name;
+      theParent.find(field_id).val(record_id);
+      window.close();
+      return false;
+    });
+  }
+
   $(".kaffy-chart").each(function () {
     var currentChart = $(this);
     var chartId = currentChart.children("canvas").first().attr('id');

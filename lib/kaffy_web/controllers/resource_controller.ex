@@ -4,13 +4,16 @@ defmodule KaffyWeb.ResourceController do
   use Phoenix.Controller, namespace: KaffyWeb
   use Phoenix.HTML
 
-  def index(conn, %{
-        "context" => context,
-        "resource" => resource,
-        "c" => _target_context,
-        "r" => _target_resource,
-        "pick" => _field
-      }) do
+  def index(
+        conn,
+        %{
+          "context" => context,
+          "resource" => resource,
+          "c" => _target_context,
+          "r" => _target_resource,
+          "pick" => _field
+        } = params
+      ) do
     my_resource = Kaffy.Utils.get_resource(context, resource)
 
     case can_proceed?(my_resource, conn) do
@@ -19,13 +22,27 @@ defmodule KaffyWeb.ResourceController do
 
       true ->
         fields = Kaffy.ResourceAdmin.index(my_resource)
+        {filtered_count, entries} = Kaffy.ResourceQuery.list_resource(my_resource, params)
+        page = Map.get(params, "page", "1") |> String.to_integer()
+        has_next = round(filtered_count / page) > page
+        next_class = if has_next, do: "", else: " disabled"
+        has_prev = page >= 2
+        prev_class = if has_prev, do: "", else: " disabled"
 
         render(conn, "pick_resource.html",
           layout: {KaffyWeb.LayoutView, "bare.html"},
           context: context,
           resource: resource,
           fields: fields,
-          my_resource: my_resource
+          my_resource: my_resource,
+          filtered_count: filtered_count,
+          page: page,
+          has_next_page: has_next,
+          next_class: next_class,
+          has_prev_page: has_prev,
+          prev_class: prev_class,
+          entries: entries,
+          params: params
         )
     end
   end

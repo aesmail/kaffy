@@ -227,7 +227,7 @@ defmodule Kaffy.ResourceForm do
         assoc = Kaffy.ResourceSchema.association_schema(schema, field_no_id)
         option_count = Kaffy.ResourceQuery.cached_total_count(assoc, true, assoc)
 
-        case option_count > 20 do
+        case option_count > 100 do
           true ->
             target_context = Kaffy.Utils.get_context_for_schema(assoc)
             target_resource = Kaffy.Utils.get_schema_key(target_context, assoc)
@@ -241,7 +241,7 @@ defmodule Kaffy.ResourceForm do
                 ),
                 content_tag :div, class: "input-group-append" do
                   content_tag :span, class: "input-group-text", id: field do
-                    link(content_tag(:i, "", class: "fas fa-search"),
+                    link(content_tag(:i, "", class: "mdi mdi-magnify"),
                       to:
                         Kaffy.Utils.router().kaffy_resource_path(
                           conn,
