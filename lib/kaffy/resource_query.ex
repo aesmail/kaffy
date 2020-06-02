@@ -10,7 +10,15 @@ defmodule Kaffy.ResourceQuery do
     search_fields = Kaffy.ResourceAdmin.search_fields(resource)
     filtered_fields = get_filter_fields(params, resource)
     default_ordering = Kaffy.ResourceAdmin.ordering(resource)
-    ordering = Map.get(params, "ordering", default_ordering)
+    default_order_field = Map.get(params, "_of", "nil") |> String.to_existing_atom()
+    default_order_way = Map.get(params, "_ow", "nil") |> String.to_existing_atom()
+
+    ordering =
+      case is_nil(default_order_field) or is_nil(default_order_way) do
+        true -> default_ordering
+        false -> [{default_order_way, default_order_field}]
+      end
+
     current_offset = (page - 1) * per_page
     schema = resource[:schema]
 

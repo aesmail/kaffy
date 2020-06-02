@@ -76,6 +76,18 @@ $(document).ready(function () {
     });
   }
 
+  $("a.kaffy-order-field").click(function () {
+    var a = $(this);
+    var field = a.data('field');
+    var order = a.data('order');
+    var filterForm = $("#kaffy-filters-form");
+    filterForm.children("input#kaffy-order-field").val(field);
+    filterForm.children("input#kaffy-order-way").val(order);
+    filterForm.children("input#kaffy-filter-page").val(1);
+    filterForm.submit();
+    event.preventDefault();
+  })
+
   $(".kaffy-chart").each(function () {
     var currentChart = $(this);
     var chartId = currentChart.children("canvas").first().attr('id');

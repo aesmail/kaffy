@@ -65,3 +65,7 @@
 .custom-select {
     height: calc(2em + 0.75rem + 2px);
 }
+
+a.kaffy-order-field {
+    cursor:pointer;
+}
