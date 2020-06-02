@@ -12,6 +12,7 @@ without the need to touch the current codebase. It was inspired by django's love
 - [Customize the Dashboard Page](#dashboard-page)
 - [Customize the Index Page](#index-page)
 - [Customize the Form Page](#form-page)
+- [Embedded Schemas and JSON Fields](#embedded-schemas-and-json-fields)
 - [Searching Records](#search)
 - [Authorizing Access To Resources](#authorization)
 - [Custom Changesets](#changesets)
@@ -57,7 +58,7 @@ plug Plug.Static,
   at: "/kaffy",
   from: :kaffy,
   gzip: false,
-  only: ~w(css img js)
+  only: ~w(css img js scss vendor)
 
 # in your config/config.exs
 config :kaffy,
@@ -227,7 +228,7 @@ defmodule MyApp.Products.ProductAdmin do
   def custom_links(_schema) do
     [
       %{name: "Source Code", url: "https://example.com/repo/issues", order: 2, location: :top, icon: "paperclip"},
-      %{name: "Products On Site", url: "https://example.com/products", location: :sub, open: "_blank"},
+      %{name: "Products On Site", url: "https://example.com/products", location: :sub, target: "_blank"},
     ]
   end
 end
@@ -240,7 +241,7 @@ end
 - `:order` to hold the displayed order of this link. All `:sub` links are ordered under the schema menu item directly before the following schema.
 - `:location` can be either `:sub` or `:top`. `:sub` means it's under the schema sub-item. `:top` means it's displayed at the top of the menu below the "Dashboard" link. Links are ordered based on the `:order` value. The default value is `:sub`.
 - `:icon` is the icon displayed next to the link. Any FontAwesome-valid icon is valid here. For example: `paperclip`.
-- `:target` to contain the target to open the link `_blank`, `_self`. `_blank` will open the link in a new window/tab, `_self` will open the link in the same window. The default value is `_self`.
+- `:target` to contain the target to open the link: `_blank` or `_self`. `_blank` will open the link in a new window/tab, `_self` will open the link in the same window. The default value is `_self`.
 
 ### Index page
 
@@ -359,6 +360,10 @@ Notice that:
 Setting a field's type to `:richtext` will render a rich text editor like the following:
 
 ![Rich text editor](demos/richtext.png)
+
+### Embedded Schemas and JSON Fields
+
+Kaffy has support for ecto's [embedded schemas](https://hexdocs.pm/ecto/Ecto.Schema.html#embedded_schema/1) and json fields. When you define a field as a `:map`, Kaffy will automatically display a textarea with a placeholder to hint that JSON content is expected. When you have an embedded schema, Kaffy will try to render each field inline with the form of the parent schema.
 
 ### Search
 

@@ -6,7 +6,7 @@ defmodule Kaffy.Application do
   def start(_type, _args) do
     children = [
       {Kaffy.Scheduler.Supervisor, []},
-      {Cachex, :cache_kaffy}
+      Kaffy.Cache.Client
     ]
 
     opts = [strategy: :one_for_one, name: Kaffy.Supervisor]

@@ -1,16 +1,17 @@
-<h1 class="mt-4">
-    <%= @resource_name %> #<%= @changeset.data.id %>
-    <h2 class="float-right">
+<div class="row mt-4">
+    <div class="col-md-9">
+        <h1><%= @resource_name %> #<%= @changeset.data.id %></h1>
+    </div>
+    <div class="col-md-3">
         <%= if Kaffy.ResourceAdmin.resource_actions(@my_resource, @conn) do %>
-            <div>
+            <div class="float-right">
                 <div class="btn-group">
-                    <button type="button" class="btn btn-light dropdown-toggle btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <button type="button" class="btn dropdown-toggle btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <i class="mdi mdi-hammer"></i> <span class="d-none d-md-inline">Actions</span>
                     </button>
                     <div class="dropdown-menu">
                         <%= for {action_key, options} <- Kaffy.ResourceAdmin.resource_actions(@my_resource, @conn) do %>
                             <%= form_tag(Kaffy.Utils.router().kaffy_resource_path(@conn, :single_action, @context, @resource, @changeset.data.id, to_string(action_key)), method: :post) %>
-                                <%# link options.name, to: Kaffy.Utils.router().kaffy_resource_path(@conn, :single_action, @context, @resource, @changeset.data.id, to_string(action_key)), class: "dropdown-item" %>
                                 <input type="submit" name="submit" value="<%= options.name %>" class="dropdown-item" />
                             </form>
                         <% end %>
@@ -18,34 +19,38 @@
                 </div>
             </div>
         <% end %>
-    </h2>
-</h1>
+    </div>
+</div>
 
 <%= for error <- Kaffy.ResourceError.display_errors(@changeset) do %>
     <div><%= error %></div>
 <% end %>
 
-<div class="mt-3">
-    <%= f = form_for(@changeset, Kaffy.Utils.router().kaffy_resource_path(@conn, :update, @context, @resource, @changeset.data.id), method: :put, multipart: true) %>
-        <%= for {field, options} <- Kaffy.ResourceAdmin.form_fields(@my_resource) do %>
-            <%= if options.update != :hidden do %>
-                <div class="form-group">
-                    <%= Kaffy.ResourceForm.form_label(f, {field, options}) %>
-                    <%= Kaffy.ResourceForm.form_field(@changeset, f, {field, options}, class: "form-control", conn: @conn) %>
-                </div>
-            <% end %>
-        <% end %>
+<div class="mt-3 grid-margin stretch-card">
+    <div class="card shadow border-left-success">
+        <div class="card-body">
+            <%= f = form_for(@changeset, Kaffy.Utils.router().kaffy_resource_path(@conn, :update, @context, @resource, @changeset.data.id), method: :put, multipart: true) %>
+                <%= for {field, options} <- Kaffy.ResourceAdmin.form_fields(@my_resource) do %>
+                    <%= if options.update != :hidden do %>
+                        <div class="form-group">
+                            <%= Kaffy.ResourceForm.form_label(f, {field, options}) %>
+                            <%= Kaffy.ResourceForm.form_field(@changeset, f, {field, options}, class: "form-control", conn: @conn) %>
+                        </div>
+                    <% end %>
+                <% end %>
 
-        <div class="p-2">
-            <%= link "Back", to: Kaffy.Utils.router().kaffy_resource_path(@conn, :index, @context, @resource), class: "btn btn-sm btn-light" %>
-            <input type="submit" name="submit" value="Save" class="btn btn-sm btn-primary" />
-            <input type="submit" name="submit" value="Save and add another" class="btn btn-sm btn-primary"/>
-            <input type="submit" name="submit" value="Save and continue editing" class="btn btn-sm btn-primary" />
-            <button type="button" class="btn btn-sm btn-danger float-right" data-toggle="modal" data-target="#delete-modal">
-                <i class="fas fa-trash"></i> Delete
-            </button>
+                <div class="p-2">
+                    <%= link "Back", to: Kaffy.Utils.router().kaffy_resource_path(@conn, :index, @context, @resource), class: "btn btn-sm btn-light" %>
+                    <input type="submit" name="submit" value="Save" class="btn btn-sm btn-primary" />
+                    <input type="submit" name="submit" value="Save and add another" class="btn btn-sm btn-primary"/>
+                    <input type="submit" name="submit" value="Save and continue editing" class="btn btn-sm btn-primary" />
+                    <button type="button" class="btn btn-sm btn-danger float-right" data-toggle="modal" data-target="#delete-modal">
+                        <i class="mdi mdi-delete"></i> Delete
+                    </button>
+                </div>
+            </form>
         </div>
-    </form>
+    </div>
 
     <!-- Modal -->
     <%= form_for(@changeset, Kaffy.Utils.router().kaffy_resource_path(@conn, :delete, @context, @resource, @changeset.data.id), method: :delete) %>

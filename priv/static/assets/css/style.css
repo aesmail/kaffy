@@ -13379,7 +13379,7 @@ dl {
         .sidebar .nav .nav-item .nav-link[aria-expanded="true"] .menu-arrow:before {
           content: "\f140"; }
       .sidebar .nav .nav-item.active {
-        background: #ffffff; }
+        background: #2653d4; }
         .sidebar .nav .nav-item.active > .nav-link .menu-title {
           color: #4285F4;
           font-family: "ubuntu-medium", sans-serif; }

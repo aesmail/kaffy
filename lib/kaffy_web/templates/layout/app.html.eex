@@ -1,33 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Purple Admin</title>
-    <!-- plugins:css -->
+    <title><%= Kaffy.Utils.title() %> - Kaffy</title>
     <link rel="stylesheet" href="/kaffy/assets/vendors/mdi/css/materialdesignicons.min.css">
     <link rel="stylesheet" href="/kaffy/assets/vendors/css/vendor.bundle.base.css">
-    <!-- endinject -->
-    <!-- Plugin css for this page -->
-    <!-- End plugin css for this page -->
-    <!-- inject:css -->
-    <!-- endinject -->
-    <!-- Layout styles -->
     <link rel="stylesheet" href="/kaffy/assets/css/style.css">
     <link rel="stylesheet" href="/kaffy/assets/vendors/flatpickr/flatpickr.min.css">
-
     <link rel="stylesheet" href="/kaffy/assets/css/kaffy.css">
-    <!-- End layout styles -->
     <link rel="shortcut icon" href="/kaffy/assets/images/favicon.png" />
   </head>
   <body>
     <div class="container-scroller">
-      <!-- partial:partials/_navbar.html -->
       <nav class="navbar default-layout-navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
         <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
-          <a class="navbar-brand brand-logo" href="index.html"><img src="/kaffy/assets/images/logo.png" alt="logo" /></a>
-          <a class="navbar-brand brand-logo-mini" href="index.html"><img src="/kaffy/assets/images/logo-mini.png" alt="logo" /></a>
+          <%= link to: Kaffy.Utils.router().kaffy_home_path(@conn, :index), class: "navbar-brand brand-logo" do %>
+            <img src="/kaffy/assets/images/logo.png" alt="logo" />
+          <% end %>
+          <%= link to: Kaffy.Utils.router().kaffy_home_path(@conn, :index), class: "navbar-brand brand-logo-mini" do %>
+            <img src="/kaffy/assets/images/logo-mini.png" alt="logo" />
+          <% end %>
         </div>
         <div class="navbar-menu-wrapper d-flex align-items-stretch">
           <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
@@ -40,19 +33,57 @@
         </div>
       </nav>
 
-
-      <!-- partial -->
       <div class="container-fluid page-body-wrapper">
-        <!-- partial:partials/_sidebar.html -->
         <nav class="sidebar sidebar-offcanvas" id="sidebar">
           <ul class="nav">
 
-            <li class="nav-item<%= if @conn.assigns[:context] == nil do %> active<% end %>">
-              <%= link to: Kaffy.Utils.router().kaffy_home_path(@conn, :index), class: "nav-link" do %>
-                <span class="menu-title">Dashboard</span>
-                <i class="mdi mdi-home menu-icon"></i>
-              <% end %>
-            </li>
+            <%= if Kaffy.Utils.show_dashboard?() do %>
+              <li class="nav-item<%= if @conn.assigns[:context] == nil do %> active<% end %>">
+                <%= link to: Kaffy.Utils.router().kaffy_dashboard_path(@conn, :dashboard), class: "nav-link" do %>
+                  <span class="menu-title">Dashboard</span>
+                  <i class="mdi mdi-home menu-icon"></i>
+                <% end %>
+              </li>
+            <% end %>
+
+            <% tasks = Kaffy.ResourceAdmin.tasks_info() %>
+
+            <%= if not Enum.empty?(tasks) do %>
+              <li class="nav-item">
+                <%= link to: Kaffy.Utils.router().kaffy_task_path(@conn, :index), class: "nav-link" do %>
+                    <span class="menu-title">Tasks</span>
+                    <i class="mdi mdi-clock-outline menu-icon"></i>
+                <% end %>
+              </li>
+            <% end %>
+
+            <%= for custom_link <- Kaffy.ResourceAdmin.collect_links(:top) do %>
+              <li class="nav-item">
+                <%= link to: custom_link.url, class: "nav-link", target: custom_link.target do %>
+                  <span class="menu-title"><%= custom_link.name %></span>
+                  <i class="mdi mdi-<%= custom_link.icon %> menu-icon"></i>
+                <% end %>
+              </li>
+            <% end %>
+
+            <% custom_pages = Kaffy.ResourceAdmin.collect_pages(@conn) %>
+
+            <%= if !Enum.empty?(custom_pages) do %>
+              <li class="nav-item">
+                <a class="nav-link" href="#kaffy-pages" data-toggle="collapse" aria-expanded="false" aria-controls="kaffy-pages">
+                    <span class="menu-title">Pages</span>
+                    <i class="menu-arrow"></i>
+                    <i class="mdi mdi-menu menu-icon"></i>
+                </a>
+                <div class="collapse" id="kaffy-pages">
+                  <ul class="nav flex-column sub-menu">
+                    <%= for custom_page <- custom_pages do %>
+                      <li class="nav-item"><%= link custom_page.name, to: Kaffy.Utils.router().kaffy_page_path(@conn, :index, custom_page.slug), class: "nav-link" %></li>
+                    <% end %>
+                  </ul>
+                </div>
+              </li>
+            <% end %>
 
             <%= for context <- Kaffy.Utils.contexts() do %>
                 <li class="nav-item<%= if @conn.assigns[:context] == to_string(context) do %> active<% end %>">
@@ -61,7 +92,7 @@
                         <i class="menu-arrow"></i>
                         <i class="mdi mdi-menu menu-icon"></i>
                     </a>
-                    <div class="collapse <%= if @conn.assigns[:context] == to_string(context) do %>show<% end %>" id="<%= context %>-context">
+                    <div class="collapse<%= if @conn.assigns[:context] == to_string(context) do %> show<% end %>" id="<%= context %>-context">
                       <ul class="nav flex-column sub-menu">
                         <%= for {resource, options} <- Kaffy.Utils.schemas_for_context(context) do %>
                             <%= if Kaffy.ResourceAdmin.authorized?(options, @conn) do %>
@@ -77,7 +108,7 @@
             <% end %>
           </ul>
         </nav>
-        <!-- partial -->
+
         <div class="main-panel">
           <div class="content-wrapper">
             <%= if get_flash(@conn, :info) do %>
@@ -94,37 +125,24 @@
             <% end %>
           </div>
 
-          <!-- content-wrapper ends -->
-          <!-- partial:partials/_footer.html -->
           <footer class="footer">
             <div class="d-sm-flex justify-content-center justify-content-sm-between">
               <span class="text-muted text-center text-sm-left d-block d-sm-inline-block">Copyright © 2020 Kaffy. All rights reserved.</span>
             </div>
           </footer>
-          <!-- partial -->
-        </div>
-        <!-- main-panel ends -->
-      </div>
-      <!-- page-body-wrapper ends -->
-    </div>
-    <!-- container-scroller -->
-    <!-- plugins:js -->
-    <script src="/kaffy/assets/vendors/js/vendor.bundle.base.js"></script>
-    <!-- endinject -->
-    <script src="/kaffy/assets/vendors/flatpickr/flatpickr.min.js"></script>
 
-    <!-- Plugin js for this page -->
+        </div>
+      </div>
+    </div>
+
+    <script src="/kaffy/assets/vendors/js/vendor.bundle.base.js"></script>
+    <script src="/kaffy/assets/vendors/flatpickr/flatpickr.min.js"></script>
     <script src="/kaffy/assets/vendors/chart.js/Chart.min.js"></script>
     <script src="/kaffy/assets/vendors/js/ckeditor.js"></script>
-    <!-- End plugin js for this page -->
-    <!-- inject:js -->
     <script src="/kaffy/assets/js/off-canvas.js"></script>
     <script src="/kaffy/assets/js/hoverable-collapse.js"></script>
     <script src="/kaffy/assets/js/misc.js"></script>
-    <!-- endinject -->
-    <!-- Custom js for this page -->
     <script src="/kaffy/assets/js/dashboard.js"></script>
     <script src="/kaffy/assets/js/todolist.js"></script>
-    <!-- End custom js for this page -->
   </body>
 </html>

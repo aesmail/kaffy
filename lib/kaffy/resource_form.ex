@@ -225,7 +225,7 @@ defmodule Kaffy.ResourceForm do
     case field_no_id in Kaffy.ResourceSchema.associations(schema) do
       true ->
         assoc = Kaffy.ResourceSchema.association_schema(schema, field_no_id)
-        option_count = Kaffy.ResourceQuery.cached_total_count(assoc)
+        option_count = Kaffy.ResourceQuery.cached_total_count(assoc, true, assoc)
 
         case option_count > 20 do
           true ->
@@ -273,14 +273,14 @@ defmodule Kaffy.ResourceForm do
 
             string_field =
               case is_nil(popular_strings) do
-                true -> Enum.at(string_fields, 0)
+                true -> Enum.at(string_fields, 0) |> elem(0)
                 false -> elem(popular_strings, 0)
               end
 
             select(
               form,
               field,
-              Enum.map(options, fn o -> {Map.get(o, string_field, "ERROR"), o.id} end),
+              Enum.map(options, fn o -> {Map.get(o, string_field, "Resource ##{o.id}"), o.id} end),
               class: "custom-select"
             )
         end
