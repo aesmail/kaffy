@@ -24,8 +24,6 @@ defmodule Kaffy.ResourceSchema do
   end
 
   def form_fields(schema) do
-    IO.inspect("form_fields(schema)")
-    IO.inspect(fields(schema))
     to_be_removed = fields_to_be_removed(schema) ++ [:id, :inserted_at, :updated_at]
     Keyword.drop(fields(schema), to_be_removed)
   end
