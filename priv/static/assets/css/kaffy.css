@@ -2,11 +2,8 @@
  * custom Kaffy Css
  */
 
-.sidebar .nav .nav-item.active {
-    background: #fdfdfd;
-}
-.sidebar .nav.sub-menu .nav-item .nav-link:hover {
-    color: #4e73df;
+.sidebar .nav .nav-item:hover {
+    background: #1240c4;
 }
 
 .btn-sm, .btn-group-sm > .btn {
