@@ -1,36 +1,42 @@
 <div class="col-lg-12 grid-margin stretch-card">
   <div class="card shadow mb-4">
+    <div class="card-header">
+      <div class="row justify-content-between">
+        <div class="col-auto mr-auto">
+          <h3>
+            <%= Kaffy.ResourceAdmin.plural_name(@my_resource) %><br/>
+            <span class="badge badge-secondary">(~ <%= @filtered_count %> records)</span>
+          </h3>
+        </div>
+        <div class="col-auto">
+          <%= link to: Kaffy.Utils.router().kaffy_resource_path(@conn, :new, @context, @resource), class: "btn btn-outline-primary" do %>
+            <i class="mdi mdi-plus"></i>
+            New <%= Kaffy.ResourceAdmin.singular_name(@my_resource) %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
     <div class="card-body table-responsive w-100">
-      <h4><%= Kaffy.ResourceAdmin.plural_name(@my_resource) %> <small>(~ <%= @filtered_count %> records)</small></h4>
       <div class="card-description">
         <div class="row">
-          <div class="col-md-3">
-            <p>
-              <%= link to: Kaffy.Utils.router().kaffy_resource_path(@conn, :new, @context, @resource), class: "btn btn-sm btn-circle" do %>
-                <i class="mdi mdi-plus"></i>
-                New <%= Kaffy.ResourceAdmin.singular_name(@my_resource) %>
-              <% end %>
-            </p>
-          </div>
 
-          <div class="col-md-7">
+          <div class="col-auto mr-auto">
             <input id="kaffy-search-field" type="text" name="search" value="<%= Map.get(@params, "search", "") %>" class="form-control bg-transparent" placeholder="Search <%= Kaffy.ResourceAdmin.plural_name(@my_resource) %>...">
           </div>
 
-          <div class="col-md-2">
+          <div class="col-auto">
             <%= if list_actions = Kaffy.ResourceAdmin.list_actions(@my_resource, @conn) do %>
-              <div class="float-right">
-                <div class="btn-group">
-                  <button type="button" class="btn dropdown-toggle btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <i class="mdi mdi-hammer"></i> <span class="d-none d-md-inline">Actions</span>
-                  </button>
-                  <div class="dropdown-menu">
-                    <%= for {action_key, options} <- list_actions do %>
-                      <%= form_tag(Kaffy.Utils.router().kaffy_resource_path(@conn, :list_action, @context, @resource, to_string(action_key)), method: :post, class: "list-action") %>
-                        <input type="submit" name="submit" value="<%= options.name %>" class="dropdown-item" />
-                      </form>
-                    <% end %>
-                  </div>
+              <div class="btn-group">
+                <button type="button" class="btn dropdown-toggle btn-sm btn-secondary" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <i class="mdi mdi-wrench"></i> <span class="d-none d-md-inline">Actions</span>
+                </button>
+                <div class="dropdown-menu">
+                  <%= for {action_key, options} <- list_actions do %>
+                    <%= form_tag(Kaffy.Utils.router().kaffy_resource_path(@conn, :list_action, @context, @resource, to_string(action_key)), method: :post, class: "list-action") %>
+                      <input type="submit" name="submit" value="<%= options.name %>" class="dropdown-item" />
+                    </form>
+                  <% end %>
                 </div>
               </div>
             <% end %>

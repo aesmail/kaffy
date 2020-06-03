@@ -2,6 +2,18 @@
  * custom Kaffy Css
  */
 
+.sidebar .nav .nav-item.active {
+    background: #fdfdfd;
+}
+.sidebar .nav.sub-menu .nav-item .nav-link:hover {
+    color: #4e73df;
+}
+
+.btn-sm, .btn-group-sm > .btn {
+    padding: 0.5rem 0.81rem;
+    margin: 0.2rem;
+}
+
 
 .table .thead-dark th {
     color: #fff;
@@ -15,6 +27,12 @@
 
 .index-table-footer {
     margin-top: 20px;
+}
+
+.btn-outline-primary:hover, .btn-outline-primary:focus, .btn-outline-primary:active {
+    background: -webkit-gradient(linear, left top, right top, from(#559bd8), to(#559bd8));
+    background: linear-gradient(to right, #4e73df, #4e73df);
+    color: #b4c2ec;
 }
 
 /* flatpickr */

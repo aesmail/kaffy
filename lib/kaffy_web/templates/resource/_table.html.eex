@@ -7,7 +7,10 @@
         <%= for entry <- @entries do %>
             <tr>
                 <td>
-                    <input class="kaffy-resource-checkbox" type="checkbox" name="resource" value="<%= entry.id %>" />
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input kaffy-resource-checkbox" id="kaffy-select-<%= entry.id %>" name="resource" value="<%= entry.id %>"/>
+                        <label class="custom-control-label" for="kaffy-select-<%= entry.id %>"></label>
+                    </div>
                 </td>
                 <%= for {field, index} <- Enum.with_index(@fields) do %>
                     <%= if index == 0 do %>
