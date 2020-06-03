@@ -1,46 +1,162 @@
 defmodule Kaffy.Utils do
   @moduledoc false
 
-  def title do
+  @doc """
+  Returns the :admin_title config if present, otherwise returns "Kaffy"
+  """
+  @spec title() :: String.t()
+  def title() do
     env(:admin_title, "Kaffy")
   end
 
+  @doc """
+  Returns the JSON package used by phoenix configs. If no such config exists, raise an exception.
+  """
+  @spec json() :: atom()
   def json() do
-    Application.get_env(:phoenix, :json_library, Jason)
+    case Application.get_env(:phoenix, :json_library) do
+      nil ->
+        raise "A json package must be configured. For example: config :phoenix, :json_library, Jason"
+
+      j ->
+        j
+    end
   end
 
-  def repo do
-    env(:ecto_repo)
+  @doc """
+  Returns the Repo from Kaffy configs. If it is not present, raise an exception.
+  """
+  @spec repo() :: atom()
+  def repo() do
+    case env(:ecto_repo) do
+      nil -> raise "Must define :ecto_repo for Kaffy to work properly."
+      r -> r
+    end
   end
 
+  @doc """
+  Returns the version of the provided app.
+
+  Example:
+
+    > get_version_of(:phoenix)
+    > "1.5.3"
+  """
+  @spec get_version_of(atom()) :: String.t()
   def get_version_of(package) do
     {:ok, version} = :application.get_key(package, :vsn)
     to_string(version)
   end
 
-  def phoenix_1_4?() do
+  @doc """
+  Returns true when phoenix's version has the same prefix as the provided argument, false otherwise.
+
+  Example:
+
+  phoenix_version?("1.4.")
+  > true # returns true for all phoenix 1.4.x versions
+  """
+  @spec phoenix_version?(String.t()) :: boolean()
+  def phoenix_version?(prefix) do
     version = get_version_of(:phoenix)
-    String.starts_with?(version, "1.4.")
+    String.starts_with?(version, prefix)
   end
 
-  def router do
-    Module.concat(env(:router), Helpers)
+  @doc """
+  Returns the router helper module from the configs. Raises if the router isn't specified.
+  """
+  @spec router() :: atom()
+  def router() do
+    case env(:router) do
+      nil -> raise "The :router config must be specified: config :kaffy, router: MyAppWeb.Router"
+      r -> r
+    end
+    |> Module.concat(Helpers)
   end
 
+  @doc """
+  Returns a keyword list of all the resources specified in config.exs.
+
+  If the :resources key isn't specified, this function will load all application modules,
+  filters the schemas modules, combine them into a keyword list, and returns that list.
+
+  Example:
+
+  ```elixir
+    full_resources()
+    [
+      categories: [
+        schemas: [
+          category: [
+            schema: Bakery.Categories.Category,
+            admin: Bakery.Categories.CategoryAdmin
+          ]
+        ]
+      ]
+    ]
+  ```
+  """
+  @spec full_resources() :: [any()]
   def full_resources() do
     env(:resources, setup_resources())
   end
 
+  @doc """
+  Returns a list of contexts as atoms.
+
+  Example:
+
+      iex> contexts()
+      [:blog, :products, :users]
+  """
+  @spec contexts() :: [atom()]
   def contexts() do
     full_resources()
     |> Keyword.keys()
   end
 
+  @doc """
+  Returns the context name based on the configs.
+
+  Example:
+
+  ```elixir
+  context = [
+      categories: [
+        schemas: [
+          category: [schema: Bakery.Categories.Category]
+        ]
+      ]
+    ]
+
+  context_name(context)
+  > "Categories"
+
+  context = [
+      categories: [
+        name: "Types",
+        schemas: [
+          category: [schema: Bakery.Categories.Category]
+        ]
+      ]
+    ]
+
+  context_name(context)
+  > "Types"
+  ```
+  """
+  @spec context_name(list()) :: String.t()
   def context_name(context) do
     default = to_string(context) |> String.capitalize()
     get_in(full_resources(), [context, :name]) || default
   end
 
+  @doc """
+  Returns the context list from the configs for a specific schema.
+
+  This is usually used to get the name or other information of the schema context.
+  """
+  @spec get_context_for_schema(module()) :: list()
   def get_context_for_schema(schema) do
     contexts()
     |> Enum.filter(fn c ->
@@ -61,21 +177,56 @@ defmodule Kaffy.Utils do
     |> Enum.at(0)
   end
 
+  @doc """
+  Returns the resource entry from the configs.
+
+  Example:
+
+      iex> get_resource("blog", "post")
+      [schema: MyApp.Blog.Post, admin: MyApp.Blog.PostAdmin]
+  """
+  @spec get_resource(String.t(), String.t()) :: list()
   def get_resource(context, resource) do
     {context, resource} = convert_to_atoms(context, resource)
     get_in(full_resources(), [context, :schemas, resource])
   end
 
+  @doc """
+  Returns all the schemas for the given context.
+
+  Example:
+
+      iex> schemas_for_context("blog")
+      [
+        post: [schema: MyApp.Blog.Post, admin: MyApp.Blog.PostAdmin],
+        comment: [schema: MyApp.Blog.Comment],
+      ]
+  """
+  @spec schemas_for_context(list()) :: list()
   def schemas_for_context(context) do
     context = convert_to_atom(context)
     get_in(full_resources(), [context, :schemas])
   end
 
+  @doc """
+  Get the schema for the provided context/resource combination.
+
+      iex> schema_for_resource("blog", "post")
+      MyApp.Blog.Post
+  """
+  @spec schema_for_resource(String.t(), String.t()) :: module()
   def schema_for_resource(context, resource) do
     {context, resource} = convert_to_atoms(context, resource)
     get_in(full_resources(), [context, :schemas, resource, :schema])
   end
 
+  @doc """
+  Like schema_for_resource/2, but returns the admin module, or nil if an admin module doesn't exist.
+
+      iex> admin-fro_resource("blog", "post")
+      MyApp.Blog.PostAdmin
+  """
+  @spec admin_for_resource(String.t(), String.t()) :: module() | nil
   def admin_for_resource(context, resource) do
     {context, resource} = convert_to_atoms(context, resource)
     get_in(full_resources(), [context, :schemas, resource, :admin])
@@ -92,15 +243,45 @@ defmodule Kaffy.Utils do
     end
   end
 
+  @doc """
+  Returns true if the given module implements the given function, false otherwise.
+
+      iex> has_function?(MyApp.Blog.PostAdmin, :form_fields)
+      true
+  """
+  @spec has_function?(module(), atom()) :: boolean()
   def has_function?(admin, func) do
     functions = admin.__info__(:functions)
     Keyword.has_key?(functions, func)
   end
 
+  @doc """
+  Returns whether the dashbaord link should be displayed or hidden. Default behavior is to show the dashboard link.
+  This option is taken from the :hide_dashboard config option.
+
+      iex> show_dashboard?()
+      true
+  """
+  @spec show_dashboard?() :: boolean()
   def show_dashboard?() do
     env(:hide_dashboard, false) == false
   end
 
+  @doc """
+  Takes a conn struct and returns the route to display as the root route.
+
+  This option can be optionally provided in the configs. If it is not provided, the default route is the dashboard.
+
+  Options are:
+
+  - [kaffy: :dashboard]
+  - [schema: ["blog", "post"]]
+  - [page: "my-custom-page"]
+
+      iex> home_page(conn)
+      "/admin/dashboard"
+  """
+  @spec home_page(Plug.Conn.t()) :: String.t()
   def home_page(conn) do
     case env(:home_page, kaffy: :dashboard) do
       [kaffy: :dashboard] ->
@@ -126,7 +307,7 @@ defmodule Kaffy.Utils do
     if is_binary(string), do: String.to_existing_atom(string), else: string
   end
 
-  def setup_resources do
+  defp setup_resources do
     otp_app = env(:otp_app)
     {:ok, mods} = :application.get_key(otp_app, :modules)
 
@@ -183,27 +364,5 @@ defmodule Kaffy.Utils do
       put_in(resources, [context_name, :schemas], existing_schemas)
     end)
     |> Enum.sort()
-  end
-
-  @doc """
-  Convert date string to utc_datetime
-
-
-  TODO: We will need to handle the date type bellow:
-  :date           -> ~D[2010-04-17]
-  :time           -> ~T[14:00:00]
-  :time_usec      -> ~T[14:00:00.000000]
-  :utc_datetime   -> ~U[2010-04-17T14:00:00Z]
-  :utc_datetime_usec -> ~U[2010-04-17T14:00:00.000000Z]
-  :naive_datetime -> ~N[2010-04-17 14:00:00]
-  :naive_datetime_usec -> ~N[2010-04-17 14:00:00.000000]
-
-  """
-  def string_to_utc_datetime(date_string) do
-    # date_string = "2020-06-10 12:00"
-    date_string = date_string |> String.replace(" ", "T")
-    date_string = "#{date_string}:00Z"
-    {:ok, utc_datetime, _} = DateTime.from_iso8601(date_string)
-    utc_datetime
   end
 end
