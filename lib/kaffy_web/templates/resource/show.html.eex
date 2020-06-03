@@ -1,26 +1,4 @@
-<div class="row mt-4">
-    <div class="col-md-9">
-        <h1><%= @resource_name %> #<%= @changeset.data.id %></h1>
-    </div>
-    <div class="col-md-3">
-        <%= if Kaffy.ResourceAdmin.resource_actions(@my_resource, @conn) do %>
-            <div class="float-right">
-                <div class="btn-group">
-                    <button type="button" class="btn dropdown-toggle btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="mdi mdi-hammer"></i> <span class="d-none d-md-inline">Actions</span>
-                    </button>
-                    <div class="dropdown-menu">
-                        <%= for {action_key, options} <- Kaffy.ResourceAdmin.resource_actions(@my_resource, @conn) do %>
-                            <%= form_tag(Kaffy.Utils.router().kaffy_resource_path(@conn, :single_action, @context, @resource, @changeset.data.id, to_string(action_key)), method: :post) %>
-                                <input type="submit" name="submit" value="<%= options.name %>" class="dropdown-item" />
-                            </form>
-                        <% end %>
-                    </div>
-                </div>
-            </div>
-        <% end %>
-    </div>
-</div>
+
 
 <%= for error <- Kaffy.ResourceError.display_errors(@changeset) do %>
     <div><%= error %></div>
@@ -28,6 +6,31 @@
 
 <div class="mt-3 grid-margin stretch-card">
     <div class="card shadow border-left-success">
+        <div class="card-header">
+            <div class="row justify-content-between">
+                <div class="col-auto mr-auto">
+                    <h1><%= @resource_name %> #<%= @changeset.data.id %></h1>
+                </div>
+                <div class="col-auto">
+                    <%= if Kaffy.ResourceAdmin.resource_actions(@my_resource, @conn) do %>
+                        <div class="float-right">
+                            <div class="btn-group">
+                                <button type="button" class="btn dropdown-toggle btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="mdi mdi-hammer"></i> <span class="d-none d-md-inline">Actions</span>
+                                </button>
+                                <div class="dropdown-menu">
+                                    <%= for {action_key, options} <- Kaffy.ResourceAdmin.resource_actions(@my_resource, @conn) do %>
+                                        <%= form_tag(Kaffy.Utils.router().kaffy_resource_path(@conn, :single_action, @context, @resource, @changeset.data.id, to_string(action_key)), method: :post) %>
+                                            <input type="submit" name="submit" value="<%= options.name %>" class="dropdown-item" />
+                                        </form>
+                                    <% end %>
+                                </div>
+                            </div>
+                        </div>
+                    <% end %>
+                </div>
+            </div>
+        </div>
         <div class="card-body">
             <%= f = form_for(@changeset, Kaffy.Utils.router().kaffy_resource_path(@conn, :update, @context, @resource, @changeset.data.id), method: :put, multipart: true) %>
                 <%= for {field, options} <- Kaffy.ResourceAdmin.form_fields(@my_resource) do %>

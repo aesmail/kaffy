@@ -1,6 +1,9 @@
-<tr>
+<tr class="bg-light">
     <th>
-        <input class="kaffy-resource-checkbox" type="checkbox" id="kaffy-select-all" name="all-resources" value="" />
+        <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input kaffy-resource-checkbox" id="kaffy-select-all" name="all-resources" value=""/>
+            <label class="custom-control-label" for="kaffy-select-all"></label>
+        </div>
     </th>
     <%= for field <- @fields do %>
         <% field_name = Kaffy.ResourceSchema.kaffy_field_name(@my_resource[:schema], field) |> String.upcase() %>
