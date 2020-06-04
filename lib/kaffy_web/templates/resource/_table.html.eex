@@ -8,7 +8,7 @@
             <tr>
                 <td>
                     <div class="custom-control custom-checkbox">
-                        <input type="checkbox" class="custom-control-input kaffy-resource-checkbox" id="kaffy-select-<%= entry.id %>" name="resource" value="<%= entry.id %>"/>
+                        <input type="checkbox" class="custom-control-input select-item kaffy-resource-checkbox" id="kaffy-select-<%= entry.id %>" name="resource" value="<%= entry.id %>"/>
                         <label class="custom-control-label" for="kaffy-select-<%= entry.id %>"></label>
                     </div>
                 </td>
