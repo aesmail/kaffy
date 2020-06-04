@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="/kaffy/assets/css/style.css">
     <link rel="stylesheet" href="/kaffy/assets/vendors/flatpickr/flatpickr.min.css">
     <link rel="stylesheet" href="/kaffy/assets/css/kaffy.css">
-    <link rel="shortcut icon" href="/kaffy/assets/images/favicon.png" />
+    <link rel="shortcut icon" href="/kaffy/assets/images/favicon/favicon-32x32.png" />
   </head>
   <body>
     <div class="container-scroller">
