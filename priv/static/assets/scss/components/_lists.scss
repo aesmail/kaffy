@@ -18,7 +18,7 @@ dl {
   li {
     padding-left: 1.5rem;
     &:before {
-      font-family: "Material Design Icons";
+      font-family: "Font Awesome 5 Free";
       margin-left: -1.5rem;
       width: 1.5rem;
       margin-right: .5rem;
@@ -86,27 +86,27 @@ dl {
     }
     &:nth-child(1) {
       &:before {
-        background: theme-gradient-color(danger);        
+        background: theme-gradient-color(danger);
       }
     }
     &:nth-child(2) {
       &:before {
-        background: theme-gradient-color(info);        
+        background: theme-gradient-color(info);
       }
     }
     &:nth-child(3) {
       &:before {
-        background: theme-gradient-color(warning);        
+        background: theme-gradient-color(warning);
       }
     }
     &:nth-child(4) {
       &:before {
-        background: theme-gradient-color(success);        
+        background: theme-gradient-color(success);
       }
     }
     &:nth-child(5) {
       &:before {
-        background: theme-gradient-color(primary);        
+        background: theme-gradient-color(primary);
       }
     }
   }

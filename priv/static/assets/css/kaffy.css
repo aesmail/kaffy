@@ -7,6 +7,47 @@
     max-width: 100%;
     height: 28px;
     margin: auto;
+}
+
+
+.sidebar .nav.sub-menu .nav-item .nav-link::before {
+    content: "\f061";
+    font-family: "Font Awesome 5 Free";
+    display: block;
+    position: absolute;
+    left: 0px;
+    top: 50%;
+    -webkit-transform: translateY(-50%);
+    transform: translateY(-50%);
+    color: #d8dff5;
+    font-size: .75rem;
+    font-weight:900;
+}
+
+.sidebar .nav .nav-item .nav-link[aria-expanded="true"] .menu-arrow:before {
+    content: "\f078";
+}
+
+.sidebar .nav .nav-item .nav-link i.menu-arrow::before {
+    content: "\f078";
+    font-family: "Font Awesome 5 Free";
+    line-height: 1;
+    display: block;
+    color: #4285f4;
+    font-size: .75rem;
+    font-weight:900;
+}
+
+.sidebar .nav .nav-item .nav-link.collapsed i.menu-arrow::before {
+    content: "\f053";
+    font-family: "Font Awesome 5 Free";
+    line-height: 1;
+    display: block;
+    color: #c0cbee;
+    font-size: 1rem;
+    font-weight: 900;
+}
+
 
 .checkbox-selected-count {
     margin-left: 0.5rem;
