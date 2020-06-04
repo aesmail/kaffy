@@ -12298,7 +12298,7 @@ code {
       transition-duration: 0s;
       -webkit-transition-duration: 250ms;
       transition-duration: 250ms;
-      font-family: Material Design Icons;
+      font-family: Font Awesome 5 Free;
       opacity: 0;
       filter: alpha(opacity=0);
       -webkit-transform: scale(0);
@@ -12456,7 +12456,7 @@ code {
   border-right: 0;
   border-left: 0;
   border-bottom: 0;
-  font: normal normal normal 24px/1 "Material Design Icons";
+  font: normal normal normal 24px/1 "Font Awesome 5 Free";
   content: "\f140";
   width: auto;
   height: auto;
@@ -12604,7 +12604,7 @@ dl {
     .list-ticked li:before,
     .list-arrow li:before,
     .list-star li:before {
-      font-family: "Material Design Icons";
+      font-family: "Font Awesome 5 Free";
       margin-left: -1.5rem;
       width: 1.5rem;
       margin-right: .5rem; }
@@ -13350,7 +13350,7 @@ dl {
             .sidebar .nav .nav-item .nav-link i.menu-icon:before {
               vertical-align: middle; }
           .sidebar .nav .nav-item .nav-link i.menu-arrow {
-            font: normal normal normal 24px/1 "Material Design Icons";
+            font: normal normal normal 24px/1 "Font Awesome 5 Free";
             line-height: 1;
             font-size: 1.125rem;
             margin-left: auto;
@@ -13438,7 +13438,7 @@ dl {
           border-top: 0; }
           .sidebar .nav.sub-menu .nav-item .nav-link:before {
             content: "\F054";
-            font-family: "Material Design Icons";
+            font-family: "Font Awesome 5 Free";
             display: block;
             position: absolute;
             left: 0px;

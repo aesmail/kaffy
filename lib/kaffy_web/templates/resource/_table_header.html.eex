@@ -11,7 +11,7 @@
         <% order_way = Map.get(@params, "_ow", "desc") %>
         <th>
             <%= if order_field == (elem(field, 0) |> to_string()) do %>
-                <a name="<%= field_name %>" class="kaffy-order-field" data-order="<%= if order_way == "desc" do %>asc<% else %>desc<% end %>" data-field="<%= elem(field, 0) %>"><%= field_name %> <i class="mdi mdi-<%= if order_way == "desc" do %>arrow-down<% else %>arrow-up<% end %>"></i><a>
+                <a name="<%= field_name %>" class="kaffy-order-field" data-order="<%= if order_way == "desc" do %>asc<% else %>desc<% end %>" data-field="<%= elem(field, 0) %>"><%= field_name %> <i class="fas fa-<%= if order_way == "desc" do %>arrow-down<% else %>arrow-up<% end %>"></i><a>
             <% else %>
                 <a name="<%= field_name %>" class="kaffy-order-field" data-order="asc" data-field="<%= elem(field, 0) %>"><%= field_name %><a>
             <% end %>

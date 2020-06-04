@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title><%= Kaffy.Utils.title() %> - Kaffy</title>
-    <link rel="stylesheet" href="/kaffy/assets/vendors/mdi/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="/kaffy/assets/vendors/fontawesome/css/all.css">
     <link rel="stylesheet" href="/kaffy/assets/vendors/css/vendor.bundle.base.css">
     <link rel="stylesheet" href="/kaffy/assets/css/style.css">
     <link rel="stylesheet" href="/kaffy/assets/vendors/flatpickr/flatpickr.min.css">
@@ -24,11 +24,11 @@
         </div>
         <div class="navbar-menu-wrapper d-flex align-items-stretch">
           <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
-            <span class="mdi mdi-menu"></span>
+            <span class="fas fa-bars"></span>
           </button>
 
           <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
-            <span class="mdi mdi-menu"></span>
+            <span class="fas fa-bars"></span>
           </button>
         </div>
       </nav>
@@ -41,7 +41,7 @@
               <li class="nav-item<%= if @conn.assigns[:context] == nil do %> active<% end %>">
                 <%= link to: Kaffy.Utils.router().kaffy_dashboard_path(@conn, :dashboard), class: "nav-link" do %>
                   <span class="menu-title">Dashboard</span>
-                  <i class="mdi mdi-home menu-icon"></i>
+                  <i class="fas fa-home menu-icon"></i>
                 <% end %>
               </li>
             <% end %>
@@ -52,7 +52,7 @@
               <li class="nav-item">
                 <%= link to: Kaffy.Utils.router().kaffy_task_path(@conn, :index), class: "nav-link" do %>
                     <span class="menu-title">Tasks</span>
-                    <i class="mdi mdi-clock-outline menu-icon"></i>
+                    <i class="fas fa-clock menu-icon"></i>
                 <% end %>
               </li>
             <% end %>
@@ -61,7 +61,7 @@
               <li class="nav-item">
                 <%= link to: custom_link.url, class: "nav-link", target: custom_link.target do %>
                   <span class="menu-title"><%= custom_link.name %></span>
-                  <i class="mdi mdi-<%= custom_link.icon %> menu-icon"></i>
+                  <i class="fas fa-<%= custom_link.icon %> menu-icon"></i>
                 <% end %>
               </li>
             <% end %>
@@ -73,7 +73,7 @@
                 <a class="nav-link" href="#kaffy-pages" data-toggle="collapse" aria-expanded="false" aria-controls="kaffy-pages">
                     <span class="menu-title">Pages</span>
                     <i class="menu-arrow"></i>
-                    <i class="mdi mdi-menu menu-icon"></i>
+                    <i class="fas fa-bars menu-icon"></i>
                 </a>
                 <div class="collapse" id="kaffy-pages">
                   <ul class="nav flex-column sub-menu">
@@ -87,10 +87,11 @@
 
             <%= for context <- Kaffy.Utils.contexts() do %>
                 <li class="nav-item<%= if @conn.assigns[:context] == to_string(context) do %> active<% end %>">
-                    <a class="nav-link" href="#<%= context %>-context" data-toggle="collapse" aria-expanded="false" aria-controls="<%= context %>-context">
+                    <a class="nav-link <%= if @conn.assigns[:context] != to_string(context) do %> collapsed<% end %>"
+                       href="#<%= context %>-context" data-toggle="collapse" aria-expanded="false" aria-controls="<%= context %>-context">
                         <span class="menu-title"><%= Kaffy.Utils.context_name(context) %></span>
                         <i class="menu-arrow"></i>
-                        <i class="mdi mdi-menu menu-icon"></i>
+                        <i class="fas fa-bars menu-icon"></i>
                     </a>
                     <div class="collapse<%= if @conn.assigns[:context] == to_string(context) do %> show<% end %>" id="<%= context %>-context">
                       <ul class="nav flex-column sub-menu">
@@ -144,6 +145,5 @@
     <script src="/kaffy/assets/js/misc.js"></script>
     <script src="/kaffy/assets/js/select-all-checkbox.js"></script>
     <script src="/kaffy/assets/js/dashboard.js"></script>
-    <script src="/kaffy/assets/js/todolist.js"></script>
   </body>
 </html>

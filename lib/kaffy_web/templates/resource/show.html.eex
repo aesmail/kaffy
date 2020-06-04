@@ -15,8 +15,8 @@
                     <%= if Kaffy.ResourceAdmin.resource_actions(@my_resource, @conn) do %>
                         <div class="float-right">
                             <div class="btn-group">
-                                <button type="button" class="btn dropdown-toggle btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <i class="mdi mdi-hammer"></i> <span class="d-none d-md-inline">Actions</span>
+                                <button type="button" class="btn dropdown-toggle btn-sm btn-secondary" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fas fa-wrench"></i> <span class="d-none d-md-inline">Actions</span>
                                 </button>
                                 <div class="dropdown-menu">
                                     <%= for {action_key, options} <- Kaffy.ResourceAdmin.resource_actions(@my_resource, @conn) do %>
@@ -48,7 +48,7 @@
                     <input type="submit" name="submit" value="Save and add another" class="btn btn-sm btn-primary"/>
                     <input type="submit" name="submit" value="Save and continue editing" class="btn btn-sm btn-primary" />
                     <button type="button" class="btn btn-sm btn-danger float-right" data-toggle="modal" data-target="#delete-modal">
-                        <i class="mdi mdi-delete"></i> Delete
+                        <i class="fas fa-trash"></i> Delete
                     </button>
                 </div>
             </form>
