@@ -24,6 +24,10 @@
     font-weight:900;
 }
 
+.sidebar .nav .nav-item .nav-link[aria-expanded="true"] .menu-arrow:before {
+    content: "\f078";
+}
+
 .sidebar .nav .nav-item .nav-link i.menu-arrow::before {
     content: "\f078";
     font-family: "Font Awesome 5 Free";
