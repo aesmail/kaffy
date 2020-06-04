@@ -1,7 +1,7 @@
 <tr class="bg-light">
     <th>
         <div class="custom-control custom-checkbox">
-            <input type="checkbox" class="custom-control-input kaffy-resource-checkbox" id="kaffy-select-all" name="all-resources" value=""/>
+            <input type="checkbox" class="custom-control-input select-all kaffy-resource-checkbox" id="kaffy-select-all" name="all-resources" value=""/>
             <label class="custom-control-label" for="kaffy-select-all"></label>
         </div>
     </th>

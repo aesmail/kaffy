@@ -6,6 +6,7 @@
           <h3>
             <%= Kaffy.ResourceAdmin.plural_name(@my_resource) %><br/>
             <span class="badge badge-secondary">(~ <%= @filtered_count %> records)</span>
+            <div id="checkbox-selected-count" class="checkbox-selected-count float-right"></div>
           </h3>
         </div>
         <div class="col-auto">

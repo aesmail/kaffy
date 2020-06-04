@@ -2,6 +2,10 @@
  * custom Kaffy Css
  */
 
+.checkbox-selected-count {
+    margin-left: 0.5rem;
+}
+
 .sidebar .nav .nav-item:hover {
     background: #1240c4;
 }
