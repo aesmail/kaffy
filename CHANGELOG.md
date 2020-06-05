@@ -1,4 +1,16 @@
-### v0.8.1 (in development)
+### v0.9.0 (in development)
+
+### v0.8.1 (2020-06-05)
+
+#### Bug Fixes
+
+- The "Select all" checkbox didn't work properly (thanks @areski).
+- Kaffy crashed when opening the page to select a record for the belogns_to association.
+
+#### Enhancements
+
+- UI improvements on the index page (thanks @areski).
+- Replace MDI icons with FontAwesome.
 
 ### v0.8.0 (2020-06-03)
 
@@ -6,7 +18,7 @@
 
 - removed `:permission` field option in favor of `:create` and `:update` options for more control and customization.
 
-### New Features
+#### New Features
 
 - ability to add custom links to the side menu.
 - ability to add add custom pages.
