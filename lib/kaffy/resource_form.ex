@@ -307,7 +307,7 @@ defmodule Kaffy.ResourceForm do
   def kaffy_input(conn, changeset, form, field, options) do
     ft = Kaffy.ResourceSchema.field_type(changeset.data.__struct__, field)
 
-    case Kaffy.Utils.is_module(ft) do
+    case Kaffy.Utils.is_module(ft) && Keyword.has_key?(ft.__info__(:functions), :render_form) do
       true ->
         ft.render_form(conn, changeset, form, field, options)
 
