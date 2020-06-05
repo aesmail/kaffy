@@ -35,7 +35,7 @@
       <div class="container-fluid page-body-wrapper">
         <div class="main-panel">
           <div class="content-wrapper">
-            <%= if Kaffy.Utils.phoenix_1_4?() do %>
+            <%= if Kaffy.Utils.phoenix_version?("1.4.") do %>
               <%= render(@view_module, @view_template, assigns) %>
             <% else %>
               <%= @inner_content %>
