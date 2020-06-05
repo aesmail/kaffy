@@ -256,6 +256,12 @@ defmodule Kaffy.Utils do
   end
 
   @doc """
+  Returns true if `thing` is a module, false otherwise.
+  """
+  @spec is_module(module()) :: boolean()
+  def is_module(thing), do: is_atom(thing) && function_exported?(thing, :__info__, 1)
+
+  @doc """
   Returns whether the dashbaord link should be displayed or hidden. Default behavior is to show the dashboard link.
   This option is taken from the :hide_dashboard config option.
 

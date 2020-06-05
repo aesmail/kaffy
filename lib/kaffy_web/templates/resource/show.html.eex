@@ -35,10 +35,7 @@
             <%= f = form_for(@changeset, Kaffy.Utils.router().kaffy_resource_path(@conn, :update, @context, @resource, @changeset.data.id), method: :put, multipart: true) %>
                 <%= for {field, options} <- Kaffy.ResourceAdmin.form_fields(@my_resource) do %>
                     <%= if options.update != :hidden do %>
-                        <div class="form-group">
-                            <%= Kaffy.ResourceForm.form_label(f, {field, options}) %>
-                            <%= Kaffy.ResourceForm.form_field(@changeset, f, {field, options}, class: "form-control", conn: @conn) %>
-                        </div>
+                        <%= Kaffy.ResourceForm.kaffy_input @conn, @changeset, f, field, options %>
                     <% end %>
                 <% end %>
 

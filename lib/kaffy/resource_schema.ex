@@ -145,9 +145,13 @@ defmodule Kaffy.ResourceSchema do
 
   def kaffy_field_value(schema, {field, options}) do
     default_value = kaffy_field_value(schema, field)
+    ft = Kaffy.ResourceSchema.field_type(schema.__struct__, field)
     value = Map.get(options || %{}, :value)
 
     cond do
+      is_function(value) ->
+        value.(schema)
+
       is_map(value) && Map.has_key?(value, :__struct__) ->
         if value.__struct__ in [NaiveDateTime, DateTime, Date, Time] do
           value
@@ -157,14 +161,14 @@ defmodule Kaffy.ResourceSchema do
           |> Kaffy.Utils.json().encode!(escape: :html_safe, pretty: true)
         end
 
-      is_binary(value) ->
-        value
-
-      is_function(value) ->
-        value.(schema)
+      Kaffy.Utils.is_module(ft) ->
+        ft.render_index(schema, field, options)
 
       is_map(value) ->
         Kaffy.Utils.json().encode!(value, escape: :html_safe, pretty: true)
+
+      is_binary(value) ->
+        value
 
       true ->
         default_value
@@ -238,7 +242,8 @@ defmodule Kaffy.ResourceSchema do
   def filter_fields(_), do: nil
 
   def field_type(_schema, {_, type}), do: type
-  def field_type(schema, field), do: schema.__schema__(:type, field)
+  def field_type(schema, field), do: schema.__changeset__ |> Map.get(field, :string)
+  # def field_type(schema, field), do: schema.__schema__(:type, field)
 
   def get_map_fields(schema) do
     get_all_fields(schema)

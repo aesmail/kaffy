@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="/kaffy/assets/vendors/flatpickr/flatpickr.min.css">
     <link rel="stylesheet" href="/kaffy/assets/css/kaffy.css">
     <link rel="shortcut icon" href="/kaffy/assets/images/favicon.png" />
+    <script src="/kaffy/assets/vendors/js/vendor.bundle.base.js"></script>
   </head>
   <body>
     <div class="container-scroller">
@@ -135,7 +136,6 @@
       </div>
     </div>
 
-    <script src="/kaffy/assets/vendors/js/vendor.bundle.base.js"></script>
     <script src="/kaffy/assets/vendors/flatpickr/flatpickr.min.js"></script>
     <script src="/kaffy/assets/vendors/chart.js/Chart.min.js"></script>
     <script src="/kaffy/assets/vendors/js/ckeditor.js"></script>

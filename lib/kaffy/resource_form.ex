@@ -303,4 +303,23 @@ defmodule Kaffy.ResourceForm do
         number_input(form, field, opts)
     end
   end
+
+  def kaffy_input(conn, changeset, form, field, options) do
+    ft = Kaffy.ResourceSchema.field_type(changeset.data.__struct__, field)
+
+    case Kaffy.Utils.is_module(ft) do
+      true ->
+        ft.render_form(conn, changeset, form, field, options)
+
+      false ->
+        content_tag :div, class: "form-group" do
+          label_tag = if ft != :boolean, do: form_label(form, {field, options}), else: ""
+
+          field_tag =
+            form_field(changeset, form, {field, options}, class: "form-control", conn: conn)
+
+          [label_tag, field_tag]
+        end
+    end
+  end
 end
