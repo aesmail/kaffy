@@ -11,7 +11,7 @@
                 <% {field, filters} = Kaffy.ResourceSchema.kaffy_field_filters(@my_resource[:schema], field) %>
                 <%= if filters do %>
                     <th class="bg-light">
-                        <select class="kaffy-filter custom-select" id="kaffy-field-<%= index %>" data-field-name="<%= Kaffy.ResourceSchema.kaffy_field_name(@my_resource[:schema], field) %>">
+                         <select class="kaffy-filter custom-select" id="kaffy-field-<%= index %>" data-field-name="<%= Kaffy.ResourceSchema.kaffy_field_name(@my_resource[:schema], field) %>">
                             <option value="">All</option>
                             <%= for {human, machine} <- filters do %>
                                 <option value="<%= machine %>"><%= human %></option>

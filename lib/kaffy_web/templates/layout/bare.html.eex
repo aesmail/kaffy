@@ -4,7 +4,6 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title><%= Kaffy.Utils.title() %> - Kaffy</title>
-    <link rel="stylesheet" href="/kaffy/assets/vendors/mdi/css/materialdesignicons.min.css">
     <link rel="stylesheet" href="/kaffy/assets/vendors/css/vendor.bundle.base.css">
     <link rel="stylesheet" href="/kaffy/assets/css/style.css">
     <link rel="stylesheet" href="/kaffy/assets/vendors/flatpickr/flatpickr.min.css">
@@ -24,11 +23,11 @@
         </div>
         <div class="navbar-menu-wrapper d-flex align-items-stretch">
           <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
-            <span class="mdi mdi-menu"></span>
+            <span class="fas fa-bars"></span>
           </button>
 
           <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
-            <span class="mdi mdi-menu"></span>
+            <span class="fas fa-bars"></span>
           </button>
         </div>
       </nav>
@@ -61,6 +60,5 @@
     <script src="/kaffy/assets/js/hoverable-collapse.js"></script>
     <script src="/kaffy/assets/js/misc.js"></script>
     <script src="/kaffy/assets/js/dashboard.js"></script>
-    <script src="/kaffy/assets/js/todolist.js"></script>
   </body>
 </html>

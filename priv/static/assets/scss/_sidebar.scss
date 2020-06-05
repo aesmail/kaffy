@@ -55,7 +55,7 @@
           }
 
           &.menu-arrow {
-            font: normal normal normal 24px/1 "Material Design Icons";
+            font: normal normal normal 24px/1 "Font Awesome 5 Free";
             line-height: 1;
             font-size: $sidebar-icon-font-size;
             margin-left: auto;
@@ -106,7 +106,7 @@
         > .nav-link {
           .menu-title {
             color: $sidebar-light-menu-active-color;
-            font-family: $type1-medium;            
+            font-family: $type1-medium;
           }
           i {
             color: theme-color(primary);
@@ -192,7 +192,7 @@
           border-top: 0;
           &:before {
             content: "\F054";
-            font-family: "Material Design Icons";
+            font-family: "Font Awesome 5 Free";
             display: block;
             position: absolute;
             left:0px;

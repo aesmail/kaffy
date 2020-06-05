@@ -2,7 +2,7 @@
     <div class="card bg-<%= @widget.type %> card-img-holder text-white">
         <div class="card-body">
             <img src="/kaffy/assets/images/dashboard/circle.svg" class="card-img-absolute" alt="circle-image" />
-            <h4 class="font-weight-normal mb-3"><%= @widget.title %> <i class="mdi mdi-<%= @widget.icon %> mdi-24px float-right"></i></h4>
+            <h4 class="font-weight-normal mb-3"><%= @widget.title %> <i class="fas fa-<%= @widget.icon %> float-right"></i></h4>
             <h2 class="mb-5"><%= @widget.content %></h2>
             <h6 class="card-text"><%= @widget.subcontent %></h6>
         </div>

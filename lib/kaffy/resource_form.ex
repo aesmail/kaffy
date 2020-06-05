@@ -255,7 +255,7 @@ defmodule Kaffy.ResourceForm do
                 ),
                 content_tag :div, class: "input-group-append" do
                   content_tag :span, class: "input-group-text", id: field do
-                    link(content_tag(:i, "", class: "mdi mdi-magnify"),
+                    link(content_tag(:i, "", class: "fas fa-search"),
                       to:
                         Kaffy.Utils.router().kaffy_resource_path(
                           conn,

@@ -1,7 +1,7 @@
 <div class="col-md-<%= @widget.width %> grid-margin stretch-card">
     <div class="card shadow border-left-success">
         <div class="card-body">
-            <p class="font-weight-normal mb-1 text-success"><strong><%= @widget.title %></strong> <i class="mdi mdi-<%= @widget.icon %> mdi-20px float-right"></i></p>
+            <p class="font-weight-normal mb-1 text-success"><strong><%= @widget.title %></strong> <i class="fss fa-<%= @widget.icon %> float-right"></i></p>
             <h2 class="mt-1"><%= @widget.content %></h2>
         </div>
     </div>
