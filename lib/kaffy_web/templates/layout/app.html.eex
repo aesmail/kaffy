@@ -70,7 +70,7 @@
 
             <%= if !Enum.empty?(custom_pages) do %>
               <li class="nav-item">
-                <a class="nav-link" href="#kaffy-pages" data-toggle="collapse" aria-expanded="false" aria-controls="kaffy-pages">
+                <a class="nav-link collapsed" href="#kaffy-pages" data-toggle="collapse" aria-expanded="false" aria-controls="kaffy-pages">
                     <span class="menu-title">Pages</span>
                     <i class="menu-arrow"></i>
                     <i class="fas fa-bars menu-icon"></i>
