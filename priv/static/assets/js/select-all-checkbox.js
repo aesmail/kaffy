@@ -30,7 +30,6 @@
       alert("no selected items!!!");
     } else {
       var values = items.join(',');
-      console.log(values);
       var html = $("<div></div>");
       html.html("selected:" + values);
       html.appendTo("body");
@@ -49,7 +48,6 @@
   //check selected items
   $("input.select-item").click(function () {
     var checked = this.checked;
-    console.log(checked);
     checkSelected();
   });
 
