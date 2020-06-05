@@ -161,7 +161,7 @@ defmodule Kaffy.ResourceSchema do
           |> Kaffy.Utils.json().encode!(escape: :html_safe, pretty: true)
         end
 
-      Kaffy.Utils.is_module(ft) ->
+      Kaffy.Utils.is_module(ft) && Keyword.has_key?(ft.__info__(:functions), :render_index) ->
         ft.render_index(schema, field, options)
 
       is_map(value) ->
