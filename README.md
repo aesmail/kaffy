@@ -301,12 +301,17 @@ If this function is not defined, Kaffy will return all fields with their respect
 
 ```elixir
 defmodule MyApp.Blog.PostAdmin do
+
+  def popular?(p) do
+    if (p.popular), do: "✅", else: "❌"
+  end
+
   def index(_) do
     [
       title: nil,
       views: %{name: "Hits"},
       date: %{name: "Date Added", value: fn p -> p.inserted_at end},
-      good: %{name: "Popular?", value: fn _ -> Enum.random(["Yes", "No"]) end}
+      popular: %{name: "Popular?", value: fn p -> popular?(p) end},
     ]
   end
 end

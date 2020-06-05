@@ -6,11 +6,12 @@
           <h3>
             <%= Kaffy.ResourceAdmin.plural_name(@my_resource) %><br/>
             <span class="badge badge-secondary">(~ <%= @filtered_count %> records)</span>
+            <div id="checkbox-selected-count" class="checkbox-selected-count float-right"></div>
           </h3>
         </div>
         <div class="col-auto">
           <%= link to: Kaffy.Utils.router().kaffy_resource_path(@conn, :new, @context, @resource), class: "btn btn-outline-primary" do %>
-            <i class="mdi mdi-plus"></i>
+            <i class="fas fa-plus"></i>
             New <%= Kaffy.ResourceAdmin.singular_name(@my_resource) %>
           <% end %>
         </div>
@@ -29,7 +30,7 @@
             <%= if list_actions = Kaffy.ResourceAdmin.list_actions(@my_resource, @conn) do %>
               <div class="btn-group">
                 <button type="button" class="btn dropdown-toggle btn-sm btn-secondary" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  <i class="mdi mdi-wrench"></i> <span class="d-none d-md-inline">Actions</span>
+                  <i class="fas fa-wrench"></i> <span class="d-none d-md-inline">Actions</span>
                 </button>
                 <div class="dropdown-menu">
                   <%= for {action_key, options} <- list_actions do %>
