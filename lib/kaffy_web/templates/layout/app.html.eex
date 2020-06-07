@@ -10,6 +10,9 @@
     <link rel="stylesheet" href="/kaffy/assets/vendors/flatpickr/flatpickr.min.css">
     <link rel="stylesheet" href="/kaffy/assets/css/kaffy.css">
     <link rel="shortcut icon" href="/kaffy/assets/images/favicon/favicon-32x32.png" />
+    <%= for css <- Kaffy.Utils.extensions(@conn).stylesheets do %>
+      <%= css %>
+    <% end %>
     <script src="/kaffy/assets/vendors/js/vendor.bundle.base.js"></script>
   </head>
   <body>
@@ -145,5 +148,8 @@
     <script src="/kaffy/assets/js/misc.js"></script>
     <script src="/kaffy/assets/js/select-all-checkbox.js"></script>
     <script src="/kaffy/assets/js/dashboard.js"></script>
+    <%= for js <- Kaffy.Utils.extensions(@conn).javascripts do %>
+      <%= js %>
+    <% end %>
   </body>
 </html>

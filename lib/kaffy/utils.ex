@@ -301,6 +301,28 @@ defmodule Kaffy.Utils do
     end
   end
 
+  def extensions(conn) do
+    exts = env(:extensions, [])
+
+    stylesheets =
+      Enum.map(exts, fn ext ->
+        case function_exported?(ext, :stylesheets, 1) do
+          true -> ext.stylesheets(conn)
+          false -> []
+        end
+      end)
+
+    javascripts =
+      Enum.map(exts, fn ext ->
+        case function_exported?(ext, :javascripts, 1) do
+          true -> ext.javascripts(conn)
+          false -> []
+        end
+      end)
+
+    %{stylesheets: stylesheets, javascripts: javascripts}
+  end
+
   defp env(key, default \\ nil) do
     Application.get_env(:kaffy, key, default)
   end
