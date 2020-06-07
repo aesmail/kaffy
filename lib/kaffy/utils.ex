@@ -308,8 +308,8 @@ defmodule Kaffy.Utils do
   end
 
   defp setup_resources do
-    otp_app = env(:otp_app)
-    {:ok, mods} = :application.get_key(otp_app, :modules)
+    # otp_app = env(:otp_app)
+    mods = :code.all_loaded() |> Enum.map(fn {m, _} -> m end)
 
     get_schemas(mods)
     |> build_resources()
@@ -317,9 +317,20 @@ defmodule Kaffy.Utils do
 
   defp get_schemas(mods) do
     Enum.filter(mods, fn m ->
-      functions = m.__info__(:functions)
-      Keyword.has_key?(functions, :__schema__) && Map.has_key?(m.__struct__, :__meta__)
+      functions =
+        m not in get_excluded_schemas() && is_module(m) &&
+          function_exported?(m, :__info__, 1) &&
+          m.__info__(:functions)
+
+      case is_list(functions) do
+        true -> Keyword.has_key?(functions, :__schema__) && Map.has_key?(m.__struct__, :__meta__)
+        false -> false
+      end
     end)
+  end
+
+  defp get_excluded_schemas() do
+    [Ecto.Schema, Ecto.Migration.SchemaMigration]
   end
 
   defp build_resources(schemas) do
