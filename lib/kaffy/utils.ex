@@ -147,7 +147,7 @@ defmodule Kaffy.Utils do
   """
   @spec context_name(list()) :: String.t()
   def context_name(context) do
-    default = to_string(context) |> String.capitalize()
+    default = Kaffy.ResourceAdmin.humanize_term(context)
     get_in(full_resources(), [context, :name]) || default
   end
 
