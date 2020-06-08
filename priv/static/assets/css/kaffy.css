@@ -24,8 +24,17 @@
     font-weight:900;
 }
 
+.sidebar .nav .nav-item .nav-link .menu-arrow{
+    margin-right: 0.4rem;
+}
+
 .sidebar .nav .nav-item .nav-link[aria-expanded="true"] .menu-arrow:before {
     content: "\f078";
+    color: #c0cbee;
+}
+
+.sidebar .nav .nav-item.active .nav-link[aria-expanded="true"] .menu-arrow:before {
+    color: #4285f4;
 }
 
 .sidebar .nav .nav-item .nav-link i.menu-arrow::before {
@@ -48,6 +57,9 @@
     font-weight: 900;
 }
 
+.sidebar .nav .nav-item.active .nav-link.collapsed .menu-arrow:before {
+    color: #4285f4;
+}
 
 .checkbox-selected-count {
     margin-left: 0.5rem;
