@@ -46,7 +46,7 @@
               </li>
             <% end %>
 
-            <% tasks = Kaffy.ResourceAdmin.tasks_info() %>
+            <% tasks = Kaffy.Tasks.tasks_info() %>
 
             <%= if not Enum.empty?(tasks) do %>
               <li class="nav-item">

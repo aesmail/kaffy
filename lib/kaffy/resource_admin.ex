@@ -337,29 +337,6 @@ defmodule Kaffy.ResourceAdmin do
     |> Enum.at(0)
   end
 
-  def scheduled_tasks(resource) do
-    Utils.get_assigned_value_or_default(resource, :scheduled_tasks, [])
-  end
-
-  def collect_tasks() do
-    Enum.reduce(Kaffy.Utils.contexts(), [], fn c, all ->
-      tasks =
-        Enum.reduce(Kaffy.Utils.schemas_for_context(c), [], fn {_, resource}, all ->
-          all ++ Kaffy.ResourceAdmin.scheduled_tasks(resource)
-        end)
-
-      all ++ tasks
-    end)
-  end
-
-  def tasks_info() do
-    children = DynamicSupervisor.which_children(KaffyTaskSupervisor)
-
-    Enum.map(children, fn {_, p, _, _} ->
-      GenServer.call(p, :info)
-    end)
-  end
-
   def custom_links(resource, location \\ nil) do
     links = Utils.get_assigned_value_or_default(resource, :custom_links, [])
 

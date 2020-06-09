@@ -12,7 +12,7 @@
             <th>Last Failed Run (UTC)</th>
         </tr>
 
-        <%= for task <- Kaffy.ResourceAdmin.tasks_info() do %>
+        <%= for task <- Kaffy.Tasks.tasks_info() do %>
             <tr>
                 <td><%= task.name %></td>
                 <td><%= task.every %></td>
