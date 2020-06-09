@@ -23,8 +23,9 @@ defmodule KaffyWeb.ResourceController do
       true ->
         fields = Kaffy.ResourceAdmin.index(my_resource)
         {filtered_count, entries} = Kaffy.ResourceQuery.list_resource(my_resource, params)
+        items_per_page = Map.get(params, "limit", "100") |> String.to_integer()
         page = Map.get(params, "page", "1") |> String.to_integer()
-        has_next = round(filtered_count / page) > page
+        has_next = round(filtered_count / items_per_page) > page
         next_class = if has_next, do: "", else: " disabled"
         has_prev = page >= 2
         prev_class = if has_prev, do: "", else: " disabled"
@@ -57,8 +58,9 @@ defmodule KaffyWeb.ResourceController do
       true ->
         fields = Kaffy.ResourceAdmin.index(my_resource)
         {filtered_count, entries} = Kaffy.ResourceQuery.list_resource(my_resource, params)
+        items_per_page = Map.get(params, "limit", "100") |> String.to_integer()
         page = Map.get(params, "page", "1") |> String.to_integer()
-        has_next = round(filtered_count / page) > page
+        has_next = round(filtered_count / items_per_page) > page
         next_class = if has_next, do: "", else: " disabled"
         has_prev = page >= 2
         prev_class = if has_prev, do: "", else: " disabled"
