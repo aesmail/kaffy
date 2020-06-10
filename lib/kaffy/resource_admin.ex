@@ -369,7 +369,7 @@ defmodule Kaffy.ResourceAdmin do
       :sub -> Enum.filter(links, fn l -> Map.get(l, :location, :sub) == :sub end)
     end
     |> Enum.sort_by(fn l -> Map.get(l, :order, 999) end)
-    |> Enum.map(fn l -> Map.merge(%{target: "_self", icon: "link"}, l) end)
+    |> Enum.map(fn l -> Map.merge(%{target: "_self", icon: "link", method: :get}, l) end)
   end
 
   def collect_links(location) do
