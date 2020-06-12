@@ -11,7 +11,7 @@ defmodule Kaffy.ResourceCallbacks do
       result =
         with {:ok, changeset} <- before_create(conn, resource, changeset),
              {:ok, changeset} <- before_save(conn, resource, changeset),
-             {:ok, entry} <- exec_create(conn, resource, changeset),
+             {:ok, entry} <- exec_insert(conn, resource, changeset),
              {:ok, entry} <- after_save(conn, resource, entry),
              do: after_create(conn, resource, entry)
 
@@ -23,15 +23,14 @@ defmodule Kaffy.ResourceCallbacks do
     end)
   end
 
-  defp exec_create(conn, resource, changeset) do
-    with {:ok, entry} <- overwritten_create(conn, resource, changeset) do
+  defp exec_insert(conn, resource, changeset) do
+    with {:ok, entry} <- insert(conn, resource, changeset) do
       {:ok, entry}
     else
       {:not_found} ->
         Kaffy.Utils.repo().insert(changeset)
 
       unexpected_error ->
-        IO.inspect("Unexpected error: #{inspect(unexpected_error)}")
         {:error, unexpected_error}
     end
   end
@@ -44,7 +43,7 @@ defmodule Kaffy.ResourceCallbacks do
       result =
         with {:ok, changeset} <- before_update(conn, resource, changeset),
              {:ok, changeset} <- before_save(conn, resource, changeset),
-             {:ok, entry} <- Kaffy.Utils.repo().update(changeset),
+             {:ok, entry} <- exec_update(conn, resource, changeset),
              {:ok, entry} <- after_save(conn, resource, entry),
              do: after_update(conn, resource, entry)
 
@@ -54,6 +53,18 @@ defmodule Kaffy.ResourceCallbacks do
         {:error, entry, error} -> repo.rollback({entry, error})
       end
     end)
+  end
+
+  defp exec_update(conn, resource, changeset) do
+    with {:ok, entry} <- update(conn, resource, changeset) do
+      {:ok, entry}
+    else
+      {:not_found} ->
+        Kaffy.Utils.repo().update(changeset)
+
+      unexpected_error ->
+        {:error, unexpected_error}
+    end
   end
 
   def delete_callbacks(conn, resource, entry) do
@@ -73,6 +84,18 @@ defmodule Kaffy.ResourceCallbacks do
     end)
   end
 
+  defp exec_update(conn, resource, changeset) do
+    with {:ok, entry} <- delete(conn, resource, changeset) do
+      {:ok, entry}
+    else
+      {:not_found} ->
+        Kaffy.Utils.repo().delete(changeset)
+
+      unexpected_error ->
+        {:error, unexpected_error}
+    end
+  end
+
   defp before_create(conn, resource, changeset) do
     Utils.get_assigned_value_or_default(
       resource,
@@ -83,10 +106,10 @@ defmodule Kaffy.ResourceCallbacks do
     )
   end
 
-  defp overwritten_create(conn, resource, changeset) do
+  defp insert(conn, resource, changeset) do
     Utils.get_assigned_value_or_default(
       resource,
-      :overwritten_create,
+      :insert,
       {:not_found},
       [conn, changeset],
       false
@@ -127,6 +150,16 @@ defmodule Kaffy.ResourceCallbacks do
     Utils.get_assigned_value_or_default(resource, :after_save, {:ok, entry}, [conn, entry], false)
   end
 
+  defp update(conn, resource, changeset) do
+    Utils.get_assigned_value_or_default(
+      resource,
+      :update,
+      {:not_found},
+      [conn, changeset],
+      false
+    )
+  end
+
   defp after_update(conn, resource, entry) do
     Utils.get_assigned_value_or_default(
       resource,
@@ -144,6 +177,16 @@ defmodule Kaffy.ResourceCallbacks do
       resource,
       :before_delete,
       {:ok, changeset},
+      [conn, changeset],
+      false
+    )
+  end
+
+  defp delete(conn, resource, changeset) do
+    Utils.get_assigned_value_or_default(
+      resource,
+      :delete,
+      {:not_found},
       [conn, changeset],
       false
     )
