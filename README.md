@@ -664,6 +664,40 @@ defmodule MyApp.Blog.PostAdmin do
 end
 ```
 
+### Overwrite actions
+
+Sometimes you may need to overwrite the way Kaffy is creating, updating, or deleting records.
+
+You can define you own Admin function to perform those actions. This can be useful if you are creating complex records, importing files, etc...
+
+The function that can be overwriten are:
+
+- `insert/2`
+- `update/2`
+- `delete/2`
+
+`insert/2`, `update/2` & `delete/2` functions are passed the current `conn` and a changeset.
+They must return `{:ok, record}` to continue.
+
+```elixir
+defmodule MyApp.Blog.PostAdmin do
+  def insert(conn, changeset) do
+    entry = Post.create_complex_post(conn.params)
+    {:ok, entry}
+  end
+
+  def update(conn, changeset) do
+    entry = Post.update_complex_post(conn.params["id"])
+    {:ok, entry}
+  end
+
+  def delete(conn, changeset) do
+    entry = Post.delete_complex_post(conn.params["id"])
+    {:ok, entry}
+  end
+end
+```
+
 ### Scheduled Tasks
 
 Kaffy supports simple scheduled tasks. Tasks are functions that are run periodically. Behind the scenes, they are put inside `GenServer`s and supervised with a `DynamicSupervisor`.
