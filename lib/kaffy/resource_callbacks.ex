@@ -9,11 +9,11 @@ defmodule Kaffy.ResourceCallbacks do
 
     repo.transaction(fn ->
       result =
-        with {:ok, changeset} <- before_create(conn, resource, changeset),
+        with {:ok, changeset} <- before_insert(conn, resource, changeset),
              {:ok, changeset} <- before_save(conn, resource, changeset),
              {:ok, entry} <- exec_insert(conn, resource, changeset),
              {:ok, entry} <- after_save(conn, resource, entry),
-             do: after_create(conn, resource, entry)
+             do: after_insert(conn, resource, entry)
 
       case result do
         {:ok, entry} -> entry
@@ -96,10 +96,10 @@ defmodule Kaffy.ResourceCallbacks do
     end
   end
 
-  defp before_create(conn, resource, changeset) do
+  defp before_insert(conn, resource, changeset) do
     Utils.get_assigned_value_or_default(
       resource,
-      :before_create,
+      :before_insert,
       {:ok, changeset},
       [conn, changeset],
       false
@@ -116,10 +116,10 @@ defmodule Kaffy.ResourceCallbacks do
     )
   end
 
-  defp after_create(conn, resource, entry) do
+  defp after_insert(conn, resource, entry) do
     Utils.get_assigned_value_or_default(
       resource,
-      :after_create,
+      :after_insert,
       {:ok, entry},
       [conn, entry],
       false

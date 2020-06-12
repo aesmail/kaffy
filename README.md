@@ -597,14 +597,14 @@ There are a few callbacks that are called every time you create, update, or dele
 
 These callbacks are:
 
-- `before_create/2`
+- `before_insert/2`
 - `before_update/2`
 - `before_delete/2`
 - `before_save/2`
 - `after_save/2`
 - `after_delete/2`
 - `after_update/2`
-- `after_create/2`
+- `after_insert/2`
 
 `before_*` functions are passed the current `conn` and a changeset. `after_*` functions are passed the current `conn` and the record itself. With the exception of `before_delete/2` and `after_delete/2` which are both passed the current `conn` and the record itself.
 
@@ -620,11 +620,11 @@ To prevent the chain from continuing and roll back any changes:
 
 When creating a new record, the following functions are called in this order:
 
-- `before_create/2`
+- `before_insert/2`
 - `before_save/2`
 - inserting the record happens here: `Repo.insert/1`
 - `after_save/2`
-- `after_create/2`
+- `after_insert/2`
 
 When updating an existing record, the following functions are called in this order:
 
@@ -644,14 +644,14 @@ It's important to know that all callbacks are run inside a transaction. So in ca
 
 ```elixir
 defmodule MyApp.Blog.PostAdmin do
-  def before_create(conn, changeset) do
+  def before_insert(conn, changeset) do
     case conn.assigns.user.username == "aesmail" do
       true -> {:error, changeset} # aesmail should never create a post
       false -> {:ok, changeset}
     end
   end
 
-  def after_create(_conn, post) do
+  def after_insert(_conn, post) do
     {:error, post, "This will prevent posts from being created"}
   end
 
