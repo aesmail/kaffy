@@ -27,7 +27,7 @@ defmodule Kaffy.ResourceCallbacks do
     with {:ok, entry} <- insert(conn, resource, changeset) do
       {:ok, entry}
     else
-      {:not_found} ->
+      {:error, :not_found} ->
         Kaffy.Utils.repo().insert(changeset)
 
       unexpected_error ->
@@ -59,7 +59,7 @@ defmodule Kaffy.ResourceCallbacks do
     with {:ok, entry} <- update(conn, resource, changeset) do
       {:ok, entry}
     else
-      {:not_found} ->
+      {:error, :not_found} ->
         Kaffy.Utils.repo().update(changeset)
 
       unexpected_error ->
@@ -88,7 +88,7 @@ defmodule Kaffy.ResourceCallbacks do
     with {:ok, entry} <- delete(conn, resource, changeset) do
       {:ok, entry}
     else
-      {:not_found} ->
+      {:error, :not_found} ->
         Kaffy.Utils.repo().delete(changeset)
 
       unexpected_error ->
@@ -110,7 +110,7 @@ defmodule Kaffy.ResourceCallbacks do
     Utils.get_assigned_value_or_default(
       resource,
       :insert,
-      {:not_found},
+      {:error, :not_found},
       [conn, changeset],
       false
     )
@@ -154,7 +154,7 @@ defmodule Kaffy.ResourceCallbacks do
     Utils.get_assigned_value_or_default(
       resource,
       :update,
-      {:not_found},
+      {:error, :not_found},
       [conn, changeset],
       false
     )
@@ -186,7 +186,7 @@ defmodule Kaffy.ResourceCallbacks do
     Utils.get_assigned_value_or_default(
       resource,
       :delete,
-      {:not_found},
+      {:error, :not_found},
       [conn, changeset],
       false
     )
