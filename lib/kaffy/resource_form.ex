@@ -246,7 +246,7 @@ defmodule Kaffy.ResourceForm do
             target_context = Kaffy.Utils.get_context_for_schema(assoc)
             target_resource = Kaffy.Utils.get_schema_key(target_context, assoc)
 
-            content_tag :div, class: "input-group col-md-2" do
+            content_tag :div, class: "input-group" do
               [
                 number_input(form, field,
                   class: "form-control",
