@@ -256,6 +256,12 @@ defmodule Kaffy.Utils do
   end
 
   @doc """
+  Returns true if `thing` is a module, false otherwise.
+  """
+  @spec is_module(module()) :: boolean()
+  def is_module(thing), do: is_atom(thing) && function_exported?(thing, :__info__, 1)
+
+  @doc """
   Returns whether the dashbaord link should be displayed or hidden. Default behavior is to show the dashboard link.
   This option is taken from the :hide_dashboard config option.
 
@@ -293,6 +299,28 @@ defmodule Kaffy.Utils do
       [page: slug] ->
         router().kaffy_page_path(conn, :index, slug)
     end
+  end
+
+  def extensions(conn) do
+    exts = env(:extensions, [])
+
+    stylesheets =
+      Enum.map(exts, fn ext ->
+        case function_exported?(ext, :stylesheets, 1) do
+          true -> ext.stylesheets(conn)
+          false -> []
+        end
+      end)
+
+    javascripts =
+      Enum.map(exts, fn ext ->
+        case function_exported?(ext, :javascripts, 1) do
+          true -> ext.javascripts(conn)
+          false -> []
+        end
+      end)
+
+    %{stylesheets: stylesheets, javascripts: javascripts}
   end
 
   defp env(key, default \\ nil) do

@@ -116,6 +116,7 @@ defmodule KaffyWeb.ResourceController do
   end
 
   def update(conn, %{"context" => context, "resource" => resource, "id" => id} = params) do
+    IO.inspect(params)
     my_resource = Kaffy.Utils.get_resource(context, resource)
     schema = my_resource[:schema]
     params = Kaffy.ResourceParams.decode_map_fields(resource, schema, params)
