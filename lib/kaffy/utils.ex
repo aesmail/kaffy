@@ -393,4 +393,8 @@ defmodule Kaffy.Utils do
     end)
     |> Enum.sort()
   end
+
+  def get_task_modules() do
+    env(:scheduled_tasks, [])
+  end
 end
