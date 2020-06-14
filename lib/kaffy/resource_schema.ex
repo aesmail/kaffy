@@ -143,7 +143,7 @@ defmodule Kaffy.ResourceSchema do
     Kaffy.ResourceAdmin.humanize_term(field)
   end
 
-  def kaffy_field_value(schema, {field, options}) do
+  def kaffy_field_value(conn, schema, {field, options}) do
     default_value = kaffy_field_value(schema, field)
     ft = Kaffy.ResourceSchema.field_type(schema.__struct__, field)
     value = Map.get(options || %{}, :value)
@@ -162,7 +162,7 @@ defmodule Kaffy.ResourceSchema do
         end
 
       Kaffy.Utils.is_module(ft) && Keyword.has_key?(ft.__info__(:functions), :render_index) ->
-        ft.render_index(schema, field, options)
+        ft.render_index(conn, schema, field, options)
 
       is_map(value) ->
         Kaffy.Utils.json().encode!(value, escape: :html_safe, pretty: true)

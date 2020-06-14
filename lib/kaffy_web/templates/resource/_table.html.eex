@@ -14,9 +14,9 @@
                 </td>
                 <%= for {field, index} <- Enum.with_index(@fields) do %>
                     <%= if index == 0 do %>
-                        <td><%= link Kaffy.ResourceSchema.kaffy_field_value(entry, field), to: Kaffy.Utils.router().kaffy_resource_path(@conn, :show, @context, @resource, entry) %></td>
+                        <td><%= link Kaffy.ResourceSchema.kaffy_field_value(@conn, entry, field), to: Kaffy.Utils.router().kaffy_resource_path(@conn, :show, @context, @resource, entry) %></td>
                     <% else %>
-                        <td><%= Kaffy.ResourceSchema.kaffy_field_value(entry, field) %></td>
+                        <td><%= Kaffy.ResourceSchema.kaffy_field_value(@conn, entry, field) %></td>
                     <% end %>
                 <% end %>
             </tr>
