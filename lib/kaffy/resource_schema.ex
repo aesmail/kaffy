@@ -77,9 +77,12 @@ defmodule Kaffy.ResourceSchema do
     end)
   end
 
-  defp reorder_fields(fields_list, _schema) do
+  defp reorder_fields(fields_list, schema) do
+    [_id, first_field | _fields] = schema.__schema__(:fields)
+
     # this is a "nice" feature to re-order the default fields to put the specified fields at the top/bottom of the form
     fields_list
+    |> reorder_field(first_field, :first)
     |> reorder_field(:email, :first)
     |> reorder_field(:name, :first)
     |> reorder_field(:title, :first)
