@@ -116,11 +116,25 @@
 
         <div class="main-panel">
           <div class="content-wrapper">
+            <%= if get_flash(@conn, :success) do %>
+                <div class="alert alert-success">
+                  <i class="fa fa-check"></i><strong>Success: </strong> <%= get_flash(@conn, :info) %>
+                </div>
+            <% end %>
             <%= if get_flash(@conn, :info) do %>
-                <div class="alert alert-success"><%= get_flash(@conn, :info) %></div>
+                <div class="alert alert-info">
+                  <i class="fa fa-info-circle"></i><strong>Info: </strong> <%= get_flash(@conn, :info) %>
+                </div>
+            <% end %>
+            <%= if get_flash(@conn, :warning) do %>
+                <div class="alert alert-warning">
+                  <i class="fa fa-exclamation-triangle"></i><strong>Warning: </strong> <%= get_flash(@conn, :error) %>
+                </div>
             <% end %>
             <%= if get_flash(@conn, :error) do %>
-                <div class="alert alert-danger"><%= get_flash(@conn, :error) %></div>
+                <div class="alert alert-danger">
+                  <i class="fa fa-exclamation-circle"></i><strong>Error: </strong> <%= get_flash(@conn, :error) %>
+                </div>
             <% end %>
 
             <%= if Kaffy.Utils.phoenix_version?("1.4.") do %>

@@ -21,7 +21,11 @@ defmodule Kaffy.ResourceError do
                     end
 
                   content_tag :div, class: "alert alert-danger" do
-                    content_tag(:span, to_string(field) <> " " <> msg)
+                    [
+                      content_tag(:i, "", class: "fa fa-exclamation-circle"),
+                      content_tag(:strong, "Error: "),
+                      content_tag(:span, Kaffy.ResourceAdmin.humanize_term(field) <> " " <> msg)
+                    ]
                   end
                 end)
       end
