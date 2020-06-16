@@ -77,9 +77,12 @@ defmodule Kaffy.ResourceSchema do
     end)
   end
 
-  defp reorder_fields(fields_list, _schema) do
+  defp reorder_fields(fields_list, schema) do
+    [_id, first_field | _fields] = schema.__schema__(:fields)
+
     # this is a "nice" feature to re-order the default fields to put the specified fields at the top/bottom of the form
     fields_list
+    |> reorder_field(first_field, :first)
     |> reorder_field(:email, :first)
     |> reorder_field(:name, :first)
     |> reorder_field(:title, :first)
@@ -143,7 +146,7 @@ defmodule Kaffy.ResourceSchema do
     Kaffy.ResourceAdmin.humanize_term(field)
   end
 
-  def kaffy_field_value(schema, {field, options}) do
+  def kaffy_field_value(conn, schema, {field, options}) do
     default_value = kaffy_field_value(schema, field)
     ft = Kaffy.ResourceSchema.field_type(schema.__struct__, field)
     value = Map.get(options || %{}, :value)
@@ -162,7 +165,7 @@ defmodule Kaffy.ResourceSchema do
         end
 
       Kaffy.Utils.is_module(ft) && Keyword.has_key?(ft.__info__(:functions), :render_index) ->
-        ft.render_index(schema, field, options)
+        ft.render_index(conn, schema, field, options)
 
       is_map(value) ->
         Kaffy.Utils.json().encode!(value, escape: :html_safe, pretty: true)
