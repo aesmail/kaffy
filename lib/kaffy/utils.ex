@@ -366,7 +366,7 @@ defmodule Kaffy.Utils do
       context_name =
         schema_module
         |> Enum.at(-2)
-        |> String.downcase()
+        |> Macro.underscore()
         |> String.to_atom()
 
       schema_name_string =
