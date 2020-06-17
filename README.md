@@ -10,7 +10,7 @@ without the need to touch the current codebase. It was inspired by django's love
 - [Live Demo](#demo)
 - [Minimum Requirements](#minimum-requirements)
 - [Installation](#installation)
-- [Custom Configuratinos](#configurations)
+- [Custom Configurations](#configurations)
 - [Customize the Side Menu](#side-menu)
 - [Customize the Dashboard Page](#dashboard-page)
 - [Customize the Index Page](#index-page)
