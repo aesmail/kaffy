@@ -238,8 +238,10 @@ defmodule Kaffy.ResourceSchema do
     persisted_fields = schema.__schema__(:fields)
 
     Enum.filter(fields(schema), fn f ->
+      field_name = elem(f, 0)
+
       field_type(schema, f).type in [:string, :textarea, :richtext] &&
-        f in persisted_fields
+        field_name in persisted_fields
     end)
     |> Enum.map(fn {f, _} -> f end)
   end
