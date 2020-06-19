@@ -235,9 +235,13 @@ defmodule Kaffy.ResourceSchema do
 
   def search_fields(resource) do
     schema = resource[:schema]
+    persisted_fields = schema.__schema__(:fields)
 
     Enum.filter(fields(schema), fn f ->
-      field_type(schema, f).type in [:string, :textarea, :richtext]
+      field_name = elem(f, 0)
+
+      field_type(schema, f).type in [:string, :textarea, :richtext] &&
+        field_name in persisted_fields
     end)
     |> Enum.map(fn {f, _} -> f end)
   end
