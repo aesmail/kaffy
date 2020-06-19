@@ -118,7 +118,7 @@
           <div class="content-wrapper">
             <%= if get_flash(@conn, :success) do %>
                 <div class="alert alert-success">
-                  <i class="fa fa-check"></i><strong>Success: </strong> <%= get_flash(@conn, :info) %>
+                  <i class="fa fa-check"></i><strong>Success: </strong> <%= get_flash(@conn, :success) %>
                 </div>
             <% end %>
             <%= if get_flash(@conn, :info) do %>
@@ -128,7 +128,7 @@
             <% end %>
             <%= if get_flash(@conn, :warning) do %>
                 <div class="alert alert-warning">
-                  <i class="fa fa-exclamation-triangle"></i><strong>Warning: </strong> <%= get_flash(@conn, :error) %>
+                  <i class="fa fa-exclamation-triangle"></i><strong>Warning: </strong> <%= get_flash(@conn, :warning) %>
                 </div>
             <% end %>
             <%= if get_flash(@conn, :error) do %>
