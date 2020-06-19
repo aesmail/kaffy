@@ -182,6 +182,9 @@ defmodule Kaffy.ResourceSchema do
     value = Map.get(schema, field, "")
 
     cond do
+      is_map(value) && Map.has_key?(value, :__struct__) && value.__struct__ == Decimal ->
+        value
+
       is_map(value) && Map.has_key?(value, :__struct__) ->
         if value.__struct__ in [NaiveDateTime, DateTime, Date, Time] do
           value
