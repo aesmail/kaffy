@@ -192,3 +192,11 @@ a.kaffy-order-field {
     background: #fa5e5e;
     border-color: #db4646;
 }
+
+
+@media (max-width: 991px) {
+    .content-wrapper {
+        padding: 1rem 0rem 1rem 0rem;
+        width: 100%;
+    }
+}
