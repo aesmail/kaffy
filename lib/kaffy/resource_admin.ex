@@ -216,8 +216,17 @@ defmodule Kaffy.ResourceAdmin do
 
     default =
       case Keyword.has_key?(functions, :changeset) do
-        true -> schema.changeset(entry, changes)
-        false -> Ecto.Changeset.change(entry, changes)
+        true ->
+          schema.changeset(entry, changes)
+
+        false ->
+          form_fields = Kaffy.ResourceSchema.form_fields(schema) |> Keyword.keys()
+
+          entry
+          |> Ecto.Changeset.cast(changes, form_fields)
+          |> Ecto.Changeset.change(changes)
+
+          Ecto.Changeset.change(entry, changes)
       end
 
     Utils.get_assigned_value_or_default(

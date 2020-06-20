@@ -73,7 +73,7 @@ defmodule Kaffy.ResourceCallbacks do
     repo.transaction(fn ->
       result =
         with {:ok, changeset} <- before_delete(conn, resource, entry),
-             {:ok, entry} <- Kaffy.Utils.repo().delete(changeset),
+             {:ok, entry} <- exec_delete(conn, resource, changeset),
              do: after_delete(conn, resource, entry)
 
       case result do
@@ -82,18 +82,6 @@ defmodule Kaffy.ResourceCallbacks do
         {:error, entry, error} -> repo.rollback({entry, error})
       end
     end)
-  end
-
-  defp exec_update(conn, resource, changeset) do
-    with {:ok, entry} <- delete(conn, resource, changeset) do
-      {:ok, entry}
-    else
-      {:error, :not_found} ->
-        Kaffy.Utils.repo().delete(changeset)
-
-      unexpected_error ->
-        {:error, unexpected_error}
-    end
   end
 
   defp before_insert(conn, resource, changeset) do
@@ -168,6 +156,18 @@ defmodule Kaffy.ResourceCallbacks do
       [conn, entry],
       false
     )
+  end
+
+  defp exec_delete(conn, resource, changeset) do
+    with {:ok, entry} <- delete(conn, resource, changeset) do
+      {:ok, entry}
+    else
+      {:error, :not_found} ->
+        Kaffy.Utils.repo().delete(changeset)
+
+      unexpected_error ->
+        {:error, unexpected_error}
+    end
   end
 
   defp before_delete(conn, resource, entry) do
