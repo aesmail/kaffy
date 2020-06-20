@@ -133,28 +133,28 @@ defmodule KaffyWeb.ResourceController do
 
         case Kaffy.ResourceCallbacks.update_callbacks(conn, my_resource, entry, changes) do
           {:ok, entry} ->
-            conn = put_flash(conn, :info, "#{resource_name} saved successfully")
+            conn = put_flash(conn, :success, "#{resource_name} saved successfully")
 
             save_button = Map.get(params, "submit", "Save")
 
             case save_button do
               "Save" ->
                 conn
-                |> put_flash(:info, "#{resource_name} saved successfully")
+                |> put_flash(:success, "#{resource_name} saved successfully")
                 |> redirect(
                   to: Kaffy.Utils.router().kaffy_resource_path(conn, :index, context, resource)
                 )
 
               "Save and add another" ->
                 conn
-                |> put_flash(:info, "#{resource_name} saved successfully")
+                |> put_flash(:success, "#{resource_name} saved successfully")
                 |> redirect(
                   to: Kaffy.Utils.router().kaffy_resource_path(conn, :new, context, resource)
                 )
 
               "Save and continue editing" ->
                 conn
-                |> put_flash(:info, "#{resource_name} saved successfully")
+                |> put_flash(:success, "#{resource_name} saved successfully")
                 |> redirect_to_resource(context, resource, entry)
             end
 
@@ -232,20 +232,20 @@ defmodule KaffyWeb.ResourceController do
           {:ok, entry} ->
             case Map.get(params, "submit", "Save") do
               "Save" ->
-                put_flash(conn, :info, "Created a new #{resource_name} successfully")
+                put_flash(conn, :success, "Created a new #{resource_name} successfully")
                 |> redirect(
                   to: Kaffy.Utils.router().kaffy_resource_path(conn, :index, context, resource)
                 )
 
               "Save and add another" ->
                 conn
-                |> put_flash(:info, "#{resource_name} saved successfully")
+                |> put_flash(:success, "#{resource_name} saved successfully")
                 |> redirect(
                   to: Kaffy.Utils.router().kaffy_resource_path(conn, :new, context, resource)
                 )
 
               "Save and continue editing" ->
-                put_flash(conn, :info, "Created a new #{resource_name} successfully")
+                put_flash(conn, :success, "Created a new #{resource_name} successfully")
                 |> redirect_to_resource(context, resource, entry)
             end
 
@@ -288,7 +288,7 @@ defmodule KaffyWeb.ResourceController do
 
         case Kaffy.ResourceCallbacks.delete_callbacks(conn, my_resource, entry) do
           {:ok, _deleted} ->
-            put_flash(conn, :info, "The record was deleted successfully")
+            put_flash(conn, :success, "The record was deleted successfully")
             |> redirect(
               to: Kaffy.Utils.router().kaffy_resource_path(conn, :index, context, resource)
             )
@@ -322,7 +322,7 @@ defmodule KaffyWeb.ResourceController do
 
     case action_record.action.(conn, entry) do
       {:ok, entry} ->
-        conn = put_flash(conn, :info, "Action performed successfully")
+        conn = put_flash(conn, :success, "Action performed successfully")
         redirect_to_resource(conn, context, resource, entry)
 
       {:error, _} ->
@@ -348,7 +348,7 @@ defmodule KaffyWeb.ResourceController do
 
     case action_record.action.(conn, entries) do
       :ok ->
-        put_flash(conn, :info, "Action performed successfully")
+        put_flash(conn, :success, "Action performed successfully")
         |> redirect(to: Kaffy.Utils.router().kaffy_resource_path(conn, :index, context, resource))
 
       {:error, error_msg} ->
