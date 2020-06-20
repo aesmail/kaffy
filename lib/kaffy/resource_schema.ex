@@ -197,6 +197,9 @@ defmodule Kaffy.ResourceSchema do
       is_map(value) ->
         Kaffy.Utils.json().encode!(value, escape: :html_safe, pretty: true)
 
+      is_binary(value) ->
+        String.slice(value, 0, 140)
+
       true ->
         value
     end
