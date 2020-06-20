@@ -200,3 +200,17 @@ a.kaffy-order-field {
         width: 100%;
     }
 }
+
+/* Fix mobile large margin */
+@media (max-width: 575.98px) {
+    .col-lg-12 {
+        padding-right: 0.15rem;
+        padding-left: 0.15rem;
+    }
+    .card .card-body {
+        padding: 0.25rem 0.25rem;
+    }
+    .table th, .table td {
+        padding: 0.375rem;
+    }
+}
