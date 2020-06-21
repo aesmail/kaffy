@@ -101,6 +101,19 @@ var lightColor = getComputedStyle(document.body).getPropertyValue('--light');
       dateFormat: "Z"
     });
 
+    // $(".kaffy-list-action-submit").click(function () {
+    //   var button = $(this);
+    //   var form_id = button.parents("form.list-action").attr("id");
+    //   var inputs = [];
+    //   button.siblings("input.kaffy-list-action-input").each(function () {
+    //     var input = $(this);
+    //     inputs.push({ name: input.attr('name'), value: input.val() });
+    //   });
+    //   console.log(form_id);
+    //   console.log(inputs);
+    //   return false;
+    // });
+
   });
 
 

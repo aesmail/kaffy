@@ -344,8 +344,15 @@ defmodule KaffyWeb.ResourceController do
     entries = Kaffy.ResourceQuery.fetch_list(my_resource, ids)
     actions = Kaffy.ResourceAdmin.list_actions(my_resource, conn)
     [action_record] = Keyword.get_values(actions, action_key)
+    kaffy_inputs = Map.get(params, "kaffy-input", %{})
 
-    case action_record.action.(conn, entries) do
+    result =
+      case Map.get(action_record, :inputs, []) do
+        [] -> action_record.action.(conn, entries)
+        _ -> action_record.action.(conn, entries, kaffy_inputs)
+      end
+
+    case result do
       :ok ->
         put_flash(conn, :success, "Action performed successfully")
         |> redirect(to: Kaffy.Utils.router().kaffy_resource_path(conn, :index, context, resource))
