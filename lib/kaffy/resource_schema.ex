@@ -255,12 +255,18 @@ defmodule Kaffy.ResourceSchema do
   def filter_fields(_), do: nil
 
   def field_type(_schema, {_, type}), do: type
-  def field_type(schema, field), do: schema.__changeset__ |> Map.get(field, :string)
+  def field_type(schema, field), do: schema.__changeset__() |> Map.get(field, :string)
   # def field_type(schema, field), do: schema.__schema__(:type, field)
 
   def get_map_fields(schema) do
     get_all_fields(schema)
-    |> Enum.filter(fn f -> field_type(schema, f) == :map end)
+    |> Enum.filter(fn
+      {_f, options} ->
+        options.type == :map
+
+      f when is_atom(f) ->
+        f == :map
+    end)
   end
 
   def widgets(_resource) do

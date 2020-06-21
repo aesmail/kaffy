@@ -2,7 +2,7 @@ defmodule Kaffy.ResourceParams do
   alias Kaffy.ResourceSchema
 
   def decode_map_fields(resource, schema, params) do
-    map_fields = ResourceSchema.get_map_fields(schema) |> Enum.map(fn f -> to_string(f) end)
+    map_fields = ResourceSchema.get_map_fields(schema) |> Enum.map(fn {f, _} -> to_string(f) end)
 
     attrs =
       Map.get(params, resource, %{})
