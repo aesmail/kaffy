@@ -20,13 +20,11 @@ defmodule Kaffy.Pagination do
   end
 
   defp add_dots(range) do
-    # Enum.map_reduce([1, 2, 3], 0, fn x, acc -> {x * 2, x + acc} end)
     {added_dots, _acc} =
       Enum.map_reduce(range, 0, fn x, last ->
         adding_page =
           if last > 0 do
             if x - last == 2 do
-              # range_with_dots.push(last + 1);
               last + 1
             else
               if x - last != 1, do: "..."
@@ -40,7 +38,5 @@ defmodule Kaffy.Pagination do
 
     added_dots
     |> List.flatten()
-
-    # |> Enum.map(fn x -> "#{x}" end)
   end
 end
