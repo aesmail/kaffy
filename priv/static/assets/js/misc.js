@@ -100,7 +100,6 @@ var lightColor = getComputedStyle(document.body).getPropertyValue('--light');
       enableTime: true,
       dateFormat: "Z"
     });
-
   });
 
 
