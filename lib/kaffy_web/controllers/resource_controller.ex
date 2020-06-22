@@ -3,6 +3,7 @@ defmodule KaffyWeb.ResourceController do
 
   use Phoenix.Controller, namespace: KaffyWeb
   use Phoenix.HTML
+  alias Kaffy.Pagination
 
   def index(
         conn,
@@ -29,6 +30,7 @@ defmodule KaffyWeb.ResourceController do
         next_class = if has_next, do: "", else: " disabled"
         has_prev = page >= 2
         prev_class = if has_prev, do: "", else: " disabled"
+        list_pages = Pagination.get_pages(page, ceil(filtered_count / items_per_page))
 
         render(conn, "pick_resource.html",
           layout: {KaffyWeb.LayoutView, "bare.html"},
@@ -42,6 +44,7 @@ defmodule KaffyWeb.ResourceController do
           next_class: next_class,
           has_prev_page: has_prev,
           prev_class: prev_class,
+          list_pages: list_pages,
           entries: entries,
           params: params
         )
@@ -64,6 +67,7 @@ defmodule KaffyWeb.ResourceController do
         next_class = if has_next, do: "", else: " disabled"
         has_prev = page >= 2
         prev_class = if has_prev, do: "", else: " disabled"
+        list_pages = Pagination.get_pages(page, ceil(filtered_count / items_per_page))
 
         render(conn, "index.html",
           layout: {KaffyWeb.LayoutView, "app.html"},
@@ -77,6 +81,7 @@ defmodule KaffyWeb.ResourceController do
           next_class: next_class,
           has_prev_page: has_prev,
           prev_class: prev_class,
+          list_pages: list_pages,
           entries: entries,
           params: params
         )

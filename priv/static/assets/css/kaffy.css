@@ -214,3 +214,8 @@ a.kaffy-order-field {
         padding: 0.375rem;
     }
 }
+
+/* center pagination */
+.index-pagination {
+    margin:0 auto;
+}
