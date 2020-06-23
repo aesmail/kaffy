@@ -93,7 +93,7 @@
 </form>
 
 
-<% list_actions = Kaffy.ResourceAdmin.list_actions(@my_resource, @conn) %>
+<% list_actions = Kaffy.ResourceAdmin.list_actions(@my_resource, @conn) || [] %>
 <%= for {action_key, options} <- list_actions do %>
   <% extra_inputs = Map.get(options, :inputs, []) %>
   <%= if !Enum.empty?(extra_inputs) do %>
