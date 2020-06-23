@@ -10,33 +10,23 @@ defmodule Kaffy.Pagination do
     showleft = current_page - @pagination_delta
     showright = current_page + @pagination_delta + 1
 
-    range =
-      Enum.filter(1..total_page, fn x ->
-        if x == 1 or x == total_page or (x >= showleft and x < showright), do: x
-      end)
-
-    range
-    |> add_dots
+    1..total_page
+    |> Enum.filter(fn x -> x == 1 || x == total_page || (x >= showleft && x < showright) end)
+    |> add_dots()
   end
 
   defp add_dots(range) do
     {added_dots, _acc} =
       Enum.map_reduce(range, 0, fn x, last ->
-        adding_page =
-          if last > 0 do
-            if x - last == 2 do
-              last + 1
-            else
-              if x - last != 1, do: "..."
-            end
-          end
-
-        current_page = if adding_page, do: [adding_page, x], else: [x]
-
+        current_page = if adding_page = add_dots_check(x, last), do: [adding_page, x], else: [x]
         {current_page, x}
       end)
 
     added_dots
     |> List.flatten()
   end
+
+  defp add_dots_check(x, last) when last > 0 and x - last == 2, do: last + 1
+  defp add_dots_check(x, last) when last > 0 and x - last != 1, do: "..."
+  defp add_dots_check(_, _), do: nil
 end
