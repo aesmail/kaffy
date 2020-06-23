@@ -55,10 +55,23 @@
       <%= render KaffyWeb.ResourceView, "_table.html", conn: @conn, fields: @fields, context: @context, resource: @resource, my_resource: @my_resource, entries: @entries, params: @params %>
     </div>
 
-    <div class="btn-group" role="group" aria-label="Basic example">
-      <% params = Map.to_list(@params) |> Enum.map(fn {k, v} -> {String.to_existing_atom(k), v} end) %>
-      <%= link "Previous", to: Kaffy.Utils.router().kaffy_resource_path(@conn, :index, @context, @resource, Keyword.merge(params, page: @page - 1)), class: "btn btn-outline-primary#{@prev_class}" %>
-      <%= link "Next", to: Kaffy.Utils.router().kaffy_resource_path(@conn, :index, @context, @resource, Keyword.merge(params, page: @page + 1)), class: "btn btn-outline-primary#{@next_class}" %>
+    <div class="index-pagination">
+    <% params = Map.to_list(@params) |> Enum.map(fn {k, v} -> {String.to_existing_atom(k), v} end) %>
+      <nav aria-label="index-list-navigation">
+        <ul class="pagination">
+          <li class="page-item <%= @prev_class %>">
+            <%= link "« Previous", to: Kaffy.Utils.router().kaffy_resource_path(@conn, :index, @context, @resource, Keyword.merge(params, page: @page - 1)), class: "page-link" %>
+          </li>
+          <%= for page_elem <- @list_pages do %>
+            <li class="page-item <%= if page_elem == @page do %>active<% end %>  <%= if page_elem == "..." do %>disabled<% end %>">
+              <%= link page_elem, to: Kaffy.Utils.router().kaffy_resource_path(@conn, :index, @context, @resource, Keyword.merge(params, page: page_elem)), class: "page-link" %>
+            </li>
+          <% end %>
+          <li class="page-item <%= @next_class %>">
+            <%= link "Next »", to: Kaffy.Utils.router().kaffy_resource_path(@conn, :index, @context, @resource, Keyword.merge(params, page: @page + 1)), class: "page-link" %>
+          </li>
+        </ul>
+      </nav>
     </div>
   </div>
 </div>
