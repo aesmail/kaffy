@@ -1,5 +1,33 @@
 ### v0.9.0 (in development)
 
+#### Bug Fixes
+
+- `map` and JSON fields weren't being properly recognized and saved/updated (regression from v0.8.x)
+- Searching a schema which has a `:string` virtual field produced a crash.
+- "Next" page link was active even when there was no records to display on the next page.
+- belongs_to fields were almost invisible on small screens.
+- Schemas without a public `changeset/2` function were crashing due to parameters not being cast properly.
+
+#### Enhancements
+
+- Introducing extensions to add custom form fields, css, and javascript.
+- List actions now can have an intermediary step for more input from the user.
+- Decimal values are displayed properly on the index page.
+- Improved layout for mobile screens.
+- First column on index page is the first field in your schema.
+- Ability to override Kaffy's `insert`, `update`, and `delete` functions to customize how the function works.
+- Moved scheduled tasks to their own modules and they have their own option in config.
+- Improved alert message styles.
+- Multi-word contexts and schemas are displayed properly.
+- Much improved pagination UI.
+
+#### Contributors for v0.9.0
+
+- Areski Belaid (@areski)
+- Axel Clark (@axelclark)
+- Adi Purnama (@adipurnama)
+- Abdullah Esmail (@aesmail)
+
 ### v0.8.1 (2020-06-05)
 
 #### Bug Fixes
