@@ -1,0 +1,12 @@
+{
+  "name": "kaffy",
+  "description": "Powerfully simple admin package for phoenix applications",
+  "dependencies": {
+    "bootstrap": "^4.5.0",
+    "compass-mixins": "^0.12.10"
+  },
+  "author": "aesmail",
+  "url": "https://github.com/aesmail/kaffy/",
+  "copyright": "Copyright (c) 2020 Abdullah Esmail",
+  "license": "MIT License"
+}
