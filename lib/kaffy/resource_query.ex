@@ -9,15 +9,7 @@ defmodule Kaffy.ResourceQuery do
     search = Map.get(params, "search", "") |> String.trim()
     search_fields = Kaffy.ResourceAdmin.search_fields(resource)
     filtered_fields = get_filter_fields(params, resource)
-    default_ordering = Kaffy.ResourceAdmin.ordering(resource)
-    default_order_field = Map.get(params, "_of", "nil") |> String.to_existing_atom()
-    default_order_way = Map.get(params, "_ow", "nil") |> String.to_existing_atom()
-
-    ordering =
-      case is_nil(default_order_field) or is_nil(default_order_way) do
-        true -> default_ordering
-        false -> [{default_order_way, default_order_field}]
-      end
+    ordering = get_ordering(resource, params)
 
     current_offset = (page - 1) * per_page
     schema = resource[:schema]
@@ -38,6 +30,17 @@ defmodule Kaffy.ResourceQuery do
     do_cache = if search == "" and Enum.empty?(filtered_fields), do: true, else: false
     all_count = cached_total_count(schema, do_cache, all)
     {all_count, current_page}
+  end
+
+  def get_ordering(resource, params) do
+    default_ordering = Kaffy.ResourceAdmin.ordering(resource)
+    default_order_field = Map.get(params, "_of", "nil") |> String.to_existing_atom()
+    default_order_way = Map.get(params, "_ow", "nil") |> String.to_existing_atom()
+
+    case is_nil(default_order_field) or is_nil(default_order_way) do
+      true -> default_ordering
+      false -> [{default_order_way, default_order_field}]
+    end
   end
 
   def fetch_resource(resource, id) do
