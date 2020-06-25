@@ -22,6 +22,9 @@ erl_crash.dump
 # Ignore package tarball (built via "mix hex.build").
 kaffy-*.tar
 
+# Ignore local node_modules
+/node_modules/
+
 .elixir_ls
 .DS_Store
 .tool-versions
