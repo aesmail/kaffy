@@ -99,8 +99,9 @@ defmodule Kaffy.Utils do
   @spec full_resources(Plug.Conn.t()) :: [any()]
   def full_resources(conn) do
     case env(:resources) do
-      nil -> setup_resources()
       f when is_function(f) -> f.(conn)
+      l when is_list(l) -> l
+      _ -> setup_resources()
     end
   end
 
