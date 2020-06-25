@@ -150,11 +150,11 @@
                 <nav class="col-md-2 d-md-block bg-light sidebar">
                     <div class="sidebar-sticky">
                         <ul class="nav flex-column">
-                            <%= for context <- Kaffy.Utils.contexts() do %>
+                            <%= for context <- Kaffy.Utils.contexts(@conn) do %>
                                 <li class="nav-item">
-                                    <a name="<%= context %>" class="nav-link"><strong><%= Kaffy.Utils.context_name(context) %></strong></a>
+                                    <a name="<%= context %>" class="nav-link"><strong><%= Kaffy.Utils.context_name(@conn, context) %></strong></a>
                                     <ul style="list-style:none;">
-                                        <%= for {resource, options} <- Kaffy.Utils.schemas_for_context(context) do %>
+                                        <%= for {resource, options} <- Kaffy.Utils.schemas_for_context(@conn, context) do %>
                                             <%= if Kaffy.ResourceAdmin.authorized?(options, @conn) do %>
                                                 <li class="nav-item">
                                                     <%= link Kaffy.ResourceAdmin.plural_name(options), to: Kaffy.Utils.router().kaffy_resource_path(@conn, :index, context, resource), class: "nav-link" %>

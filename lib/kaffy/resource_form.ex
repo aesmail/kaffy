@@ -243,8 +243,8 @@ defmodule Kaffy.ResourceForm do
 
         case option_count > 100 do
           true ->
-            target_context = Kaffy.Utils.get_context_for_schema(assoc)
-            target_resource = Kaffy.Utils.get_schema_key(target_context, assoc)
+            target_context = Kaffy.Utils.get_context_for_schema(conn, assoc)
+            target_resource = Kaffy.Utils.get_schema_key(conn, target_context, assoc)
 
             content_tag :div, class: "input-group" do
               [

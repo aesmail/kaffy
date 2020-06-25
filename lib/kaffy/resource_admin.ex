@@ -311,9 +311,9 @@ defmodule Kaffy.ResourceAdmin do
   end
 
   def collect_widgets(conn) do
-    Enum.reduce(Kaffy.Utils.contexts(), [], fn c, all ->
+    Enum.reduce(Kaffy.Utils.contexts(conn), [], fn c, all ->
       widgets =
-        Enum.reduce(Kaffy.Utils.schemas_for_context(c), [], fn {_, resource}, all ->
+        Enum.reduce(Kaffy.Utils.schemas_for_context(conn, c), [], fn {_, resource}, all ->
           all ++ Kaffy.ResourceAdmin.widgets(resource, conn)
         end)
         |> Enum.map(fn widget ->
@@ -338,9 +338,9 @@ defmodule Kaffy.ResourceAdmin do
   end
 
   def collect_pages(conn) do
-    Enum.reduce(Kaffy.Utils.contexts(), [], fn c, all ->
+    Enum.reduce(Kaffy.Utils.contexts(conn), [], fn c, all ->
       all ++
-        Enum.reduce(Kaffy.Utils.schemas_for_context(c), [], fn {_, resource}, all ->
+        Enum.reduce(Kaffy.Utils.schemas_for_context(conn, c), [], fn {_, resource}, all ->
           all ++ Kaffy.ResourceAdmin.custom_pages(resource, conn)
         end)
     end)
@@ -366,11 +366,11 @@ defmodule Kaffy.ResourceAdmin do
     |> Enum.map(fn l -> Map.merge(%{target: "_self", icon: "link", method: :get}, l) end)
   end
 
-  def collect_links(location) do
-    contexts = Kaffy.Utils.contexts()
+  def collect_links(conn, location) do
+    contexts = Kaffy.Utils.contexts(conn)
 
     Enum.reduce(contexts, [], fn c, all ->
-      resources = Kaffy.Utils.schemas_for_context(c)
+      resources = Kaffy.Utils.schemas_for_context(conn, c)
 
       Enum.reduce(resources, all, fn {_r, options}, all ->
         links =

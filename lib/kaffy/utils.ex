@@ -96,9 +96,12 @@ defmodule Kaffy.Utils do
     ]
   ```
   """
-  @spec full_resources() :: [any()]
-  def full_resources() do
-    env(:resources, setup_resources())
+  @spec full_resources(Plug.Conn.t()) :: [any()]
+  def full_resources(conn) do
+    case env(:resources) do
+      nil -> setup_resources()
+      f when is_function(f) -> f.(conn)
+    end
   end
 
   @doc """
@@ -109,10 +112,10 @@ defmodule Kaffy.Utils do
       iex> contexts()
       [:blog, :products, :users]
   """
-  @spec contexts() :: [atom()]
-  def contexts() do
-    full_resources()
-    |> Keyword.keys()
+  @spec contexts(Plug.Conn.t()) :: [atom()]
+  def contexts(conn) do
+    full_resources(conn)
+    |> Enum.map(fn {context, _options} -> context end)
   end
 
   @doc """
@@ -145,10 +148,10 @@ defmodule Kaffy.Utils do
   > "Types"
   ```
   """
-  @spec context_name(list()) :: String.t()
-  def context_name(context) do
+  @spec context_name(Plug.Conn.t(), list()) :: String.t()
+  def context_name(conn, context) do
     default = Kaffy.ResourceAdmin.humanize_term(context)
-    get_in(full_resources(), [context, :name]) || default
+    get_in(full_resources(conn), [context, :name]) || default
   end
 
   @doc """
@@ -156,18 +159,18 @@ defmodule Kaffy.Utils do
 
   This is usually used to get the name or other information of the schema context.
   """
-  @spec get_context_for_schema(module()) :: list()
-  def get_context_for_schema(schema) do
-    contexts()
+  @spec get_context_for_schema(Plug.Conn.t(), module()) :: list()
+  def get_context_for_schema(conn, schema) do
+    contexts(conn)
     |> Enum.filter(fn c ->
-      schemas = Enum.map(schemas_for_context(c), fn {_k, v} -> Keyword.get(v, :schema) end)
+      schemas = Enum.map(schemas_for_context(conn, c), fn {_k, v} -> Keyword.get(v, :schema) end)
       schema in schemas
     end)
     |> Enum.at(0)
   end
 
-  def get_schema_key(context, schema) do
-    schemas_for_context(context)
+  def get_schema_key(conn, context, schema) do
+    schemas_for_context(conn, context)
     |> Enum.reduce([], fn {k, v}, keys ->
       case schema == Keyword.get(v, :schema) do
         true -> [k | keys]
@@ -185,10 +188,10 @@ defmodule Kaffy.Utils do
       iex> get_resource("blog", "post")
       [schema: MyApp.Blog.Post, admin: MyApp.Blog.PostAdmin]
   """
-  @spec get_resource(String.t(), String.t()) :: list()
-  def get_resource(context, resource) do
+  @spec get_resource(Plug.Conn.t(), String.t(), String.t()) :: list()
+  def get_resource(conn, context, resource) do
     {context, resource} = convert_to_atoms(context, resource)
-    get_in(full_resources(), [context, :schemas, resource])
+    get_in(full_resources(conn), [context, :resources, resource])
   end
 
   @doc """
@@ -202,35 +205,35 @@ defmodule Kaffy.Utils do
         comment: [schema: MyApp.Blog.Comment],
       ]
   """
-  @spec schemas_for_context(list()) :: list()
-  def schemas_for_context(context) do
+  @spec schemas_for_context(Plug.Conn.t(), list()) :: list()
+  def schemas_for_context(conn, context) do
     context = convert_to_atom(context)
-    get_in(full_resources(), [context, :schemas])
+    get_in(full_resources(conn), [context, :resources])
   end
 
-  @doc """
-  Get the schema for the provided context/resource combination.
+  # @doc """
+  # Get the schema for the provided context/resource combination.
 
-      iex> schema_for_resource("blog", "post")
-      MyApp.Blog.Post
-  """
-  @spec schema_for_resource(String.t(), String.t()) :: module()
-  def schema_for_resource(context, resource) do
-    {context, resource} = convert_to_atoms(context, resource)
-    get_in(full_resources(), [context, :schemas, resource, :schema])
-  end
+  #     iex> schema_for_resource("blog", "post")
+  #     MyApp.Blog.Post
+  # """
+  # @spec schema_for_resource(String.t(), String.t()) :: module()
+  # def schema_for_resource(context, resource) do
+  #   {context, resource} = convert_to_atoms(context, resource)
+  #   get_in(full_resources(), [context, :schemas, resource, :schema])
+  # end
 
-  @doc """
-  Like schema_for_resource/2, but returns the admin module, or nil if an admin module doesn't exist.
+  # @doc """
+  # Like schema_for_resource/2, but returns the admin module, or nil if an admin module doesn't exist.
 
-      iex> admin-fro_resource("blog", "post")
-      MyApp.Blog.PostAdmin
-  """
-  @spec admin_for_resource(String.t(), String.t()) :: module() | nil
-  def admin_for_resource(context, resource) do
-    {context, resource} = convert_to_atoms(context, resource)
-    get_in(full_resources(), [context, :schemas, resource, :admin])
-  end
+  #     iex> admin-fro_resource("blog", "post")
+  #     MyApp.Blog.PostAdmin
+  # """
+  # @spec admin_for_resource(String.t(), String.t()) :: module() | nil
+  # def admin_for_resource(context, resource) do
+  #   {context, resource} = convert_to_atoms(context, resource)
+  #   get_in(full_resources(), [context, :schemas, resource, :admin])
+  # end
 
   def get_assigned_value_or_default(resource, function, default, params \\ [], add_schema \\ true) do
     admin = resource[:admin]
@@ -386,12 +389,14 @@ defmodule Kaffy.Utils do
           false -> [schema: schema]
         end
 
-      resources = Keyword.put_new(resources, context_name, schemas: [])
-      resources = put_in(resources, [context_name, :schemas, schema_name], schema_options)
-      existing_schemas = get_in(resources, [context_name, :schemas]) |> Enum.sort()
-      put_in(resources, [context_name, :schemas], existing_schemas)
+      humanized_context = Kaffy.ResourceAdmin.humanize_term(context_name)
+      resources = Keyword.put_new(resources, context_name, name: humanized_context, resources: [])
+      resources = put_in(resources, [context_name, :resources, schema_name], schema_options)
+      existing_schemas = get_in(resources, [context_name, :resources]) |> Enum.sort()
+      put_in(resources, [context_name, :resources], existing_schemas)
     end)
     |> Enum.sort()
+    |> IO.inspect()
   end
 
   def get_task_modules() do

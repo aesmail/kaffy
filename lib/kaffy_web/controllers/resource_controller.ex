@@ -15,7 +15,7 @@ defmodule KaffyWeb.ResourceController do
           "pick" => _field
         } = params
       ) do
-    my_resource = Kaffy.Utils.get_resource(context, resource)
+    my_resource = Kaffy.Utils.get_resource(conn, context, resource)
 
     case can_proceed?(my_resource, conn) do
       false ->
@@ -52,7 +52,7 @@ defmodule KaffyWeb.ResourceController do
   end
 
   def index(conn, %{"context" => context, "resource" => resource} = params) do
-    my_resource = Kaffy.Utils.get_resource(context, resource)
+    my_resource = Kaffy.Utils.get_resource(conn, context, resource)
 
     case can_proceed?(my_resource, conn) do
       false ->
@@ -89,7 +89,7 @@ defmodule KaffyWeb.ResourceController do
   end
 
   def show(conn, %{"context" => context, "resource" => resource, "id" => id}) do
-    my_resource = Kaffy.Utils.get_resource(context, resource)
+    my_resource = Kaffy.Utils.get_resource(conn, context, resource)
     schema = my_resource[:schema]
     resource_name = Kaffy.ResourceAdmin.singular_name(my_resource)
 
@@ -121,7 +121,7 @@ defmodule KaffyWeb.ResourceController do
   end
 
   def update(conn, %{"context" => context, "resource" => resource, "id" => id} = params) do
-    my_resource = Kaffy.Utils.get_resource(context, resource)
+    my_resource = Kaffy.Utils.get_resource(conn, context, resource)
     schema = my_resource[:schema]
     params = Kaffy.ResourceParams.decode_map_fields(resource, schema, params)
 
@@ -200,7 +200,7 @@ defmodule KaffyWeb.ResourceController do
   end
 
   def new(conn, %{"context" => context, "resource" => resource}) do
-    my_resource = Kaffy.Utils.get_resource(context, resource)
+    my_resource = Kaffy.Utils.get_resource(conn, context, resource)
     resource_name = Kaffy.ResourceAdmin.singular_name(my_resource)
 
     case can_proceed?(my_resource, conn) do
@@ -222,7 +222,7 @@ defmodule KaffyWeb.ResourceController do
   end
 
   def create(conn, %{"context" => context, "resource" => resource} = params) do
-    my_resource = Kaffy.Utils.get_resource(context, resource)
+    my_resource = Kaffy.Utils.get_resource(conn, context, resource)
     params = Kaffy.ResourceParams.decode_map_fields(resource, my_resource[:schema], params)
     changes = Map.get(params, resource, %{})
     resource_name = Kaffy.ResourceAdmin.singular_name(my_resource)
@@ -281,7 +281,7 @@ defmodule KaffyWeb.ResourceController do
   end
 
   def delete(conn, %{"context" => context, "resource" => resource, "id" => id}) do
-    my_resource = Kaffy.Utils.get_resource(context, resource)
+    my_resource = Kaffy.Utils.get_resource(conn, context, resource)
 
     case can_proceed?(my_resource, conn) do
       false ->
@@ -318,7 +318,7 @@ defmodule KaffyWeb.ResourceController do
         "id" => id,
         "action_key" => action_key
       }) do
-    my_resource = Kaffy.Utils.get_resource(context, resource)
+    my_resource = Kaffy.Utils.get_resource(conn, context, resource)
     entry = Kaffy.ResourceQuery.fetch_resource(my_resource, id)
     actions = Kaffy.ResourceAdmin.resource_actions(my_resource, conn)
     action_key = String.to_existing_atom(action_key)
@@ -343,7 +343,7 @@ defmodule KaffyWeb.ResourceController do
         conn,
         %{"context" => context, "resource" => resource, "action_key" => action_key} = params
       ) do
-    my_resource = Kaffy.Utils.get_resource(context, resource)
+    my_resource = Kaffy.Utils.get_resource(conn, context, resource)
     action_key = String.to_existing_atom(action_key)
     ids = Map.get(params, "ids", "") |> String.split(",")
     entries = Kaffy.ResourceQuery.fetch_list(my_resource, ids)
@@ -369,7 +369,7 @@ defmodule KaffyWeb.ResourceController do
   end
 
   # def export(conn, %{"context" => context, "resource" => resource}) do
-  #   my_resource = Kaffy.Utils.get_resource(context, resource)
+  #   my_resource = Kaffy.Utils.get_resource(conn, context, resource)
   # end
 
   defp can_proceed?(resource, conn) do
