@@ -25,6 +25,10 @@ without the need to touch the current codebase. It was inspired by django's love
 - [Simple Scheduled Tasks](#scheduled-tasks)
 - [The Driving Points Behind Kaffy's Development](#the-driving-points)
 
+## Sponsors
+
+ If you are interested in becoming a sponsor and supporting the development of Kaffy, please visit Kaffy's [Patreon page](https://www.patreon.com/kaffyadmin).
+
 ## Demo
 
 [Check out the simple demo here](https://kaffy.gigalixirapp.com/admin/)
