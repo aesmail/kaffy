@@ -9,6 +9,9 @@ defmodule Kaffy.ResourceForm do
     label(form, label_text)
   end
 
+  def form_help_text({field, options}), do: Map.get(options, :help_text, nil)
+  def form_help_text(field) when is_atom(field), do: nil
+
   def bare_form_field(resource, form, {field, options}) do
     options = options || %{}
     type = Map.get(options, :type, Kaffy.ResourceSchema.field_type(resource[:schema], field))
@@ -324,6 +327,7 @@ defmodule Kaffy.ResourceForm do
 
       false ->
         {error_msg, error_class} = get_field_error(form, field)
+        help_text = form_help_text({field, options})
 
         content_tag :div, class: "form-group #{error_class}" do
           label_tag = if ft != :boolean, do: form_label(form, {field, options}), else: ""
@@ -334,10 +338,14 @@ defmodule Kaffy.ResourceForm do
               conn: conn
             )
 
-          field_feeback =
+          field_feeback = [
             content_tag :div, class: "invalid-feedback" do
               error_msg
+            end,
+            content_tag :p, class: "help_text" do
+              help_text
             end
+          ]
 
           [label_tag, field_tag, field_feeback]
         end

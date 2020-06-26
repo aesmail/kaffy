@@ -219,3 +219,11 @@ a.kaffy-order-field {
 .index-pagination {
     margin:0 auto;
 }
+
+/* Form Help text */
+.help_text {
+    margin-top: 0.25rem;
+    color: #9c9c9c;
+    font-size: .75rem;
+    font-style: italic;
+}
