@@ -382,4 +382,24 @@ defmodule Kaffy.ResourceAdmin do
     end)
     |> Enum.sort_by(fn c -> Map.get(c, :order, 999) end)
   end
+
+  def custom_index_query(conn, resource, query) do
+    Utils.get_assigned_value_or_default(
+      resource,
+      :custom_index_query,
+      query,
+      [conn, resource, query],
+      false
+    )
+  end
+
+  def custom_show_query(conn, resource, query) do
+    Utils.get_assigned_value_or_default(
+      resource,
+      :custom_show_query,
+      query,
+      [conn, resource, query],
+      false
+    )
+  end
 end

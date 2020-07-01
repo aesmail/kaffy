@@ -3,7 +3,7 @@ defmodule Kaffy.ResourceQuery do
 
   import Ecto.Query
 
-  def list_resource(resource, params \\ %{}) do
+  def list_resource(conn, resource, params \\ %{}) do
     per_page = Map.get(params, "limit", "100") |> String.to_integer()
     page = Map.get(params, "page", "1") |> String.to_integer()
     search = Map.get(params, "search", "") |> String.trim()
@@ -25,7 +25,8 @@ defmodule Kaffy.ResourceQuery do
         current_offset
       )
 
-    current_page = Kaffy.Utils.repo().all(paged)
+    custom_query = Kaffy.ResourceAdmin.custom_index_query(conn, schema, paged)
+    current_page = Kaffy.Utils.repo().all(custom_query)
 
     do_cache = if search == "" and Enum.empty?(filtered_fields), do: true, else: false
     all_count = cached_total_count(schema, do_cache, all)
@@ -43,9 +44,11 @@ defmodule Kaffy.ResourceQuery do
     end
   end
 
-  def fetch_resource(resource, id) do
+  def fetch_resource(conn, resource, id) do
     schema = resource[:schema]
-    Kaffy.Utils.repo().get(schema, id)
+    query = from(s in schema, where: s.id == ^id)
+    custom_query = Kaffy.ResourceAdmin.custom_show_query(conn, schema, query)
+    Kaffy.Utils.repo().one(custom_query)
   end
 
   def fetch_list(_, [""]), do: []

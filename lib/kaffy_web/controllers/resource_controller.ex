@@ -23,7 +23,7 @@ defmodule KaffyWeb.ResourceController do
 
       true ->
         fields = Kaffy.ResourceAdmin.index(my_resource)
-        {filtered_count, entries} = Kaffy.ResourceQuery.list_resource(my_resource, params)
+        {filtered_count, entries} = Kaffy.ResourceQuery.list_resource(conn, my_resource, params)
         items_per_page = Map.get(params, "limit", "100") |> String.to_integer()
         page = Map.get(params, "page", "1") |> String.to_integer()
         has_next = round(filtered_count / items_per_page) > page
@@ -60,7 +60,7 @@ defmodule KaffyWeb.ResourceController do
 
       true ->
         fields = Kaffy.ResourceAdmin.index(my_resource)
-        {filtered_count, entries} = Kaffy.ResourceQuery.list_resource(my_resource, params)
+        {filtered_count, entries} = Kaffy.ResourceQuery.list_resource(conn, my_resource, params)
         items_per_page = Map.get(params, "limit", "100") |> String.to_integer()
         page = Map.get(params, "page", "1") |> String.to_integer()
         has_next = round(filtered_count / items_per_page) > page
@@ -98,7 +98,7 @@ defmodule KaffyWeb.ResourceController do
         unauthorized_access(conn)
 
       true ->
-        if entry = Kaffy.ResourceQuery.fetch_resource(my_resource, id) do
+        if entry = Kaffy.ResourceQuery.fetch_resource(conn, my_resource, id) do
           changeset = Ecto.Changeset.change(entry)
 
           render(conn, "show.html",
@@ -132,7 +132,7 @@ defmodule KaffyWeb.ResourceController do
         unauthorized_access(conn)
 
       true ->
-        entry = Kaffy.ResourceQuery.fetch_resource(my_resource, id)
+        entry = Kaffy.ResourceQuery.fetch_resource(conn, my_resource, id)
         changes = Map.get(params, resource, %{})
 
         case Kaffy.ResourceCallbacks.update_callbacks(conn, my_resource, entry, changes) do
@@ -288,7 +288,7 @@ defmodule KaffyWeb.ResourceController do
         unauthorized_access(conn)
 
       true ->
-        entry = Kaffy.ResourceQuery.fetch_resource(my_resource, id)
+        entry = Kaffy.ResourceQuery.fetch_resource(conn, my_resource, id)
 
         case Kaffy.ResourceCallbacks.delete_callbacks(conn, my_resource, entry) do
           {:ok, _deleted} ->
@@ -319,7 +319,7 @@ defmodule KaffyWeb.ResourceController do
         "action_key" => action_key
       }) do
     my_resource = Kaffy.Utils.get_resource(context, resource)
-    entry = Kaffy.ResourceQuery.fetch_resource(my_resource, id)
+    entry = Kaffy.ResourceQuery.fetch_resource(conn, my_resource, id)
     actions = Kaffy.ResourceAdmin.resource_actions(my_resource, conn)
     action_key = String.to_existing_atom(action_key)
     [action_record] = Keyword.get_values(actions, action_key)
