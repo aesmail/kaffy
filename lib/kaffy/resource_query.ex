@@ -103,7 +103,11 @@ defmodule Kaffy.ResourceQuery do
           query
 
         true ->
-          term = String.replace(search, ["%", "_"], "")
+          term =
+            search
+            |> String.replace("%", "\%")
+            |> String.replace("_", "\_")
+
           term = "%#{term}%"
 
           Enum.reduce(search_fields, query, fn
