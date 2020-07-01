@@ -1,4 +1,10 @@
-### v0.9.0 (in development)
+### v0.9.1 (in development)
+
+### v0.9.0 (2020-07-02)
+
+#### Breaking change
+
+- If you are defining your resources manually, you need to replace all `:schemas` keys with `:resources`.
 
 #### Bug Fixes
 

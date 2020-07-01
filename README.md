@@ -109,24 +109,35 @@ config :kaffy,
   home_page: [kaffy: :dashboard],
   ecto_repo: MyApp.Repo,
   router: MyAppWeb.Router,
-  resources: [
-    blog: [
-      name: "My Blog", # a custom name for this context/section.
-      resources: [ # this line used to be "schemas" in pre v0.9
-        post: [schema: MyApp.Blog.Post, admin: MyApp.SomeModule.Anywhere.PostAdmin],
-        comment: [schema: MyApp.Blog.Comment],
-        tag: [schema: MyApp.Blog.Tag]
-      ]
-    ],
-    inventory: [
-      name: "Inventory",
-      resources: [
-        category: [schema: MyApp.Products.Category, admin: MyApp.Products.CategoryAdmin],
-        product: [schema: MyApp.Products.Product, admin: MyApp.Products.ProductAdmin]
+  resources: &MyApp.Kaffy.Config.create_resources/1
+
+# in your custom resources function
+defmodule MyApp.Kaffy.Config do
+  def create_resources(_conn) do
+    [
+      blog: [
+        name: "My Blog", # a custom name for this context/section.
+        resources: [ # this line used to be "schemas" in pre v0.9
+          post: [schema: MyApp.Blog.Post, admin: MyApp.SomeModule.Anywhere.PostAdmin],
+          comment: [schema: MyApp.Blog.Comment],
+          tag: [schema: MyApp.Blog.Tag]
+        ]
+      ],
+      inventory: [
+        name: "Inventory",
+        resources: [
+          category: [schema: MyApp.Products.Category, admin: MyApp.Products.CategoryAdmin],
+          product: [schema: MyApp.Products.Product, admin: MyApp.Products.ProductAdmin]
+        ]
       ]
     ]
-  ]
+  end
+end
 ```
+
+Starting with Kaffy v0.9, the `:resources` option can take a literal list or a function.
+If a function is provided, it should take a conn and return a list of contexts and schemas like in the example above.
+Passing a conn to the function provides more flexibility and customization to your resources list.
 
 You can set the `:hide_dashboard` option to true to hide the dashboard link from the side menu.
 To change the home page, change the `:home_page` option to one of the following:
