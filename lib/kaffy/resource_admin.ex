@@ -388,7 +388,7 @@ defmodule Kaffy.ResourceAdmin do
       resource,
       :custom_index_query,
       query,
-      [conn, resource, query],
+      [conn, resource[:schema], query],
       false
     )
   end
@@ -398,7 +398,7 @@ defmodule Kaffy.ResourceAdmin do
       resource,
       :custom_show_query,
       query,
-      [conn, resource, query],
+      [conn, resource[:schema], query],
       false
     )
   end

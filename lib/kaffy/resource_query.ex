@@ -25,7 +25,7 @@ defmodule Kaffy.ResourceQuery do
         current_offset
       )
 
-    custom_query = Kaffy.ResourceAdmin.custom_index_query(conn, schema, paged)
+    custom_query = Kaffy.ResourceAdmin.custom_index_query(conn, resource, paged)
     current_page = Kaffy.Utils.repo().all(custom_query)
 
     do_cache = if search == "" and Enum.empty?(filtered_fields), do: true, else: false
@@ -47,7 +47,7 @@ defmodule Kaffy.ResourceQuery do
   def fetch_resource(conn, resource, id) do
     schema = resource[:schema]
     query = from(s in schema, where: s.id == ^id)
-    custom_query = Kaffy.ResourceAdmin.custom_show_query(conn, schema, query)
+    custom_query = Kaffy.ResourceAdmin.custom_show_query(conn, resource, query)
     Kaffy.Utils.repo().one(custom_query)
   end
 
