@@ -161,6 +161,7 @@
     <script src="/kaffy/assets/js/hoverable-collapse.js"></script>
     <script src="/kaffy/assets/js/misc.js"></script>
     <script src="/kaffy/assets/js/select-all-checkbox.js"></script>
+    <script src="/kaffy/assets/js/phoenix_html.js"></script>
     <script src="/kaffy/assets/js/dashboard.js"></script>
     <%= for js <- Kaffy.Utils.extensions(@conn).javascripts do %>
       <%= js %>
