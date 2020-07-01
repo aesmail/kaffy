@@ -500,8 +500,7 @@ end
 ### Extensions
 
 Extensions allow you to define custom css, javascript, and html.
-Sometimes you need specialized functionality that Kaffy doesn't have.
-For example, you need to display the current image in the resource form above the the image field.
+For example, you need to use a specific javascript library or customize the look and feel of Kaffy.
 This is where extensions come in handy.
 
 Extensions are elixir modules which special functions.
