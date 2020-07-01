@@ -16,6 +16,7 @@ without the need to touch the current codebase. It was inspired by django's love
 - [Customize the Index Page](#index-page)
 - [Customize the Form Page](#form-page)
 - [Custom Form Fields](#custom-form-fields)
+- [Extensions](#extensions)
 - [Customize the Query](#customize-the-query)
 - [Embedded Schemas and JSON Fields](#embedded-schemas-and-json-fields)
 - [Searching Records](#search)
@@ -25,7 +26,6 @@ without the need to touch the current codebase. It was inspired by django's love
 - [Custom Actions](#custom-actions)
 - [Custom Callbacks When Saving Records](#callbacks)
 - [Simple Scheduled Tasks](#scheduled-tasks)
-- [Extensions](#extensions)
 - [The Driving Points Behind Kaffy's Development](#the-driving-points)
 
 ## Sponsors
@@ -497,6 +497,48 @@ defmodule MyApp.Kaffy.URLField do
 end
 ```
 
+### Extensions
+
+Extensions allow you to define custom css, javascript, and html.
+Sometimes you need specialized functionality that Kaffy doesn't have.
+For example, you need to display the current image in the resource form above the the image field.
+This is where extensions come in handy.
+
+Extensions are elixir modules which special functions.
+
+```elixir
+defmodule MyApp.Kaffy.Extension do
+  def stylesheets(_conn) do
+    [
+      {:safe, ~s(<link rel="stylesheet" href="/kaffy/somestyle.css" />)}
+    ]
+  end
+
+  def javascripts(_conn) do
+    [
+      {:safe, ~s(<script src="https://example.com/javascript.js"></script>)}
+    ]
+  end
+end
+```
+
+There are currently 2 special functions supported in extensions: `stylesheets/1` and `javascripts/1`.
+Both functions take a conn and must return a list of safe strings.
+`stylesheets/1` will add whatever you include at the end of the `<head>` tag.
+`javascripts/1` will add whatever you include there just before the closing `</body>` tag.
+
+Once you have your extension module, you need to add it to the `extensions` list in config:
+
+```elixir
+config :kaffy,
+  # other settings
+  extensions: [
+    MyApp.Kaffy.Extension
+  ]
+```
+
+You can check [this issue](https://github.com/aesmail/kaffy/issues/54) to see an example which uses extensions with custom fields.
+
 ### Customize the Query
 
 You can customize the query in case you need it to be more than just simple fetching.
@@ -840,48 +882,6 @@ defmodule MyApp.Products.ProductAdmin do
   end
 end
 ```
-
-### Extensions
-
-Extensions allow you to define custom css, javascript, and html.
-Sometimes you need specialized functionality that Kaffy doesn't have.
-For example, you need to display the current image in the resource form above the the image field.
-This is where extensions come in handy.
-
-Extensions are elixir modules which special functions.
-
-```elixir
-defmodule MyApp.Kaffy.Extension do
-  def stylesheets(_conn) do
-    [
-      {:safe, ~s(<link rel="stylesheet" href="/kaffy/somestyle.css" />)}
-    ]
-  end
-
-  def javascripts(_conn) do
-    [
-      {:safe, ~s(<script src="https://example.com/javascript.js"></script>)}
-    ]
-  end
-end
-```
-
-There are currently 2 special functions supported in extensions: `stylesheets/1` and `javascripts/1`.
-Both functions take a conn and must return a list of safe strings.
-`stylesheets/1` will add whatever you include at the end of the `<head>` tag.
-`javascripts/1` will add whatever you include there just before the closing `</body>` tag.
-
-Once you have your extension module, you need to add it to the `extensions` list in config:
-
-```elixir
-config :kaffy,
-  # other settings
-  extensions: [
-    MyApp.Kaffy.Extension
-  ]
-```
-
-You can check [this issue](https://github.com/aesmail/kaffy/issues/54) to see an example which uses extensions with custom fields.
 
 Once you create your scheduled tasks, a new "Tasks" menu item will show up (below the Dashboard item) listing all your tasks with some tiny bits of information about each task like the following image:
 
