@@ -851,7 +851,7 @@ This is where extensions come in handy.
 Extensions are elixir modules which special functions.
 
 ```elixir
-defmodule MyApp.Kaffy.Extensions do
+defmodule MyApp.Kaffy.Extension do
   def stylesheets(_conn) do
     [
       {:safe, ~s(<link rel="stylesheet" href="/kaffy/somestyle.css" />)}
@@ -870,6 +870,16 @@ There are currently 2 special functions supported in extensions: `stylesheets/1`
 Both functions take a conn and must return a list of safe strings.
 `stylesheets/1` will add whatever you include at the end of the `<head>` tag.
 `javascripts/1` will add whatever you include there just before the closing `</body>` tag.
+
+Once you have your extension module, you need to add it to the `extensions` list in config:
+
+```elixir
+config :kaffy,
+  # other settings
+  extensions: [
+    MyApp.Kaffy.Extension
+  ]
+```
 
 You can check [this issue](https://github.com/aesmail/kaffy/issues/54) to see an example which uses extensions with custom fields.
 
