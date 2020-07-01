@@ -9,7 +9,7 @@ defmodule Kaffy.ResourceForm do
     label(form, label_text)
   end
 
-  def form_help_text({field, options}), do: Map.get(options, :help_text, nil)
+  def form_help_text({_field, options}), do: Map.get(options, :help_text, nil)
   def form_help_text(field) when is_atom(field), do: nil
 
   def bare_form_field(resource, form, {field, options}) do
