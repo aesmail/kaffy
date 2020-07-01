@@ -397,7 +397,6 @@ defmodule Kaffy.Utils do
       put_in(resources, [context_name, :resources], existing_schemas)
     end)
     |> Enum.sort()
-    |> IO.inspect()
   end
 
   def get_task_modules() do

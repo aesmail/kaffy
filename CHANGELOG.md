@@ -12,7 +12,8 @@
 
 #### Enhancements
 
-- Introducing extensions to add custom form fields, css, and javascript.
+- Introducing extension modules to add custom html, css, and javascript.
+- Custom form fields for specialized functionality.
 - List actions now can have an intermediary step for more input from the user.
 - Decimal values are displayed properly on the index page.
 - Improved layout for mobile screens.

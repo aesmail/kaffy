@@ -15,6 +15,8 @@ without the need to touch the current codebase. It was inspired by django's love
 - [Customize the Dashboard Page](#dashboard-page)
 - [Customize the Index Page](#index-page)
 - [Customize the Form Page](#form-page)
+- [Custom Form Fields](#custom-form-fields)
+- [Customize the Query](#customize-the-query)
 - [Embedded Schemas and JSON Fields](#embedded-schemas-and-json-fields)
 - [Searching Records](#search)
 - [Authorizing Access To Resources](#authorization)
@@ -23,6 +25,7 @@ without the need to touch the current codebase. It was inspired by django's love
 - [Custom Actions](#custom-actions)
 - [Custom Callbacks When Saving Records](#callbacks)
 - [Simple Scheduled Tasks](#scheduled-tasks)
+- [Extensions](#extensions)
 - [The Driving Points Behind Kaffy's Development](#the-driving-points)
 
 ## Sponsors
@@ -44,7 +47,7 @@ without the need to touch the current codebase. It was inspired by django's love
 ```elixir
 def deps do
   [
-    {:kaffy, "~> 0.8.0"}
+    {:kaffy, "~> 0.9.0"}
   ]
 end
 ```
@@ -90,6 +93,10 @@ end
 
 ### Configurations
 
+#### Breaking change in v0.9
+
+If you're upgrading from an earlier version to v0.9, you need to replace your `:schemas` with `:resources`.
+
 If you don't specify a `resources` option in your configs, Kaffy will try to auto-detect your schemas and your admin modules. Admin modules should be in the same namespace as their respective schemas in order for kaffy to detect them. For example, if you have a schema `MyApp.Products.Product`, its admin module should be `MyApp.Products.ProductAdmin`.
 
 Otherwise, if you'd like to explicitly specify your schemas and their admin modules, you can do like the following:
@@ -105,7 +112,7 @@ config :kaffy,
   resources: [
     blog: [
       name: "My Blog", # a custom name for this context/section.
-      schemas: [
+      resources: [ # this line used to be "schemas" in pre v0.9
         post: [schema: MyApp.Blog.Post, admin: MyApp.SomeModule.Anywhere.PostAdmin],
         comment: [schema: MyApp.Blog.Comment],
         tag: [schema: MyApp.Blog.Tag]
@@ -113,7 +120,7 @@ config :kaffy,
     ],
     inventory: [
       name: "Inventory",
-      schemas: [
+      resources: [
         category: [schema: MyApp.Products.Category, admin: MyApp.Products.CategoryAdmin],
         product: [schema: MyApp.Products.Product, admin: MyApp.Products.ProductAdmin]
       ]
@@ -147,13 +154,13 @@ MyApp.Products.Schemas.Category
 # To fix this, define resources manually:
 resources: [
   posts: [
-    schemas: [
+    resources: [
       post: [schema: MyApp.Posts.Schemas.Post],
       category: [schema: MyApp.Posts.Schemas.Category]
     ]
   ],
   products: [
-    schemas: [
+    resources: [
       product: [schema: MyApp.Products.Schemas.Product],
       category: [schema: MyApp.Products.Schemas.Category]
     ]
@@ -416,6 +423,103 @@ Notice that:
 
 
 Setting a field's type to `:richtext` will render a rich text editor.
+
+### Custom Form Fields
+
+You can create your own form fields very easily with Kaffy.
+Just follow the instructions on how to create a custom type for ecto and add 2 additional functions to the module:
+`render_form/5` and `render_index/3`.
+Check the below example or a better example on the comments of [this issue](https://github.com/aesmail/kaffy/issues/54).
+
+```elixir
+defmodule MyApp.Kaffy.URLField do
+  use Ecto.Type
+  def type, do: :string
+
+  # casting input from the form and making it "storable" inside the database column (:string)
+  def cast(url) when is_map(url) do
+    name = Map.get(url, "one")
+    link = Map.get(url, "two")
+    {:ok, ~s(<a href="#{link}">#{name}</a>)}
+  end
+
+  # if the input is not a string, return an error
+  def cast(_), do: :error
+
+  # loading the raw value from the database and turning it into a expected data type for the form
+  def load(data) when is_binary(data) do
+    [[_, link]] = Regex.scan(~r/href="(.*)"/, data)
+    [[_, name]] = Regex.scan(~r/>(.*)</, data)
+
+    {:ok, %{"one" => name, "two" => link}}
+  end
+
+  # this function should return the HTML related to rendering the customized form field.
+  def render_form(_conn, changeset, form, field, _options) do
+    [
+      {:safe, ~s(<div class="form-group">)},
+      Phoenix.HTML.Form.label(form, field, "Web URL"),
+      Phoenix.HTML.Form.text_input(form, field,
+        placeholder: "This is a custom field",
+        class: "form-control",
+        name: "#{form.name}[#{field}][one]",
+        id: "#{form.name}_#{field}_one",
+        value: get_field_value(changeset, field, "one")
+      ),
+      Phoenix.HTML.Form.text_input(form, field,
+        placeholder: "This is a custom field",
+        class: "form-control",
+        name: "#{form.name}[#{field}][two]",
+        id: "#{form.name}_#{field}_two",
+        value: get_field_value(changeset, field, "two")
+      ),
+      {:safe, ~s(</div>)}
+    ]
+  end
+
+  # this is how the field should be rendered on the index page
+  def render_index(resource, field, _options) do
+    case Map.get(resource, field) do
+      nil ->
+        ""
+
+      details ->
+        name = details["one"]
+        link = details["two"]
+        {:safe, ~s(<a href="#{link}">#{name}</a>)}
+    end
+  end
+
+  defp get_field_value(changeset, field, subfield) do
+    field_value = Map.get(changeset.data, field)
+    Map.get(field_value || %{}, subfield, "")
+  end
+end
+```
+
+### Customize the Query
+
+You can customize the query in case you need it to be more than just simple fetching.
+
+```elixir
+defmodule MyApp.Blog.PostAdmin do
+  def custom_index_query(_conn, _schema, query) do
+    from(r in query, preload: [:tags])
+  end
+
+  def custom_show_query(_conn, _schema, query) do
+    case user_is_admin?(conn) do
+      true -> from(r in query, preload: [:history])
+      false -> query
+    end
+  end
+end
+```
+
+The `custom_index_query/3` function takes a conn, the schema, and the query to customize, and it must return a query.
+It is called when fetching the resources for the index page.
+
+The `custom_show_query/3` is identifical to `custom_index_query/3`, but works when fetching a single resource in the show/edit page.
 
 ### Embedded Schemas and JSON Fields
 
@@ -736,6 +840,38 @@ defmodule MyApp.Products.ProductAdmin do
   end
 end
 ```
+
+### Extensions
+
+Extensions allow you to define custom css, javascript, and html.
+Sometimes you need specialized functionality that Kaffy doesn't have.
+For example, you need to display the current image in the resource form above the the image field.
+This is where extensions come in handy.
+
+Extensions are elixir modules which special functions.
+
+```elixir
+defmodule MyApp.Kaffy.Extensions do
+  def stylesheets(_conn) do
+    [
+      {:safe, ~s(<link rel="stylesheet" href="/kaffy/somestyle.css" />)}
+    ]
+  end
+
+  def javascripts(_conn) do
+    [
+      {:safe, ~s(<script src="https://example.com/javascript.js"></script>)}
+    ]
+  end
+end
+```
+
+There are currently 2 special functions supported in extensions: `stylesheets/1` and `javascripts/1`.
+Both functions take a conn and must return a list of safe strings.
+`stylesheets/1` will add whatever you include at the end of the `<head>` tag.
+`javascripts/1` will add whatever you include there just before the closing `</body>` tag.
+
+You can check [this issue](https://github.com/aesmail/kaffy/issues/54) to see an example which uses extensions with custom fields.
 
 Once you create your scheduled tasks, a new "Tasks" menu item will show up (below the Dashboard item) listing all your tasks with some tiny bits of information about each task like the following image:
 
