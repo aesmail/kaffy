@@ -7,6 +7,8 @@
 - "Next" page link was active even when there was no records to display on the next page.
 - belongs_to fields were almost invisible on small screens.
 - Schemas without a public `changeset/2` function were crashing due to parameters not being cast properly.
+- Searching a resource with a search term that contained a special SQL character (% or _) returned invalid results.
+- Multi-word contexts weren't being formatted properly.
 
 #### Enhancements
 
@@ -18,8 +20,10 @@
 - Ability to override Kaffy's `insert`, `update`, and `delete` functions to customize how the function works.
 - Moved scheduled tasks to their own modules and they have their own option in config.
 - Improved alert message styles.
-- Multi-word contexts and schemas are displayed properly.
 - Much improved pagination UI.
+- Ability to customize the query Kaffy uses for the index and show pages.
+- A more flexible and customizable way to define resource and admin modules.
+- Added a `help_text` option to `form_fields` to display a helpful text next to the field.
 
 #### Contributors for v0.9.0
 

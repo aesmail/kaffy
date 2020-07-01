@@ -3,21 +3,13 @@ defmodule Kaffy.ResourceQuery do
 
   import Ecto.Query
 
-  def list_resource(resource, params \\ %{}) do
+  def list_resource(conn, resource, params \\ %{}) do
     per_page = Map.get(params, "limit", "100") |> String.to_integer()
     page = Map.get(params, "page", "1") |> String.to_integer()
     search = Map.get(params, "search", "") |> String.trim()
     search_fields = Kaffy.ResourceAdmin.search_fields(resource)
     filtered_fields = get_filter_fields(params, resource)
-    default_ordering = Kaffy.ResourceAdmin.ordering(resource)
-    default_order_field = Map.get(params, "_of", "nil") |> String.to_existing_atom()
-    default_order_way = Map.get(params, "_ow", "nil") |> String.to_existing_atom()
-
-    ordering =
-      case is_nil(default_order_field) or is_nil(default_order_way) do
-        true -> default_ordering
-        false -> [{default_order_way, default_order_field}]
-      end
+    ordering = get_ordering(resource, params)
 
     current_offset = (page - 1) * per_page
     schema = resource[:schema]
@@ -33,16 +25,30 @@ defmodule Kaffy.ResourceQuery do
         current_offset
       )
 
-    current_page = Kaffy.Utils.repo().all(paged)
+    custom_query = Kaffy.ResourceAdmin.custom_index_query(conn, schema, paged)
+    current_page = Kaffy.Utils.repo().all(custom_query)
 
     do_cache = if search == "" and Enum.empty?(filtered_fields), do: true, else: false
     all_count = cached_total_count(schema, do_cache, all)
     {all_count, current_page}
   end
 
-  def fetch_resource(resource, id) do
+  def get_ordering(resource, params) do
+    default_ordering = Kaffy.ResourceAdmin.ordering(resource)
+    default_order_field = Map.get(params, "_of", "nil") |> String.to_existing_atom()
+    default_order_way = Map.get(params, "_ow", "nil") |> String.to_existing_atom()
+
+    case is_nil(default_order_field) or is_nil(default_order_way) do
+      true -> default_ordering
+      false -> [{default_order_way, default_order_field}]
+    end
+  end
+
+  def fetch_resource(conn, resource, id) do
     schema = resource[:schema]
-    Kaffy.Utils.repo().get(schema, id)
+    query = from(s in schema, where: s.id == ^id)
+    custom_query = Kaffy.ResourceAdmin.custom_show_query(conn, schema, query)
+    Kaffy.Utils.repo().one(custom_query)
   end
 
   def fetch_list(_, [""]), do: []
@@ -100,7 +106,11 @@ defmodule Kaffy.ResourceQuery do
           query
 
         true ->
-          term = String.replace(search, ["%", "_"], "")
+          term =
+            search
+            |> String.replace("%", "\%")
+            |> String.replace("_", "\_")
+
           term = "%#{term}%"
 
           Enum.reduce(search_fields, query, fn

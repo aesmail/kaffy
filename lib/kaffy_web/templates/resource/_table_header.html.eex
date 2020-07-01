@@ -7,11 +7,11 @@
     </th>
     <%= for field <- @fields do %>
         <% field_name = Kaffy.ResourceSchema.kaffy_field_name(@my_resource[:schema], field) |> String.upcase() %>
-        <% order_field = Map.get(@params, "_of", "id") %>
-        <% order_way = Map.get(@params, "_ow", "desc") %>
+        <% [{order_way, order_field}] = Kaffy.ResourceQuery.get_ordering(@my_resource, @params) %>
+
         <th>
-            <%= if order_field == (elem(field, 0) |> to_string()) do %>
-                <a name="<%= field_name %>" class="kaffy-order-field" data-order="<%= if order_way == "desc" do %>asc<% else %>desc<% end %>" data-field="<%= elem(field, 0) %>"><%= field_name %> <i class="fas fa-<%= if order_way == "desc" do %>arrow-down<% else %>arrow-up<% end %>"></i><a>
+            <%= if order_field == elem(field, 0) do %>
+                <a name="<%= field_name %>" class="kaffy-order-field" data-order="<%= if order_way == :desc do %>asc<% else %>desc<% end %>" data-field="<%= elem(field, 0) %>"><%= field_name %> <i class="fas fa-<%= if order_way == :desc do %>arrow-down<% else %>arrow-up<% end %>"></i><a>
             <% else %>
                 <a name="<%= field_name %>" class="kaffy-order-field" data-order="asc" data-field="<%= elem(field, 0) %>"><%= field_name %><a>
             <% end %>

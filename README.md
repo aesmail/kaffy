@@ -25,6 +25,10 @@ without the need to touch the current codebase. It was inspired by django's love
 - [Simple Scheduled Tasks](#scheduled-tasks)
 - [The Driving Points Behind Kaffy's Development](#the-driving-points)
 
+## Sponsors
+
+ If you are interested in becoming a sponsor and supporting the development of Kaffy, please visit Kaffy's [Patreon page](https://www.patreon.com/kaffyadmin).
+
 ## Demo
 
 [Check out the simple demo here](https://kaffy.gigalixirapp.com/admin/)
@@ -379,7 +383,8 @@ defmodule MyApp.Blog.PostAdmin do
       status: %{choices: [{"Publish", "publish"}, {"Pending", "pending"}]},
       body: %{type: :textarea, rows: 4},
       views: %{create: :hidden, update: :readonly},
-      settings: %{label: "Post Settings"}
+      settings: %{label: "Post Settings"},
+      slug: %{help_text: "Define your own slug for the post, if empty one will be created for you using the post title."}
     ]
   end
 end
@@ -397,7 +402,7 @@ Options can be:
 - `:choices` - a keyword list of option and values to restrict the input values that this field can accept.
 - `:create` - can be `:editable` which means it can be edited when creating a new record, or `:readonly` which means this field is visible when creating a new record but cannot be edited, or `:hidden` which means this field shouldn't be visible when creating a new record. It is `:editable` by default.
 - `:update` - can be `:editable` which means it can be edited when updating an existing record, or `:readonly` which means this field is visible when updating a record but cannot be edited, or `:hidden` which means this field shouldn't be visible when updating record. It is `:editable` by default.
-
+- `:help_text` - extra "help text" to be displayed with the form field.
 
 Result
 

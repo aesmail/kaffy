@@ -1,10 +1,11 @@
 
-<%= for error <- Kaffy.ResourceError.display_errors(@changeset) do %>
+<%= for error <- Kaffy.ResourceError.display_errors(@conn, @changeset) do %>
 <div><%= error %></div>
 <% end %>
 
+
 <div class="mt-3 grid-margin stretch-card">
-    <div class="card shadow border-left-primary">
+    <div class="card shadow <%= Kaffy.ResourceError.form_error_border_class(@changeset, "border-left-primary")%>">
         <div class="card-header">
             <div class="row justify-content-between">
                 <div class="col-auto mr-auto">

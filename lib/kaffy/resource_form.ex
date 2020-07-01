@@ -9,6 +9,9 @@ defmodule Kaffy.ResourceForm do
     label(form, label_text)
   end
 
+  def form_help_text({_field, options}), do: Map.get(options, :help_text, nil)
+  def form_help_text(field) when is_atom(field), do: nil
+
   def bare_form_field(resource, form, {field, options}) do
     options = options || %{}
     type = Map.get(options, :type, Kaffy.ResourceSchema.field_type(resource[:schema], field))
@@ -304,6 +307,17 @@ defmodule Kaffy.ResourceForm do
     end
   end
 
+  def get_field_error(form, field) do
+    case Keyword.get_values(form.errors, field) do
+      [{msg, _}] ->
+        error_msg = Kaffy.ResourceAdmin.humanize_term(field) <> " " <> msg <> "!"
+        {error_msg, "is-invalid"}
+
+      _ ->
+        {nil, ""}
+    end
+  end
+
   def kaffy_input(conn, changeset, form, field, options) do
     ft = Kaffy.ResourceSchema.field_type(changeset.data.__struct__, field)
 
@@ -312,13 +326,28 @@ defmodule Kaffy.ResourceForm do
         ft.render_form(conn, changeset, form, field, options)
 
       false ->
-        content_tag :div, class: "form-group" do
+        {error_msg, error_class} = get_field_error(form, field)
+        help_text = form_help_text({field, options})
+
+        content_tag :div, class: "form-group #{error_class}" do
           label_tag = if ft != :boolean, do: form_label(form, {field, options}), else: ""
 
           field_tag =
-            form_field(changeset, form, {field, options}, class: "form-control", conn: conn)
+            form_field(changeset, form, {field, options},
+              class: "form-control #{error_class}",
+              conn: conn
+            )
 
-          [label_tag, field_tag]
+          field_feeback = [
+            content_tag :div, class: "invalid-feedback" do
+              error_msg
+            end,
+            content_tag :p, class: "help_text" do
+              help_text
+            end
+          ]
+
+          [label_tag, field_tag, field_feeback]
         end
     end
   end
