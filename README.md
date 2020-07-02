@@ -728,10 +728,28 @@ Kaffy also supports actions on a group of resources. You can enable list actions
 defmodule MyApp.Products.ProductAdmin do
   def list_actions(_conn) do
     [
+      change_price: %{
+        name: "Change the price",
+        inputs: [
+          %{name: "new_price", title: "New Price", default: "3"}
+        ],
+        action: fn _conn, products, params -> change_price(products, params) end
+      },
       soldout: %{name: "Mark as soldout", action: fn _, products -> list_soldout(products) end},
       restock: %{name: "Bring back", action: fn _, products -> bring_back(products) end},
       not_good: %{name: "Error me out", action: fn _, _ -> {:error, "Expected error"} end}
     ]
+  end
+
+  defp change_price(products, params) do
+      new_price = Map.get(params, "new_price") |> Decimal.new()
+
+      Enum.map(products, fn p ->
+        Ecto.Changeset.change(p, %{price: new_price})
+        |> Bakery.Repo.update()
+      end)
+
+      :ok
   end
 end
 ```
@@ -743,6 +761,14 @@ Result
 `list_actions/1` takes a `conn` and must return a keyword list.
 The keys must be atoms defining the unique action "keys".
 The values are maps providing a human-friendly `:name` and an `:action` that is an anonymous function with arity 2 that takes a `conn` and a list of selected records.
+
+The `change_price` action is a multi-step action.
+The defined `:inputs` option will display a popup with a form that contains defined in this option.
+`:inputs` should be a list of maps. Each input must have a `:name`, a `:title`, and a `:default` value.
+After submitting the popup form, the extra values, along with the selected resources, are passed to the `:action` function.
+In the example above, `change_price/2` will receive the selected products with a map of extra inputs, like: `%{"new_price" => "3.5"}` for example.
+
+![MultiStep actions](demos/kaffy_multistep_actions.png)
 
 List actions must return one of the following:
 
