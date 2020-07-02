@@ -37,6 +37,7 @@
 - Areski Belaid (@areski)
 - Axel Clark (@axelclark)
 - Adi Purnama (@adipurnama)
+- Nicolas Resnikow (@nresni)
 - Abdullah Esmail (@aesmail)
 
 ### v0.8.1 (2020-06-05)
