@@ -272,6 +272,7 @@ end
 
 - `:name` to display as the text for the link.
 - `:url` to contain the actual URL.
+- `:method` the method to use with the link.
 - `:order` to hold the displayed order of this link. All `:sub` links are ordered under the schema menu item directly before the following schema.
 - `:location` can be either `:sub` or `:top`. `:sub` means it's under the schema sub-item. `:top` means it's displayed at the top of the menu below the "Dashboard" link. Links are ordered based on the `:order` value. The default value is `:sub`.
 - `:icon` is the icon displayed next to the link. Any FontAwesome-valid icon is valid here. For example: `paperclip`.
