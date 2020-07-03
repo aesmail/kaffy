@@ -28,6 +28,16 @@ defmodule Kaffy.ResourceSchema do
     Keyword.drop(fields(schema), to_be_removed)
   end
 
+  def cast_fields(schema) do
+    to_be_removed =
+      fields_to_be_removed(schema) ++
+        get_has_many_associations(schema) ++
+        get_has_one_assocations(schema) ++
+        get_many_to_many_associations(schema) ++ [:id, :inserted_at, :updated_at]
+
+    Keyword.drop(fields(schema), to_be_removed)
+  end
+
   def fields(schema) do
     schema
     |> get_all_fields()
@@ -217,6 +227,36 @@ defmodule Kaffy.ResourceSchema do
 
   def associations(schema) do
     schema.__schema__(:associations)
+  end
+
+  def get_has_many_associations(schema) do
+    associations(schema)
+    |> Enum.filter(fn a ->
+      case association(schema, a) do
+        %Ecto.Association.Has{cardinality: :many} -> true
+        _ -> false
+      end
+    end)
+  end
+
+  def get_has_one_assocations(schema) do
+    associations(schema)
+    |> Enum.filter(fn a ->
+      case association(schema, a) do
+        %Ecto.Association.Has{cardinality: :one} -> true
+        _ -> false
+      end
+    end)
+  end
+
+  def get_many_to_many_associations(schema) do
+    associations(schema)
+    |> Enum.filter(fn a ->
+      case association(schema, a) do
+        %Ecto.Association.ManyToMany{cardinality: :many} -> true
+        _ -> false
+      end
+    end)
   end
 
   def association(schema, name) do

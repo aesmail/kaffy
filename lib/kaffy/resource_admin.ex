@@ -179,10 +179,10 @@ defmodule Kaffy.ResourceAdmin do
           schema.changeset(schema_struct, changes)
 
         false ->
-          form_fields = Kaffy.ResourceSchema.form_fields(schema) |> Keyword.keys()
+          cast_fields = Kaffy.ResourceSchema.cast_fields(schema) |> Keyword.keys()
 
           schema_struct
-          |> Ecto.Changeset.cast(changes, form_fields)
+          |> Ecto.Changeset.cast(changes, cast_fields)
           |> Ecto.Changeset.change(changes)
       end
 
@@ -220,10 +220,10 @@ defmodule Kaffy.ResourceAdmin do
           schema.changeset(entry, changes)
 
         false ->
-          form_fields = Kaffy.ResourceSchema.form_fields(schema) |> Keyword.keys()
+          cast_fields = Kaffy.ResourceSchema.cast_fields(schema) |> Keyword.keys()
 
           entry
-          |> Ecto.Changeset.cast(changes, form_fields)
+          |> Ecto.Changeset.cast(changes, cast_fields)
           |> Ecto.Changeset.change(changes)
 
           Ecto.Changeset.change(entry, changes)
