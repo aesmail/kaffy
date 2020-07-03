@@ -34,8 +34,6 @@ without the need to touch the current codebase. It was inspired by django's love
 
 Become a sponsor through Kaffy's [OpenCollective](https://opencollective.com/kaffy) page.
 
-<object type="image/svg+xml" data="https://opencollective.com/kaffy/tiers/sponsor.svg?avatarHeight=50&width=600"></object>
-
 ## Demo
 
 [Check out the simple demo here](https://kaffy.gigalixirapp.com/admin/)
