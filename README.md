@@ -1,3 +1,5 @@
+<img src="https://opencollective.com/kaffy/tiers/sponsor/badge.svg?label=sponsor&color=brightgreen" />
+
 ![What You Get](demos/kaffy_index.png)
 
 ## Introduction
@@ -30,7 +32,9 @@ without the need to touch the current codebase. It was inspired by django's love
 
 ## Sponsors
 
- If you are interested in becoming a sponsor and supporting the development of Kaffy, please visit Kaffy's [Patreon page](https://www.patreon.com/kaffyadmin).
+Become a sponsor through Kaffy's [OpenCollective](https://opencollective.com/kaffy) page.
+
+<object type="image/svg+xml" data="https://opencollective.com/kaffy/tiers/sponsor.svg?avatarHeight=50&width=600"></object>
 
 ## Demo
 
