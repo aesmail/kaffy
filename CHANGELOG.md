@@ -2,7 +2,7 @@
 
 #### Bug Fixes
 
-- Schemas with `has_many` or `many_to_many` assocations crashed when trying to save while the schema doesn't have a `changeset/2` function.
+- Schemas with `has_many` or `many_to_many` assocations crashed when trying to save if the schema doesn't have a default `changeset/2` function.
 
 ### v0.9.0 (2020-07-02)
 
