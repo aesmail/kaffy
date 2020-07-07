@@ -318,7 +318,6 @@ defmodule KaffyWeb.ResourceController do
         "id" => id,
         "action_key" => action_key
       }) do
-    
     my_resource = Kaffy.Utils.get_resource(conn, context, resource)
     entry = Kaffy.ResourceQuery.fetch_resource(conn, my_resource, id)
     actions = Kaffy.ResourceAdmin.resource_actions(my_resource, conn)

@@ -29,7 +29,7 @@
     if (items.length < 1) {
       alert("no selected items!!!");
     } else {
-      var values = items.join(',');
+      var values = items.filter(function (e) { return e != ""; }).join(',');
       var html = $("<div></div>");
       html.html("selected:" + values);
       html.appendTo("body");
@@ -55,7 +55,7 @@
   function checkSelected() {
     var all = $("input.select-all")[0];
     var total = $("input.select-item").length;
-    var len = $("input.select-item:checked:checked").length;
+    var len = $("input.select-item:checked").length;
     var html = $('<span class="badge badge-secondary">' + len + " / " + total + " selected" + '</span>');
     $("#checkbox-selected-count").html(html);
     all.checked = len === total;

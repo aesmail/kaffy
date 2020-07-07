@@ -30,11 +30,11 @@ $(document).ready(function () {
     var actionForm = $(this);
     var selected = $.map($("input.kaffy-resource-checkbox:checked"), function (e) {
       return $(e).val();
-    });
+    }).filter(function (n) {
+      return n != "";
+    }).join();
 
-    $("input.kaffy-resource-checkbox:checked").each(function () {
-      $("<input />").attr("type", "hidden").attr("name", "ids").attr("value", selected.join()).appendTo(actionForm);
-    });
+    $("<input />").attr("type", "hidden").attr("name", "ids").attr("value", selected).appendTo(actionForm);
 
     return true;
   });
