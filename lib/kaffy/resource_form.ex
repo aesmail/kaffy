@@ -159,6 +159,14 @@ defmodule Kaffy.ResourceForm do
 
         textarea(form, field, [value: value, rows: 4, placeholder: "JSON Content"] ++ opts)
 
+      {:array, _} ->
+        value =
+          data
+          |> Map.get(field, "")
+          |> Kaffy.Utils.json().encode!(escape: :html_safe, pretty: true)
+
+        textarea(form, field, [value: value, rows: 4, placeholder: "JSON Content"] ++ opts)
+
       :file ->
         file_input(form, field, opts)
 
