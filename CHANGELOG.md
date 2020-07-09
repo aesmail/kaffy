@@ -15,7 +15,7 @@
 
 #### Bug Fixes
 
-- `map` and JSON fields weren't being properly recognized and saved/updated (regression from v0.8.x)
+- `map` and JSON fields weren't being properly recognized and saved/updated (regression from v0.8.x).
 - Searching a schema which has a `:string` virtual field produced a crash.
 - "Next" page link was active even when there was no records to display on the next page.
 - belongs_to fields were almost invisible on small screens.
