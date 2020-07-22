@@ -15,11 +15,11 @@ without the need to touch the current codebase. It was inspired by django's love
 - [Custom Configurations](#configurations)
 - [Customize the Side Menu](#side-menu)
 - [Customize the Dashboard Page](#dashboard-page)
-- [Customize the Index Page](#index-page)
-- [Customize the Form Page](#form-page)
+- [Customize the Index Pages](#index-page)
+- [Customize the Form Pages](#form-page)
 - [Custom Form Fields](#custom-form-fields)
+- [Customize the Queries](#customize-the-queries)
 - [Extensions](#extensions)
-- [Customize the Query](#customize-the-query)
 - [Embedded Schemas and JSON Fields](#embedded-schemas-and-json-fields)
 - [Searching Records](#search)
 - [Authorizing Access To Resources](#authorization)
@@ -316,7 +316,7 @@ The maps have the following keys:
 - `:assigns` (optional) to hold the assigns for the template. Default to an empty list.
 - `:order` is the order of the page among other pages in the side menu.
 
-### Index page
+### Index pages
 
 The `index/1` function takes a schema and must return a keyword list of fields and their options.
 
@@ -390,7 +390,7 @@ end
 ```
 
 
-### Form Page
+### Form Pages
 
 Kaffy treats the show and edit pages as one, the form page.
 
@@ -511,6 +511,32 @@ defmodule MyApp.Kaffy.URLField do
 end
 ```
 
+
+### Customize the Queries
+
+By default Kaffy does a simple Ecto query to retrieve records.  You can customize the queries used by Kaffy by using `custom_index_query` and `custom_show_query`.  This allows you to preload associations to display associated data on your pages, for example.  Attempting to access an association without preloading it first will result in a `Ecto.Association.NotLoaded` exception.
+
+```elixir
+defmodule MyApp.Blog.PostAdmin do
+  def custom_index_query(_conn, _schema, query) do
+    from(r in query, preload: [:tags])
+  end
+
+  def custom_show_query(_conn, _schema, query) do
+    case user_is_admin?(conn) do
+      true -> from(r in query, preload: [:history])
+      false -> query
+    end
+  end
+end
+```
+
+The `custom_index_query/3` function takes a conn, the schema, and the query to customize, and it must return a query.
+It is called when fetching the resources for the index page.
+
+The `custom_show_query/3` is identifical to `custom_index_query/3`, but works when fetching a single resource in the show/edit page.
+
+
 ### Extensions
 
 Extensions allow you to define custom css, javascript, and html.
@@ -551,30 +577,6 @@ config :kaffy,
 ```
 
 You can check [this issue](https://github.com/aesmail/kaffy/issues/54) to see an example which uses extensions with custom fields.
-
-### Customize the Query
-
-You can customize the query in case you need it to be more than just simple fetching.
-
-```elixir
-defmodule MyApp.Blog.PostAdmin do
-  def custom_index_query(_conn, _schema, query) do
-    from(r in query, preload: [:tags])
-  end
-
-  def custom_show_query(_conn, _schema, query) do
-    case user_is_admin?(conn) do
-      true -> from(r in query, preload: [:history])
-      false -> query
-    end
-  end
-end
-```
-
-The `custom_index_query/3` function takes a conn, the schema, and the query to customize, and it must return a query.
-It is called when fetching the resources for the index page.
-
-The `custom_show_query/3` is identifical to `custom_index_query/3`, but works when fetching a single resource in the show/edit page.
 
 ### Embedded Schemas and JSON Fields
 
