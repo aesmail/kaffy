@@ -289,7 +289,13 @@ defmodule Kaffy.ResourceForm do
 
             fields = Kaffy.ResourceSchema.fields(assoc)
 
-            string_fields = Enum.filter(fields, fn {_f, options} -> options.type == :string end)
+            string_fields =
+              Enum.filter(fields, fn {_f, options} ->
+                options.type == :string or
+                  (Kaffy.Utils.is_module(options.type) and
+                     Kernel.function_exported?(options.type, :type, 0) and
+                     options.type.type == :string)
+              end)
 
             popular_strings =
               string_fields
