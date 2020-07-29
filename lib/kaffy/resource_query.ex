@@ -118,11 +118,11 @@ defmodule Kaffy.ResourceQuery do
               query = from(s in q, join: a in assoc(s, ^association))
 
               Enum.reduce(fields, query, fn f, current_query ->
-                from([..., r] in current_query, or_where: ilike(field(r, ^f), ^term))
+                from([..., r] in current_query, or_where: ilike(type(field(r, ^f), :string), ^term))
               end)
 
             f, q ->
-              from(s in q, or_where: ilike(field(s, ^f), ^term))
+              from(s in q, or_where: ilike(type(field(s, ^f), :string), ^term))
           end)
       end
 
