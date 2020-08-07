@@ -305,7 +305,7 @@ defmodule KaffyWeb.ResourceController do
             )
             |> redirect_to_resource(context, resource, entry)
 
-          {:error, {entry, error}} when is_binary(error) ->
+          {:error, {_entry, error}} when is_binary(error) ->
             put_flash(conn, :error, error)
             |> redirect_to_resource(context, resource, entry)
         end
