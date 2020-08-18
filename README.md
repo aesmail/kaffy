@@ -433,7 +433,7 @@ Notice that:
 
 - Even though the `status` field is of type `:string`, it is rendered as a `<select>` element with choices.
 - The `views` field is rendered as "readonly" because it was set as `:readonly` for the update form.
-- `settigns` is an embedded schema. That's why it is rendered as such.
+- `settings` is an embedded schema. That's why it is rendered as such.
 
 
 Setting a field's type to `:richtext` will render a rich text editor.
