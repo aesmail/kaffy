@@ -107,6 +107,12 @@ defmodule Kaffy.ResourceForm do
           false -> text_or_assoc(conn, schema, form, field, opts)
         end
 
+      :binary_id ->
+        case Kaffy.ResourceSchema.primary_key(schema) == [field] do
+          true -> text_input(form, field, opts)
+          false -> text_or_assoc(conn, schema, form, field, opts)
+        end
+
       :string ->
         text_input(form, field, opts)
 
@@ -304,7 +310,7 @@ defmodule Kaffy.ResourceForm do
 
             string_field =
               case is_nil(popular_strings) do
-                true -> Enum.at(string_fields, 0) |> elem(0)
+                true -> (Enum.at(string_fields, 0) || {:id}) |> elem(0)
                 false -> elem(popular_strings, 0)
               end
 
