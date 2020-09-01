@@ -327,15 +327,26 @@ defmodule Kaffy.ResourceForm do
     end
   end
 
-  def get_field_error(form, field) do
-    case Keyword.get_values(form.errors, field) do
-      [{msg, _}] ->
-        error_msg = Kaffy.ResourceAdmin.humanize_term(field) <> " " <> msg <> "!"
-        {error_msg, "is-invalid"}
-
-      _ ->
+  def get_field_error(changeset, field) do
+    changeset
+    |> build_error_messages()
+    |> Map.get(field)
+    |> case do
+      nil ->
         {nil, ""}
+
+      messages ->
+        error_msg = Kaffy.ResourceAdmin.humanize_term(field) <> " " <> Enum.join(messages, ", ") <> "!"
+        {error_msg, "is-invalid"}
     end
+  end
+
+  defp build_error_messages(changeset) do
+    Ecto.Changeset.traverse_errors(changeset, fn {msg, opts} ->
+      Enum.reduce(opts, msg, fn {key, value}, acc ->
+        String.replace(acc, "%{#{key}}", to_string(value))
+      end)
+    end)
   end
 
   def kaffy_input(conn, changeset, form, field, options) do
@@ -346,7 +357,7 @@ defmodule Kaffy.ResourceForm do
         ft.render_form(conn, changeset, form, field, options)
 
       false ->
-        {error_msg, error_class} = get_field_error(form, field)
+        {error_msg, error_class} = get_field_error(changeset, field)
         help_text = form_help_text({field, options})
 
         content_tag :div, class: "form-group #{error_class}" do
