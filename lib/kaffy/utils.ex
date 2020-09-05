@@ -10,6 +10,22 @@ defmodule Kaffy.Utils do
   end
 
   @doc """
+  Returns the :admin_logo config if present, otherwise returns Kaffy default logo.
+  """
+  @spec logo(Plug.Conn.t()) :: String.t()
+  def logo(conn) do
+    router().static_path(conn, env(:admin_logo, "/kaffy/assets/images/logo.png"))
+  end
+
+  @doc """
+  Returns the :admin_logo_mini config if present, otherwise returns Kaffy default logo.
+  """
+  @spec logo_mini(Plug.Conn.t()) :: String.t()
+  def logo_mini(conn) do
+    router().static_path(conn, env(:admin_logo_mini, "/kaffy/assets/images/logo-mini.png"))
+  end
+
+  @doc """
   Returns the JSON package used by phoenix configs. If no such config exists, raise an exception.
   """
   @spec json() :: atom()

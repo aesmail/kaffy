@@ -107,6 +107,8 @@ Otherwise, if you'd like to explicitly specify your schemas and their admin modu
 # config.exs
 config :kaffy,
   admin_title: "My Awesome App",
+  admin_logo: "/images/logo.png",
+  admin_logo_mini: "/images/logo-mini.png",
   hide_dashboard: false,
   home_page: [kaffy: :dashboard],
   ecto_repo: MyApp.Repo,
