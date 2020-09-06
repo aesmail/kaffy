@@ -391,6 +391,8 @@ defmodule KaffyWeb.ResourceController do
   end
 
   defp redirect_to_resource(conn, context, resource, entry) do
+    id = Kaffy.ResourceAdmin.serialize_id(resource, entry)
+
     redirect(conn,
       to:
         Kaffy.Utils.router().kaffy_resource_path(
@@ -398,7 +400,7 @@ defmodule KaffyWeb.ResourceController do
           :show,
           context,
           resource,
-          entry.id
+          id
         )
     )
   end
