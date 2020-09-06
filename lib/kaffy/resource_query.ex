@@ -46,7 +46,8 @@ defmodule Kaffy.ResourceQuery do
 
   def fetch_resource(conn, resource, id) do
     schema = resource[:schema]
-    query = from(s in schema, where: s.id == ^id)
+    id_filter = Kaffy.ResourceAdmin.deserialize_id(resource, id)
+    query = from(s in schema, where: ^id_filter)
     custom_query = Kaffy.ResourceAdmin.custom_show_query(conn, resource, query)
     Kaffy.Utils.repo().one(custom_query)
   end
