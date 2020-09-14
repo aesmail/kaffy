@@ -20,10 +20,10 @@
       <nav class="navbar default-layout-navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
         <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
           <%= link to: Kaffy.Utils.router().kaffy_home_path(@conn, :index), class: "navbar-brand brand-logo" do %>
-            <img src="/kaffy/assets/images/logo.png" alt="logo" />
+            <img src="<%= Kaffy.Utils.logo(@conn) %>" alt="logo" />
           <% end %>
           <%= link to: Kaffy.Utils.router().kaffy_home_path(@conn, :index), class: "navbar-brand brand-logo-mini" do %>
-            <img src="/kaffy/assets/images/logo-mini.png" alt="logo" />
+            <img src="<%= Kaffy.Utils.logo_mini(@conn) %>" alt="logo" />
           <% end %>
         </div>
         <div class="navbar-menu-wrapper d-flex align-items-stretch">
