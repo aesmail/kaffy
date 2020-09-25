@@ -102,7 +102,7 @@ defmodule Kaffy.ResourceQuery do
 
     query =
       cond do
-        (is_nil(search_fields) || Enum.empty?(search_fields)) && search == "" ->
+        (is_nil(search_fields) || Enum.empty?(search_fields)) || search == "" ->
           query
 
         true ->
