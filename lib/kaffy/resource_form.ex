@@ -344,10 +344,13 @@ defmodule Kaffy.ResourceForm do
   defp build_error_messages(changeset) do
     Ecto.Changeset.traverse_errors(changeset, fn {msg, opts} ->
       Enum.reduce(opts, msg, fn {key, value}, acc ->
-        String.replace(acc, "%{#{key}}", to_string(value))
+        String.replace(acc, "%{#{key}}", build_changeset_value(value))
       end)
     end)
   end
+
+  defp build_changeset_value(value) when is_tuple(value), do: value |> Tuple.to_list() |> Enum.join(", ")
+  defp build_changeset_value(value), do: to_string(value)
 
   def kaffy_input(conn, changeset, form, field, options) do
     ft = Kaffy.ResourceSchema.field_type(changeset.data.__struct__, field)
