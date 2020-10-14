@@ -49,6 +49,7 @@ defmodule Kaffy.ResourceForm do
         opts
       end
 
+    opts = if options[:value], do: Keyword.put(opts, :value_fn, options.value), else: opts
     permission =
       case is_nil(changeset.data.id) do
         true -> Map.get(options, :create, :editable)
@@ -197,6 +198,8 @@ defmodule Kaffy.ResourceForm do
       :utc_datetime_usec ->
         flatpickr_datetime_usec(form, field, opts)
 
+      :safe_html ->
+        {:safe, opts[:value_fn].(form.data)}
       _ ->
         text_input(form, field, opts)
     end
