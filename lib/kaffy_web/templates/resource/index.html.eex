@@ -85,11 +85,12 @@
         <% end %>
     <% end %>
   <% end %>
+  <% [{order_way, order_field}] = Kaffy.ResourceQuery.get_ordering(@my_resource, @params) %>
   <input id="kaffy-filter-search" type="hidden" name="search" value="<%= Map.get(@params, "search", "") %>" />
   <input id="kaffy-filter-page" type="hidden" name="page" value="<%= Map.get(@params, "page", "1") %>" />
   <input id="kaffy-filter-limit" type="hidden" name="limit" value="<%= Map.get(@params, "limit", "100") %>" />
-  <input id="kaffy-order-field" type="hidden" name="<%= to_string(:_of) %>" value="<%= Map.get(@params, "_of", "id") %>" />
-  <input id="kaffy-order-way" type="hidden" name="<%= to_string(:_ow) %>" value="<%= Map.get(@params, "_ow", "desc") %>" />
+  <input id="kaffy-order-field" type="hidden" name="<%= to_string(:_of) %>" value="<%= Map.get(@params, "_of", order_field) %>" />
+  <input id="kaffy-order-way" type="hidden" name="<%= to_string(:_ow) %>" value="<%= Map.get(@params, "_ow", order_way) %>" />
 </form>
 
 
