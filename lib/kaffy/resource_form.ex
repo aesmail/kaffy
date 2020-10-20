@@ -49,7 +49,6 @@ defmodule Kaffy.ResourceForm do
         opts
       end
 
-    opts = if options[:value], do: Keyword.put(opts, :value_fn, options.value), else: opts
     permission =
       case is_nil(changeset.data.id) do
         true -> Map.get(options, :create, :editable)
@@ -62,6 +61,12 @@ defmodule Kaffy.ResourceForm do
       !is_nil(choices) ->
         select(form, field, choices, class: "custom-select")
 
+      type == :image_preview ->
+        build_image_preview(changeset.data, options)
+
+      type == :custom_html ->
+        build_custom_html(changeset.data, options)
+
       true ->
         build_html_input(changeset.data, form, field, type, opts, permission == :readonly)
     end
@@ -71,6 +76,20 @@ defmodule Kaffy.ResourceForm do
     type = Kaffy.ResourceSchema.field_type(changeset.data.__struct__, field)
     build_html_input(changeset.data, form, field, type, opts)
   end
+
+  defp build_image_preview(data, opts) do
+    url = extract_value(data, opts)
+    content_tag :img, "", src: url, style: Map.get(opts, :inline_css)
+  end
+
+  defp build_custom_html(data, opts) do
+    value = extract_value(data, opts)
+    {:safe, value}
+  end
+
+  defp extract_value(data, %{value_fn: fun}) when is_function(fun), do: fun.(data)
+  defp extract_value(_data, %{value: value}), do: value
+  defp extract_value(_data, _), do: raise (":value or :value_fn is missing")
 
   defp build_html_input(schema, form, field, type, opts, readonly \\ false) do
     data = schema
@@ -198,8 +217,6 @@ defmodule Kaffy.ResourceForm do
       :utc_datetime_usec ->
         flatpickr_datetime_usec(form, field, opts)
 
-      :safe_html ->
-        {:safe, opts[:value_fn].(form.data)}
       _ ->
         text_input(form, field, opts)
     end
