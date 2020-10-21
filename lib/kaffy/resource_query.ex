@@ -102,7 +102,7 @@ defmodule Kaffy.ResourceQuery do
 
     query =
       cond do
-        (is_nil(search_fields) || Enum.empty?(search_fields)) || search == "" ->
+        is_nil(search_fields) || Enum.empty?(search_fields) || search == "" ->
           query
 
         true ->
@@ -118,7 +118,9 @@ defmodule Kaffy.ResourceQuery do
               query = from(s in q, join: a in assoc(s, ^association))
 
               Enum.reduce(fields, query, fn f, current_query ->
-                from([..., r] in current_query, or_where: ilike(type(field(r, ^f), :string), ^term))
+                from([..., r] in current_query,
+                  or_where: ilike(type(field(r, ^f), :string), ^term)
+                )
               end)
 
             f, q ->

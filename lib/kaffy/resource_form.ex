@@ -336,7 +336,9 @@ defmodule Kaffy.ResourceForm do
         {nil, ""}
 
       messages ->
-        error_msg = Kaffy.ResourceAdmin.humanize_term(field) <> " " <> Enum.join(messages, ", ") <> "!"
+        error_msg =
+          Kaffy.ResourceAdmin.humanize_term(field) <> " " <> Enum.join(messages, ", ") <> "!"
+
         {error_msg, "is-invalid"}
     end
   end
@@ -349,7 +351,9 @@ defmodule Kaffy.ResourceForm do
     end)
   end
 
-  defp build_changeset_value(value) when is_tuple(value), do: value |> Tuple.to_list() |> Enum.join(", ")
+  defp build_changeset_value(value) when is_tuple(value),
+    do: value |> Tuple.to_list() |> Enum.join(", ")
+
   defp build_changeset_value(value), do: to_string(value)
 
   def kaffy_input(conn, changeset, form, field, options) do

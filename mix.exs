@@ -32,6 +32,7 @@ defmodule Kaffy.MixProject do
     [
       {:phoenix, "~> 1.4"},
       {:phoenix_html, "~> 2.11"},
+      {:mock, "~> 0.3.0", only: :test},
       {:ecto, "~> 3.0"},
       {:ex_doc, ">= 0.0.0", only: :dev, runtime: false}
     ]
