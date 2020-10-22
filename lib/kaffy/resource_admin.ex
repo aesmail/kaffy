@@ -294,11 +294,13 @@ defmodule Kaffy.ResourceAdmin do
   end
 
   def resource_actions(resource, conn) do
-    Utils.get_assigned_value_or_default(resource, :resource_actions, nil, [conn], false)
+    actions = Utils.get_assigned_value_or_default(resource, :resource_actions, nil, [conn], false)
+    reorder_actions(actions)
   end
 
   def list_actions(resource, conn) do
-    Utils.get_assigned_value_or_default(resource, :list_actions, nil, [conn], false)
+    actions = Utils.get_assigned_value_or_default(resource, :list_actions, nil, [conn], false)
+    reorder_actions(actions)
   end
 
   def widgets(resource, conn) do
@@ -401,5 +403,25 @@ defmodule Kaffy.ResourceAdmin do
       [conn, resource[:schema], query],
       false
     )
+  end
+
+  defp reorder_actions(actions) when is_list(actions), do: actions
+
+  defp reorder_actions(actions) when is_map(actions) do
+    has_order_field? = fn {_, params} ->
+      Map.has_key?(params, :order)
+    end
+
+    if Enum.any?(actions, has_order_field?) do
+      unless Enum.all?(actions, has_order_field?) do
+        raise "when one action declares :order field then all actions must declare one"
+      end
+
+      Enum.sort(actions, fn a, b ->
+        elem(a, 1).order <= elem(b, 1).order
+      end)
+    else
+      Map.to_list(actions)
+    end
   end
 end
