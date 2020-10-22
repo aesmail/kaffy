@@ -321,8 +321,7 @@ defmodule KaffyWeb.ResourceController do
     my_resource = Kaffy.Utils.get_resource(conn, context, resource)
     entry = Kaffy.ResourceQuery.fetch_resource(conn, my_resource, id)
     actions = Kaffy.ResourceAdmin.resource_actions(my_resource, conn)
-    action_key = String.to_existing_atom(action_key)
-    [action_record] = Keyword.get_values(actions, action_key)
+    action_record = get_action_record(actions, action_key)
 
     case action_record.action.(conn, entry) do
       {:ok, entry} ->
@@ -344,11 +343,10 @@ defmodule KaffyWeb.ResourceController do
         %{"context" => context, "resource" => resource, "action_key" => action_key} = params
       ) do
     my_resource = Kaffy.Utils.get_resource(conn, context, resource)
-    action_key = String.to_existing_atom(action_key)
     ids = Map.get(params, "ids", "") |> String.split(",")
     entries = Kaffy.ResourceQuery.fetch_list(my_resource, ids)
     actions = Kaffy.ResourceAdmin.list_actions(my_resource, conn)
-    [action_record] = Keyword.get_values(actions, action_key)
+    action_record = get_action_record(actions, action_key)
     kaffy_inputs = Map.get(params, "kaffy-input", %{})
 
     result =
@@ -393,5 +391,17 @@ defmodule KaffyWeb.ResourceController do
           entry.id
         )
     )
+  end
+
+  # we received actions as map so we actually use strings as keys
+  defp get_action_record(actions, action_key) when is_map(actions) and is_binary(action_key) do
+    Map.fetch!(actions, action_key)
+  end
+
+  # we received actions as Keyword list so action_key needs to be an atom
+  defp get_action_record(actions, action_key) when is_list(actions) and is_binary(action_key) do
+    action_key = String.to_existing_atom(action_key)
+    [action_record] = Keyword.get_values(actions, action_key)
+    action_record
   end
 end
