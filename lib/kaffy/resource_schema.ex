@@ -1,7 +1,7 @@
 defmodule Kaffy.ResourceSchema do
   @moduledoc false
 
-  def primary_key(schema) do
+  def primary_keys(schema) do
     schema.__schema__(:primary_key)
   end
 
@@ -24,7 +24,10 @@ defmodule Kaffy.ResourceSchema do
   end
 
   def form_fields(schema) do
-    to_be_removed = fields_to_be_removed(schema) ++ [:id, :inserted_at, :updated_at]
+    to_be_removed =
+      fields_to_be_removed(schema) ++
+        primary_keys(schema) ++
+        [:inserted_at, :updated_at]
     Keyword.drop(fields(schema), to_be_removed)
   end
 
@@ -33,7 +36,9 @@ defmodule Kaffy.ResourceSchema do
       fields_to_be_removed(schema) ++
         get_has_many_associations(schema) ++
         get_has_one_assocations(schema) ++
-        get_many_to_many_associations(schema) ++ [:id, :inserted_at, :updated_at]
+        get_many_to_many_associations(schema) ++
+        primary_keys(schema) ++
+        [:inserted_at, :updated_at]
 
     Keyword.drop(fields(schema), to_be_removed)
   end
