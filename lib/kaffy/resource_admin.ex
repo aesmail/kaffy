@@ -180,10 +180,7 @@ defmodule Kaffy.ResourceAdmin do
 
         false ->
           cast_fields = Kaffy.ResourceSchema.cast_fields(schema) |> Keyword.keys()
-
-          schema_struct
-          |> Ecto.Changeset.cast(changes, cast_fields)
-          |> Ecto.Changeset.change(changes)
+          Ecto.Changeset.cast(schema_struct, changes, cast_fields)
       end
 
     Utils.get_assigned_value_or_default(
@@ -221,12 +218,7 @@ defmodule Kaffy.ResourceAdmin do
 
         false ->
           cast_fields = Kaffy.ResourceSchema.cast_fields(schema) |> Keyword.keys()
-
-          entry
-          |> Ecto.Changeset.cast(changes, cast_fields)
-          |> Ecto.Changeset.change(changes)
-
-          Ecto.Changeset.change(entry, changes)
+          Ecto.Changeset.cast(entry, changes, cast_fields)
       end
 
     Utils.get_assigned_value_or_default(
