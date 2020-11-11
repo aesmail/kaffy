@@ -5,7 +5,7 @@ defmodule Kaffy.ResourceCallbacks do
 
   def create_callbacks(conn, resource, changes) do
     changeset = Kaffy.ResourceAdmin.create_changeset(resource, changes)
-    repo = Kaffy.Utils.repo()
+    repo = Kaffy.Utils.repo(resource)
 
     repo.transaction(fn ->
       result =
@@ -28,7 +28,7 @@ defmodule Kaffy.ResourceCallbacks do
       {:ok, entry}
     else
       {:error, :not_found} ->
-        Kaffy.Utils.repo().insert(changeset)
+        Kaffy.Utils.repo(resource).insert(changeset)
 
       unexpected_error ->
         {:error, unexpected_error}
@@ -37,7 +37,7 @@ defmodule Kaffy.ResourceCallbacks do
 
   def update_callbacks(conn, resource, entry, changes) do
     changeset = Kaffy.ResourceAdmin.update_changeset(resource, entry, changes)
-    repo = Kaffy.Utils.repo()
+    repo = Kaffy.Utils.repo(resource)
 
     repo.transaction(fn ->
       result =
@@ -60,7 +60,7 @@ defmodule Kaffy.ResourceCallbacks do
       {:ok, entry}
     else
       {:error, :not_found} ->
-        Kaffy.Utils.repo().update(changeset)
+        Kaffy.Utils.repo(resource).update(changeset)
 
       unexpected_error ->
         {:error, unexpected_error}
@@ -68,7 +68,7 @@ defmodule Kaffy.ResourceCallbacks do
   end
 
   def delete_callbacks(conn, resource, entry) do
-    repo = Kaffy.Utils.repo()
+    repo = Kaffy.Utils.repo(resource)
 
     repo.transaction(fn ->
       result =
@@ -163,7 +163,7 @@ defmodule Kaffy.ResourceCallbacks do
       {:ok, entry}
     else
       {:error, :not_found} ->
-        Kaffy.Utils.repo().delete(changeset)
+        Kaffy.Utils.repo(resource).delete(changeset)
 
       unexpected_error ->
         {:error, unexpected_error}
