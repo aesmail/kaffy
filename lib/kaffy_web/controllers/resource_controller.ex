@@ -15,6 +15,7 @@ defmodule KaffyWeb.ResourceController do
           "pick" => _field
         } = params
       ) do
+    Kaffy.Utils.set_dynamic_repo(conn)
     my_resource = Kaffy.Utils.get_resource(conn, context, resource)
 
     case can_proceed?(my_resource, conn) do
@@ -52,6 +53,7 @@ defmodule KaffyWeb.ResourceController do
   end
 
   def index(conn, %{"context" => context, "resource" => resource} = params) do
+    Kaffy.Utils.set_dynamic_repo(conn)
     my_resource = Kaffy.Utils.get_resource(conn, context, resource)
 
     case can_proceed?(my_resource, conn) do
@@ -89,6 +91,7 @@ defmodule KaffyWeb.ResourceController do
   end
 
   def show(conn, %{"context" => context, "resource" => resource, "id" => id}) do
+    Kaffy.Utils.set_dynamic_repo(conn)
     my_resource = Kaffy.Utils.get_resource(conn, context, resource)
     schema = my_resource[:schema]
     resource_name = Kaffy.ResourceAdmin.singular_name(my_resource)
@@ -121,6 +124,7 @@ defmodule KaffyWeb.ResourceController do
   end
 
   def update(conn, %{"context" => context, "resource" => resource, "id" => id} = params) do
+    Kaffy.Utils.set_dynamic_repo(conn)
     my_resource = Kaffy.Utils.get_resource(conn, context, resource)
     schema = my_resource[:schema]
     params = Kaffy.ResourceParams.decode_map_fields(resource, schema, params)
@@ -200,6 +204,7 @@ defmodule KaffyWeb.ResourceController do
   end
 
   def new(conn, %{"context" => context, "resource" => resource}) do
+    Kaffy.Utils.set_dynamic_repo(conn)
     my_resource = Kaffy.Utils.get_resource(conn, context, resource)
     resource_name = Kaffy.ResourceAdmin.singular_name(my_resource)
 
@@ -222,6 +227,7 @@ defmodule KaffyWeb.ResourceController do
   end
 
   def create(conn, %{"context" => context, "resource" => resource} = params) do
+    Kaffy.Utils.set_dynamic_repo(conn)
     my_resource = Kaffy.Utils.get_resource(conn, context, resource)
     params = Kaffy.ResourceParams.decode_map_fields(resource, my_resource[:schema], params)
     changes = Map.get(params, resource, %{})
@@ -281,6 +287,7 @@ defmodule KaffyWeb.ResourceController do
   end
 
   def delete(conn, %{"context" => context, "resource" => resource, "id" => id}) do
+    Kaffy.Utils.set_dynamic_repo(conn)
     my_resource = Kaffy.Utils.get_resource(conn, context, resource)
 
     case can_proceed?(my_resource, conn) do
@@ -318,6 +325,7 @@ defmodule KaffyWeb.ResourceController do
         "id" => id,
         "action_key" => action_key
       }) do
+    Kaffy.Utils.set_dynamic_repo(conn)
     my_resource = Kaffy.Utils.get_resource(conn, context, resource)
     entry = Kaffy.ResourceQuery.fetch_resource(conn, my_resource, id)
     actions = Kaffy.ResourceAdmin.resource_actions(my_resource, conn)
@@ -342,6 +350,7 @@ defmodule KaffyWeb.ResourceController do
         conn,
         %{"context" => context, "resource" => resource, "action_key" => action_key} = params
       ) do
+    Kaffy.Utils.set_dynamic_repo(conn)
     my_resource = Kaffy.Utils.get_resource(conn, context, resource)
     ids = Map.get(params, "ids", "") |> String.split(",")
     entries = Kaffy.ResourceQuery.fetch_list(my_resource, ids)

@@ -29,13 +29,13 @@ defmodule Kaffy.ResourceForm do
         )
 
       true ->
-        build_html_input(resource[:schema], form, field, type, [])
+        build_html_input(resource, resource[:schema], form, field, type, [])
     end
   end
 
-  def form_field(changeset, form, field, opts \\ [])
+  def form_field(resource, changeset, form, field, opts \\ [])
 
-  def form_field(changeset, form, {field, options}, opts) do
+  def form_field(resource, changeset, form, {field, options}, opts) do
     options = options || %{}
 
     type =
@@ -62,16 +62,24 @@ defmodule Kaffy.ResourceForm do
         select(form, field, choices, class: "custom-select")
 
       true ->
-        build_html_input(changeset.data, form, field, type, opts, permission == :readonly)
+        build_html_input(
+          resource,
+          changeset.data,
+          form,
+          field,
+          type,
+          opts,
+          permission == :readonly
+        )
     end
   end
 
-  def form_field(changeset, form, field, opts) do
+  def form_field(resource, changeset, form, field, opts) do
     type = Kaffy.ResourceSchema.field_type(changeset.data.__struct__, field)
-    build_html_input(changeset.data, form, field, type, opts)
+    build_html_input(resource, changeset.data, form, field, type, opts)
   end
 
-  defp build_html_input(schema, form, field, type, opts, readonly \\ false) do
+  defp build_html_input(resource, schema, form, field, type, opts, readonly \\ false) do
     data = schema
     {conn, opts} = Keyword.pop(opts, :conn)
     opts = Keyword.put(opts, :readonly, readonly)
@@ -91,7 +99,7 @@ defmodule Kaffy.ResourceForm do
                 [
                   [
                     form_label(fp, f),
-                    form_field(embed_changeset, fp, f, class: "form-control")
+                    form_field(resource, embed_changeset, fp, f, class: "form-control")
                   ]
                   | all
                 ]
@@ -104,13 +112,13 @@ defmodule Kaffy.ResourceForm do
       :id ->
         case Kaffy.ResourceSchema.primary_key(schema) == [field] do
           true -> text_input(form, field, opts)
-          false -> text_or_assoc(conn, schema, form, field, opts)
+          false -> text_or_assoc(conn, resource, form, field, opts)
         end
 
       :binary_id ->
         case Kaffy.ResourceSchema.primary_key(schema) == [field] do
           true -> text_input(form, field, opts)
-          false -> text_or_assoc(conn, schema, form, field, opts)
+          false -> text_or_assoc(conn, resource, form, field, opts)
         end
 
       :string ->
@@ -240,7 +248,9 @@ defmodule Kaffy.ResourceForm do
     ]
   end
 
-  defp text_or_assoc(conn, schema, form, field, opts) do
+  defp text_or_assoc(conn, resource, form, field, opts) do
+    schema = resource[:schema]
+
     actual_assoc =
       Enum.filter(Kaffy.ResourceSchema.associations(schema), fn a ->
         Kaffy.ResourceSchema.association(schema, a).owner_key == field
@@ -291,7 +301,7 @@ defmodule Kaffy.ResourceForm do
             end
 
           false ->
-            options = Kaffy.Utils.repo().all(assoc)
+            options = Kaffy.Utils.repo(resource).all(assoc)
 
             fields = Kaffy.ResourceSchema.fields(assoc)
 
@@ -356,7 +366,7 @@ defmodule Kaffy.ResourceForm do
 
   defp build_changeset_value(value), do: to_string(value)
 
-  def kaffy_input(conn, changeset, form, field, options) do
+  def kaffy_input(conn, resource, changeset, form, field, options) do
     ft = Kaffy.ResourceSchema.field_type(changeset.data.__struct__, field)
 
     case Kaffy.Utils.is_module(ft) && Keyword.has_key?(ft.__info__(:functions), :render_form) do
@@ -371,7 +381,7 @@ defmodule Kaffy.ResourceForm do
           label_tag = if ft != :boolean, do: form_label(form, {field, options}), else: ""
 
           field_tag =
-            form_field(changeset, form, {field, options},
+            form_field(resource, changeset, form, {field, options},
               class: "form-control #{error_class}",
               conn: conn
             )

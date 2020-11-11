@@ -51,6 +51,14 @@ defmodule Kaffy.Utils do
   end
 
   @doc """
+  Returns the repo module specified by the resource
+  """
+  @spec repo(String.t()) :: atom()
+  def repo(resource) do
+    resource[:repo] || repo()
+  end
+
+  @doc """
   Returns the version of the provided app.
 
   Example:
@@ -118,6 +126,14 @@ defmodule Kaffy.Utils do
       f when is_function(f) -> f.(conn)
       l when is_list(l) -> l
       _ -> setup_resources()
+    end
+  end
+
+  @spec full_resources(Plug.Conn.t()) :: atom() | pid() | nil
+  def set_dynamic_repo(conn) do
+    case env(:set_dynamic_repo) do
+      f when is_function(f) -> f.(conn)
+      _ -> nil
     end
   end
 
@@ -340,7 +356,15 @@ defmodule Kaffy.Utils do
         end
       end)
 
-    %{stylesheets: stylesheets, javascripts: javascripts}
+    navigation_extras =
+      Enum.map(exts, fn ext ->
+        case function_exported?(ext, :navigation_extras, 1) do
+          true -> ext.navigation_extras(conn)
+          false -> []
+        end
+      end)
+
+    %{stylesheets: stylesheets, javascripts: javascripts, navigation_extras: navigation_extras}
   end
 
   defp env(key, default \\ nil) do

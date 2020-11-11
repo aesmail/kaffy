@@ -26,7 +26,7 @@
             <img src="<%= Kaffy.Utils.logo_mini(@conn) %>"  alt="logo" />
           <% end %>
         </div>
-        <div class="navbar-menu-wrapper d-flex align-items-stretch">
+        <div class="navbar-menu-wrapper d-flex align-items-stretch justify-content-between">
           <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
             <span class="fas fa-bars"></span>
           </button>
@@ -34,6 +34,10 @@
           <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
             <span class="fas fa-bars"></span>
           </button>
+
+          <%= for extra <- Kaffy.Utils.extensions(@conn).navigation_extras do %>
+            <%= extra %>
+          <% end %>
         </div>
       </nav>
 

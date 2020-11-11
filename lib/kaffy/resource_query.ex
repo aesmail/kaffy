@@ -26,10 +26,10 @@ defmodule Kaffy.ResourceQuery do
       )
 
     custom_query = Kaffy.ResourceAdmin.custom_index_query(conn, resource, paged)
-    current_page = Kaffy.Utils.repo().all(custom_query)
+    current_page = Kaffy.Utils.repo(resource).all(custom_query)
 
     do_cache = if search == "" and Enum.empty?(filtered_fields), do: true, else: false
-    all_count = cached_total_count(schema, do_cache, all)
+    all_count = cached_total_count(resource, do_cache, all)
     {all_count, current_page}
   end
 
@@ -48,7 +48,7 @@ defmodule Kaffy.ResourceQuery do
     schema = resource[:schema]
     query = from(s in schema, where: s.id == ^id)
     custom_query = Kaffy.ResourceAdmin.custom_show_query(conn, resource, query)
-    Kaffy.Utils.repo().one(custom_query)
+    Kaffy.Utils.repo(resource).one(custom_query)
   end
 
   def fetch_list(_, [""]), do: []
@@ -57,13 +57,15 @@ defmodule Kaffy.ResourceQuery do
     schema = resource[:schema]
 
     from(s in schema, where: s.id in ^ids)
-    |> Kaffy.Utils.repo().all()
+    |> Kaffy.Utils.repo(resource).all()
   end
 
-  def total_count(schema, do_cache, query) do
+  def total_count(resource, do_cache, query) do
+    schema = resource[:schema]
+
     result =
       from(s in query, select: fragment("count(*)"))
-      |> Kaffy.Utils.repo().one()
+      |> Kaffy.Utils.repo(resource).one()
 
     if do_cache and result > 100_000 do
       Kaffy.Cache.Client.add_cache(schema, "count", result, 600)
@@ -72,10 +74,11 @@ defmodule Kaffy.ResourceQuery do
     result
   end
 
-  def cached_total_count(schema, false, query), do: total_count(schema, false, query)
+  def cached_total_count(resource, false, query), do: total_count(resource, false, query)
 
-  def cached_total_count(schema, do_cache, query) do
-    Kaffy.Cache.Client.get_cache(schema, "count") || total_count(schema, do_cache, query)
+  def cached_total_count(resource, do_cache, query) do
+    Kaffy.Cache.Client.get_cache(resource[:schema], "count") ||
+      total_count(resource, do_cache, query)
   end
 
   defp get_filter_fields(params, resource) do
