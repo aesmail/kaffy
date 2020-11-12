@@ -538,6 +538,19 @@ It is called when fetching the resources for the index page.
 
 The `custom_show_query/3` is identifical to `custom_index_query/3`, but works when fetching a single resource in the show/edit page.
 
+It's also possible to pass `opts` to the Repo operation, in this case, you just have to return a tuple instead, like below:
+
+```elixir
+defmodule MyApp.Accounts.TenantAdmin do
+  def custom_index_query(_conn, _schema, query) do
+    {query, skip_tenant_id: true}
+  end
+
+  def custom_show_query(_conn, _schema, query) do
+    {query, skip_tenant_id: true}
+  end
+end
+```
 
 ### Extensions
 
