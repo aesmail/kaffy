@@ -335,6 +335,10 @@ defmodule Kaffy.ResourceForm do
       nil ->
         {nil, ""}
 
+      # # In case of field is a embedded schema
+      %{} ->
+        {nil, ""}
+
       messages ->
         error_msg =
           Kaffy.ResourceAdmin.humanize_term(field) <> " " <> Enum.join(messages, ", ") <> "!"
