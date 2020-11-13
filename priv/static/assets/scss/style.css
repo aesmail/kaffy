@@ -4782,8 +4782,8 @@ textarea.form-control {
 
 .was-validated :invalid ~ .invalid-feedback,
 .was-validated :invalid ~ .invalid-tooltip,
-.is-invalid ~ .invalid-feedback,
-.is-invalid ~ .invalid-tooltip {
+.is-invalid .invalid-feedback,
+.is-invalid .invalid-tooltip {
   display: block;
 }
 

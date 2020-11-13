@@ -50,7 +50,7 @@ defmodule Kaffy.ResourceForm do
       end
 
     permission =
-      case is_nil(changeset.data.id) do
+      case !Map.has_key?(changeset.data, :id) || is_nil(changeset.data.id) do
         true -> Map.get(options, :create, :editable)
         false -> Map.get(options, :update, :editable)
       end
@@ -344,6 +344,11 @@ defmodule Kaffy.ResourceForm do
     |> case do
       nil ->
         {nil, ""}
+
+      errors when is_map(errors) ->
+        error_msg = Kaffy.ResourceAdmin.humanize_term(field) <> " has multiple errors!"
+
+        {error_msg, "is-invalid"}
 
       messages ->
         error_msg =
