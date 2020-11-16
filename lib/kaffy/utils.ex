@@ -129,7 +129,7 @@ defmodule Kaffy.Utils do
     end
   end
 
-  @spec full_resources(Plug.Conn.t()) :: atom() | pid() | nil
+  @spec set_dynamic_repo(Plug.Conn.t()) :: atom() | pid() | nil
   def set_dynamic_repo(conn) do
     case env(:set_dynamic_repo) do
       f when is_function(f) -> f.(conn)
@@ -225,6 +225,31 @@ defmodule Kaffy.Utils do
   def get_resource(conn, context, resource) do
     {context, resource} = convert_to_atoms(context, resource)
     get_in(full_resources(conn), [context, :resources, resource])
+  end
+
+  @doc """
+  Returns the resource entry from the schema.
+
+  Example:
+
+      iex> get_resource_from_schema(conn, MyApp.Blog.Post)
+      [schema: MyApp.Blog.Post, admin: MyApp.Blog.PostAdmin]
+  """
+  @spec get_resource_from_schema(Plug.Conn.t(), module()) :: list()
+  def get_resource_from_schema(conn, schema) do
+    full_resources(conn)
+    |> Enum.reduce_while(nil, fn {_, props}, acc ->
+      props[:resources]
+      |> Enum.reduce(fn {_name, resource_props}, _ ->
+        if resource_props[:schema] == schema do
+          resource_props
+        end
+      end)
+      |> case do
+        nil -> {:cont, acc}
+        resource -> {:halt, resource}
+      end
+    end)
   end
 
   @doc """

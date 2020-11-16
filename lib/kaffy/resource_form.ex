@@ -266,7 +266,8 @@ defmodule Kaffy.ResourceForm do
     case field_no_id in Kaffy.ResourceSchema.associations(schema) do
       true ->
         assoc = Kaffy.ResourceSchema.association_schema(schema, field_no_id)
-        option_count = Kaffy.ResourceQuery.cached_total_count(assoc, true, assoc)
+        assoc_resource = Kaffy.Utils.get_resource_from_schema(conn, assoc)
+        option_count = Kaffy.ResourceQuery.cached_total_count(assoc_resource, true, assoc)
 
         case option_count > 100 do
           true ->
