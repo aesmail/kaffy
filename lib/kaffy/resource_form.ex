@@ -29,7 +29,7 @@ defmodule Kaffy.ResourceForm do
         )
 
       true ->
-        build_html_input(resource[:schema], form, field, type, [])
+        build_html_input(resource[:schema], form, {field, options}, type, [])
     end
   end
 
@@ -62,16 +62,23 @@ defmodule Kaffy.ResourceForm do
         select(form, field, choices, class: "custom-select")
 
       true ->
-        build_html_input(changeset.data, form, field, type, opts, permission == :readonly)
+        build_html_input(
+          changeset.data,
+          form,
+          {field, options},
+          type,
+          opts,
+          permission == :readonly
+        )
     end
   end
 
-  def form_field(changeset, form, field, opts) do
+  def form_field(changeset, form, {field, options}, opts) do
     type = Kaffy.ResourceSchema.field_type(changeset.data.__struct__, field)
-    build_html_input(changeset.data, form, field, type, opts)
+    build_html_input(changeset.data, form, {field, options}, type, opts)
   end
 
-  defp build_html_input(schema, form, field, type, opts, readonly \\ false) do
+  defp build_html_input(schema, form, {field, options}, type, opts, readonly \\ false) do
     data = schema
     {conn, opts} = Keyword.pop(opts, :conn)
     opts = Keyword.put(opts, :readonly, readonly)
@@ -91,7 +98,7 @@ defmodule Kaffy.ResourceForm do
                 [
                   [
                     form_label(fp, f),
-                    form_field(embed_changeset, fp, f, class: "form-control")
+                    form_field(embed_changeset, fp, {f, options}, class: "form-control")
                   ]
                   | all
                 ]
@@ -139,7 +146,7 @@ defmodule Kaffy.ResourceForm do
         [
           {:safe, ~s(<div class="custom-control custom-checkbox">)},
           checkbox(form, field, checkbox_opts),
-          label(form, field, label_opts),
+          label(form, field, form_label_string({field, options}), label_opts),
           {:safe, "</div>"}
         ]
 
@@ -150,7 +157,7 @@ defmodule Kaffy.ResourceForm do
         [
           {:safe, ~s(<div class="custom-control custom-switch">)},
           checkbox(form, field, checkbox_opts),
-          label(form, field, label_opts),
+          label(form, field, form_label_string({field, options}), label_opts),
           {:safe, "</div>"}
         ]
 
