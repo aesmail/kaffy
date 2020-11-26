@@ -198,6 +198,8 @@ defmodule Kaffy.ResourceForm do
         flatpickr_datetime_usec(form, field, opts)
 
       _ ->
+        field = to_string |> field
+
         text_input(form, field, opts)
     end
   end
