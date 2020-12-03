@@ -61,10 +61,10 @@ defmodule Kaffy.ResourceForm do
       !is_nil(choices) ->
         select(form, field, choices, class: "custom-select")
 
-      type == :image_preview ->
+      type == :image ->
         build_image_preview(changeset.data, options)
 
-      type == :custom_html ->
+      type == :html ->
         build_custom_html(changeset.data, options)
 
       true ->
