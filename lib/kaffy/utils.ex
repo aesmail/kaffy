@@ -202,7 +202,7 @@ defmodule Kaffy.Utils do
 
   Example:
 
-      iex> get_resource("blog", "post")
+      iex> get_resource(conn, "blog", "post")
       [schema: MyApp.Blog.Post, admin: MyApp.Blog.PostAdmin]
   """
   @spec get_resource(Plug.Conn.t(), String.t(), String.t()) :: list()

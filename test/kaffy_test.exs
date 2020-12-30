@@ -2,7 +2,6 @@ defmodule KaffyTest do
   use ExUnit.Case
   doctest Kaffy
   alias KaffyTest.Schemas.{Person, Pet}
-  alias KaffyTest.Admin.PersonAdmin
 
   test "greets the world" do
     assert Kaffy.hello() == :world
@@ -79,16 +78,5 @@ defmodule KaffyTest do
       assert Pet == ResourceSchema.association_schema(Person, :pets)
       assert Person == ResourceSchema.association_schema(Pet, :person)
     end
-  end
-
-  describe "Kaffy.ResourceAdmin" do
-    alias Kaffy.ResourceAdmin
-
-    # [Qizot] I don't know if this test should be valid anymore if associations are allowed
-    # test "index/1 should return a keyword list of fields and their values" do
-    #   assert Kaffy.ResourceSchema.fields(Person) == ResourceAdmin.index(schema: Person)
-    #   custom_index = ResourceAdmin.index(schema: Person, admin: PersonAdmin)
-    #   assert [:name, :married] == Keyword.keys(custom_index)
-    # end
   end
 end

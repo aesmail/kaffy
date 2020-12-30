@@ -394,14 +394,15 @@ defmodule KaffyWeb.ResourceController do
   end
 
   # we received actions as map so we actually use strings as keys
-  defp get_action_record(actions, action_key) when is_map(actions) and is_binary(action_key) do
-    Map.fetch!(actions, action_key)
-  end
-
-  # we received actions as Keyword list so action_key needs to be an atom
   defp get_action_record(actions, action_key) when is_list(actions) and is_binary(action_key) do
-    action_key = String.to_existing_atom(action_key)
-    [action_record] = Keyword.get_values(actions, action_key)
-    action_record
+    if Keyword.keyword?(actions) do
+      action_key = String.to_existing_atom(action_key)
+      [action_record] = Keyword.get_values(actions, action_key)
+      action_record
+    else
+      # we received ordered list created from actions map
+      {^action_key, action_record} = List.keyfind(actions, action_key, 0)
+      action_record
+    end
   end
 end

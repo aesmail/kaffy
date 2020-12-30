@@ -1,10 +1,11 @@
 defmodule ActionsTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: false
   use Phoenix.ConnTest
 
   import Mock
-  alias Phoenix.Controller, as: PhoenixController
 
+  alias Phoenix.Controller, as: PhoenixController
+  alias KaffyTest.Schemas.Empty
   alias KaffyWeb.ResourceController
 
   defmodule ActionsListAdmin do
@@ -67,17 +68,6 @@ defmodule ActionsTest do
     end
   end
 
-  defmodule FakeSchema do
-    use Ecto.Schema
-
-    schema "fake_schema" do
-    end
-
-    def changeset(fake, _attrs) do
-      fake
-    end
-  end
-
   defmodule FakeRouter do
     use Phoenix.Router
     use Kaffy.Routes, scope: "/admin"
@@ -91,13 +81,13 @@ defmodule ActionsTest do
           name: "list",
           # this line used to be "schemas" in pre v0.9
           resources: [
-            test: [schema: FakeSchema, admin: ActionsListAdmin]
+            test: [schema: Empty, admin: ActionsListAdmin]
           ]
         ],
         map: [
           name: "map",
           resources: [
-            test: [schema: FakeSchema, admin: ActionsMapAdmin]
+            test: [schema: Empty, admin: ActionsMapAdmin]
           ]
         ]
       ]
@@ -139,5 +129,59 @@ defmodule ActionsTest do
 
       assert %{"success" => _} = get_flash(result_conn)
     end
+  end
+
+  test "Kaffy.ResourceAdmin.resource_actions/2 performs ordering of actions when provided :order fields" do
+    defmodule OrderActions do
+      def resource_actions(_) do
+        %{
+          "two" => %{
+            order: 2
+          },
+          "three" => %{
+            order: 3
+          },
+          "four" => %{
+            order: 4
+          },
+          "one" => %{
+            order: 1
+          }
+        }
+      end
+    end
+
+    assert [{"one", _}, {"two", _}, {"three", _}, {"four", _}] =
+             Kaffy.ResourceAdmin.resource_actions([schema: Empty, admin: OrderActions], %{})
+  end
+
+  test "Kaffy.ResourceAdmin.resource_actions/2 raises an error when one action declared :order but other did not" do
+    defmodule InvalidOrderActions do
+      def resource_actions(_) do
+        %{
+          "two" => %{},
+          "one" => %{
+            order: 1
+          }
+        }
+      end
+    end
+
+    assert_raise RuntimeError, ~r/:order/, fn ->
+      Kaffy.ResourceAdmin.resource_actions([schema: Empty, admin: InvalidOrderActions], %{})
+    end
+  end
+
+  test "Kaffy.ResourceAdmin.resource_actions/2 allows unordered actions" do
+    defmodule NonOrderedActions do
+      def resource_actions(_) do
+        %{
+          "two" => %{},
+          "one" => %{}
+        }
+      end
+    end
+
+    assert Kaffy.ResourceAdmin.resource_actions([schema: Empty, admin: NonOrderedActions], %{})
   end
 end
