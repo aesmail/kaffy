@@ -134,6 +134,23 @@ defmodule Kaffy.ResourceAdmin do
   end
 
   @doc """
+  `default_actions/1` takes a schema and returns the default actions for the schema.
+
+  If `default_actions/1` is not defined, Kaffy will return `[:new, :edit, :delete]`.
+
+  Example:
+
+  ```elixir
+  def default_actions(_schema) do
+    [:new, :delete]
+  end
+  ```
+  """
+  def default_actions(resource) do
+    Utils.get_assigned_value_or_default(resource, :default_actions, [:new, :edit, :delete])
+  end
+
+  @doc """
   `authorized?/2` takes the schema and the current Plug.Conn struct and
   should return a boolean value.
 
