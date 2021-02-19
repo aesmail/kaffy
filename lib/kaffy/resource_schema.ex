@@ -41,6 +41,7 @@ defmodule Kaffy.ResourceSchema do
   def fields(schema) do
     schema
     |> get_all_fields()
+    |> reorder_fields(schema)
   end
 
   defp get_all_fields(schema) do
@@ -84,6 +85,42 @@ defmodule Kaffy.ResourceSchema do
           all
       end
     end)
+  end
+
+  defp reorder_fields(fields_list, schema) do
+    [first_field | _fields] = schema.__schema__(:fields) -- [:id]
+
+    # this is a "nice" feature to re-order the default fields to put the specified fields at the top/bottom of the form
+    fields_list
+    |> reorder_field(first_field, :first)
+    |> reorder_field(:email, :first)
+    |> reorder_field(:name, :first)
+    |> reorder_field(:title, :first)
+    |> reorder_field(:id, :first)
+    |> reorder_field(:inserted_at, :last)
+    |> reorder_field(:updated_at, :last)
+
+    # |> reorder_field(Kaffy.ResourceSchema.embeds(schema), :last)
+  end
+
+  defp reorder_field(fields_list, [], _), do: fields_list
+
+  defp reorder_field(fields_list, [field | rest], position) do
+    fields_list = reorder_field(fields_list, field, position)
+    reorder_field(fields_list, rest, position)
+  end
+
+  defp reorder_field(fields_list, field_name, position) do
+    if field_name in Keyword.keys(fields_list) do
+      {field_options, fields_list} = Keyword.pop(fields_list, field_name)
+
+      case position do
+        :first -> [{field_name, field_options}] ++ fields_list
+        :last -> fields_list ++ [{field_name, field_options}]
+      end
+    else
+      fields_list
+    end
   end
 
   def has_field_filters?(resource) do
