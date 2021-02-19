@@ -50,7 +50,7 @@ defmodule Kaffy.ResourceForm do
       end
 
     permission =
-      case is_nil(changeset.data.id) do
+      case is_nil(changeset.data[:id]) do
         true -> Map.get(options, :create, :editable)
         false -> Map.get(options, :update, :editable)
       end
