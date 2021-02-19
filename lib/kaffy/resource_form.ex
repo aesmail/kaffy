@@ -50,7 +50,7 @@ defmodule Kaffy.ResourceForm do
       end
 
     permission =
-      case is_nil(changeset.data[:id]) do
+      case is_nil(Map.get(changeset.data, :id)) do
         true -> Map.get(options, :create, :editable)
         false -> Map.get(options, :update, :editable)
       end
@@ -73,11 +73,6 @@ defmodule Kaffy.ResourceForm do
     end
   end
 
-  def form_field(changeset, form, {field, options}, opts) do
-    type = Kaffy.ResourceSchema.field_type(changeset.data.__struct__, field)
-    build_html_input(changeset.data, form, {field, options}, type, opts)
-  end
-
   defp build_html_input(schema, form, {field, options}, type, opts, readonly \\ false) do
     data = schema
     {conn, opts} = Keyword.pop(opts, :conn)
@@ -93,12 +88,14 @@ defmodule Kaffy.ResourceForm do
         inputs_for(form, field, fn fp ->
           [
             {:safe, ~s(<div class="card ml-3" style="padding:15px;">)},
-            Enum.reduce(embed_fields, [], fn f, all ->
+            Enum.reduce(embed_fields, [], fn {embed_f, embed_f_options}, all ->
               content_tag :div, class: "form-group" do
                 [
                   [
-                    form_label(fp, f),
-                    form_field(embed_changeset, fp, {f, options}, class: "form-control")
+                    form_label(fp, embed_f),
+                    form_field(embed_changeset, fp, {embed_f, embed_f_options},
+                      class: "form-control"
+                    )
                   ]
                   | all
                 ]
