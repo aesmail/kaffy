@@ -352,7 +352,7 @@ defmodule Kaffy.Utils do
   end
 
   defp convert_to_atom(string) do
-    if is_binary(string), do: String.to_existing_atom(string), else: string
+    if is_binary(string), do: String.to_atom(string), else: string
   end
 
   defp setup_resources do
