@@ -15,8 +15,8 @@ without the need to touch the current codebase. It was inspired by django's love
 - [Custom Configurations](#configurations)
 - [Customize the Side Menu](#side-menu)
 - [Customize the Dashboard Page](#dashboard-page)
-- [Customize the Index Pages](#index-page)
-- [Customize the Form Pages](#form-page)
+- [Customize the Index Pages](#index-pages)
+- [Customize the Form Pages](#form-pages)
 - [Custom Form Fields](#custom-form-fields)
 - [Customize the Queries](#customize-the-queries)
 - [Extensions](#extensions)
@@ -439,6 +439,32 @@ Notice that:
 
 
 Setting a field's type to `:richtext` will render a rich text editor.
+
+#### Association Forms
+
+A `belongs_to` association should be referenced by the field name, *not* the association name. For example, a schema with the following assocation:
+
+```
+schema "my_model" do 
+  ...
+  belongs_to :owner, App.Owners.Owner
+  ...
+end
+```
+
+Would define `form_fields/1` like so:
+
+```
+def form_fields(_) do
+  [
+    ...
+    owner_id: nil,
+    ...
+  ]
+end
+```
+
+**NOTE:** `many_to_many` associations are currently not supported.
 
 ### Custom Form Fields
 
