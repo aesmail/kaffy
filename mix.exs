@@ -1,6 +1,7 @@
 defmodule Kaffy.MixProject do
   use Mix.Project
 
+  @source_url "https://github.com/aesmail/kaffy"
   @version "0.9.2"
 
   def project do
@@ -14,7 +15,6 @@ defmodule Kaffy.MixProject do
       description: description(),
       package: package(),
       name: "Kaffy",
-      source_url: "https://github.com/aesmail/kaffy",
       deps: deps(),
       docs: docs()
     ]
@@ -53,7 +53,7 @@ defmodule Kaffy.MixProject do
       maintainers: ["Abdullah Esmail"],
       licenses: ["MIT"],
       links: %{
-        "GitHub" => "https://github.com/aesmail/kaffy",
+        "GitHub" => @source_url,
         "Demo" => "https://kaffy.fly.dev/admin/"
       }
     ]
@@ -61,14 +61,17 @@ defmodule Kaffy.MixProject do
 
   def docs() do
     [
+      extras: [
+        "CHANGELOG.md": [],
+        "LICENSE.md": [title: "License"],
+        "README.md": [title: "Overview"]
+      ],
       main: "readme",
-      name: "Kaffy",
+      assets: "assets",
+      source_url: @source_url,
       source_ref: "v#{@version}",
       canonical: "http://hexdocs.pm/kaffy",
-      source_url: "https://github.com/aesmail/kaffy",
-      extras: [
-        "README.md"
-      ]
+      formatters: ["html"]
     ]
   end
 end
