@@ -282,7 +282,7 @@ defmodule Kaffy.Utils do
   def is_module(thing), do: is_atom(thing) && function_exported?(thing, :__info__, 1)
 
   @doc """
-  Returns whether the dashbaord link should be displayed or hidden. Default behavior is to show the dashboard link.
+  Returns whether the dashboard link should be displayed or hidden. Default behavior is to show the dashboard link.
   This option is taken from the :hide_dashboard config option.
 
       iex> show_dashboard?()

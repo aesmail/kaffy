@@ -68,7 +68,7 @@ defmodule Kaffy.ResourceSchema do
   end
 
   defp fields_to_be_removed(schema) do
-    # if schema defines belongs_to assocations, remove assoc fields and keep their actual *_id fields.
+    # if schema defines belongs_to associations, remove assoc fields and keep their actual *_id fields.
     schema.__changeset__()
     |> Enum.reduce([], fn {field, type}, all ->
       case type do

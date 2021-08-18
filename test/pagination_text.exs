@@ -4,7 +4,7 @@ defmodule Kaffy.PaginationTest do
 
   # testing for get_pages(current_page, total_page)
 
-  test "test on emtpy pages" do
+  test "test on empty pages" do
     pages = Pagination.get_pages(0, 0)
     assert pages == []
   end

@@ -5,7 +5,7 @@
 - Clicking on the "Select all" checkbox and performing an action wasn't working properly (#129).
 - A resource with a `{:array, _}` field type used to crash when rendering the form page (#130).
 - Tidbit icons weren't shown properly.
-- Schemas with `has_many` or `many_to_many` assocations crashed when trying to save if the schema doesn't have a default `changeset/2` function.
+- Schemas with `has_many` or `many_to_many` associations crashed when trying to save if the schema doesn't have a default `changeset/2` function.
 
 ### v0.9.0 (2020-07-02)
 
@@ -104,7 +104,7 @@
 
 #### Enhancements
 
-- search across assocations.
+- search across associations.
 - improve how autodetected schema names are formatted.
 - clicking on the upper left title goes to the website's root "/" (used to go to the dashboard page, which already has a link in the menu).
 - fix a few typos in README (thanks @areski).
