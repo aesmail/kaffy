@@ -73,10 +73,10 @@ defmodule Kaffy.ResourceForm do
     end
   end
 
-  def form_field(changeset, form, {field, options}, opts) do
-    type = Kaffy.ResourceSchema.field_type(changeset.data.__struct__, field)
-    build_html_input(changeset.data, form, {field, options}, type, opts)
-  end
+  # def form_field(changeset, form, {field, options}, opts) do
+  #   type = Kaffy.ResourceSchema.field_type(changeset.data.__struct__, field)
+  #   build_html_input(changeset.data, form, {field, options}, type, opts)
+  # end
 
   defp build_html_input(schema, form, {field, options}, type, opts, readonly \\ false) do
     data = schema
