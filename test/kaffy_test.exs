@@ -2,7 +2,7 @@ defmodule KaffyTest do
   use ExUnit.Case
   doctest Kaffy
   alias KaffyTest.Schemas.{Person, Pet}
-  alias KaffyTest.Admin.PersonAdmin
+  # alias KaffyTest.Admin.PersonAdmin
 
   test "greets the world" do
     assert Kaffy.hello() == :world
@@ -82,7 +82,7 @@ defmodule KaffyTest do
   end
 
   describe "Kaffy.ResourceAdmin" do
-    alias Kaffy.ResourceAdmin
+    # alias Kaffy.ResourceAdmin
 
     # [Qizot] I don't know if this test should be valid anymore if associations are allowed
     # test "index/1 should return a keyword list of fields and their values" do
