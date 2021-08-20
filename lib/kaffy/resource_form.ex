@@ -365,6 +365,9 @@ defmodule Kaffy.ResourceForm do
   defp build_changeset_value(value) when is_tuple(value),
     do: value |> Tuple.to_list() |> Enum.join(", ")
 
+  defp build_changeset_value(value) when is_list(value),
+    do: value |> Enum.join(", ")
+
   defp build_changeset_value(value), do: to_string(value)
 
   def kaffy_input(conn, changeset, form, field, options) do
