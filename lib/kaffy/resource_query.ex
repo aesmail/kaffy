@@ -152,6 +152,9 @@ defmodule Kaffy.ResourceQuery do
   defp build_filtered_fields_query(query, []), do: query
 
   defp build_filtered_fields_query(query, [filter | rest]) do
+    IO.puts("build_filtered_fields_query --------------------------------------")
+    IO.puts("query: #{inspect(query)}, filter: #{inspect(filter)}, rest: #{inspect(rest)}")
+
     query =
       case filter.value == "" do
         true ->
@@ -159,7 +162,8 @@ defmodule Kaffy.ResourceQuery do
 
         false ->
           field_name = String.to_existing_atom(filter.name)
-          from(s in query, where: field(s, ^field_name) == ^filter.value)
+          filter_values = String.split(filter.value, ",")
+          from(s in query, where: field(s, ^field_name) in ^filter_values)
       end
 
     build_filtered_fields_query(query, rest)

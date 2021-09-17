@@ -23,13 +23,16 @@
     <tr>
         <th class="bg-light"></th>
         <%= for {field, index} <- Enum.with_index(@fields) do %>
-            <% {field, filters} = Kaffy.ResourceSchema.kaffy_field_filters(@my_resource[:schema], field) %>
+            <% {field, multiple, filters} = Kaffy.ResourceSchema.kaffy_field_filters(@my_resource[:schema], field) %>
             <%= if filters do %>
                 <th class="bg-light">
-                    <select class="kaffy-filter custom-select" id="kaffy-field-<%= index %>" data-field-name="<%= field %>">
+                    <select class="kaffy-filter custom-select" id="kaffy-field-<%= index %>" data-field-name="<%= field %>" <%= if multiple do %> multiple<% end %>>
                         <option value="">All</option>
                         <%= for {human, machine} <- filters do %>
-                            <option value="<%= machine %>"<%= if Map.get(@params, to_string(field)) == to_string(machine) do %> selected<% end %>><%= human %></option>
+                             <% params = Map.get(@params, to_string(field)) || "" %>
+                             <% params = String.split(params, ",") %>
+
+                            <option value="<%= machine %>"<%= if Enum.member?(params, to_string(machine)) do %> selected<% end %>><%= human %></option>
                         <% end %>
                     </select>
                 </th>

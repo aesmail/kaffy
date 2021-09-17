@@ -130,13 +130,17 @@ defmodule Kaffy.ResourceSchema do
       Enum.map(admin_fields, fn f -> kaffy_field_filters(resource[:schema], f) end)
 
     Enum.any?(fields_with_filters, fn
-      {_, filters} -> filters
+      {_, _, filters} -> filters
       _ -> false
     end)
   end
 
   def kaffy_field_filters(_schema, {field, options}) do
-    {field, Map.get(options || %{}, :filters, false)}
+    {
+      field,
+      Map.get(options || %{}, :filter_multiple, false),
+      Map.get(options || %{}, :filters, false)
+    }
   end
 
   def kaffy_field_filters(_, _), do: false
