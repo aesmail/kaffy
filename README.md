@@ -909,7 +909,7 @@ end
 
 Kaffy supports simple scheduled tasks. Tasks are functions that are run periodically. Behind the scenes, they are put inside `GenServer`s and supervised with a `DynamicSupervisor`.
 
-To setup scheduled tasks, first define a `task_[task_name]/1` function in your admin module that returns a list of task:
+To setup scheduled tasks, first define a `task_[task_name]/1` function in your admin module that returns a list of tasks:
 
 ```elixir
 defmodule MyApp.Products.ProductAdmin do
@@ -949,7 +949,7 @@ config :kaffy,
 
 ```
 
-Once this is done, a new "Tasks" menu item will show up (below the Dashboard item) listing all your tasks with some tiny bits of information about each task like the following image:
+A new "Tasks" menu item will show up (below the Dashboard item) with your tasks as well as some tiny bits of information about each task like the following image:
 
 ![Simple scheduled tasks](demos/kaffy_tasks.png)
 
@@ -969,7 +969,7 @@ The `action` function must return one of the following values:
 - `{:ok, value}` which indicates a successful run. The `value` will be passed to the `action` function in its next run.
 - `{:error, value}` which indicates a failed run. The `value` will be saved and passed again to the `action` function in its next run.
 
-In case the `action` function crashes, the task will be brought back up again in its initial state that is defined in the `task_[task_name]/1` function and the "Started" time will change to indicate the new starting time. This will also reset the successful and failed run counts to 0.
+If the `action` function crashes, the task will be brought back up again in its initial state that is defined in the `task_[task_name]/1` function and the "Started" time will change to indicate the new starting time. This will also reset the successful and failed run counts to 0.
 
 Note that since scheduled tasks are run with `GenServer`s, they are stored and kept in memory. Having too many scheduled tasks under low memory conditions can cause an out of memory exception.
 
