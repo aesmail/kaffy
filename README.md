@@ -935,11 +935,11 @@ end
 
 Kaffy supports simple scheduled tasks. Tasks are functions that are run periodically. Behind the scenes, they are put inside `GenServer`s and supervised with a `DynamicSupervisor`.
 
-To create scheduled tasks, simply define a `scheduled_tasks/1` function in your admin module:
+To setup scheduled tasks, first define a `task_[task_name]/1` function in your admin module that returns a list of tasks:
 
 ```elixir
 defmodule MyApp.Products.ProductAdmin do
-  def scheduled_tasks(_) do
+  def task_products do
     [
       %{
         name: "Cache Product Count",
@@ -965,11 +965,21 @@ defmodule MyApp.Products.ProductAdmin do
 end
 ```
 
-Once you create your scheduled tasks, a new "Tasks" menu item will show up (below the Dashboard item) listing all your tasks with some tiny bits of information about each task like the following image:
+Once this is done, add the admin module to the `scheduled_tasks` option in your config:
+```elixir
+config :kaffy,
+  ...
+  scheduled_tasks: [
+    MyApp.Products.ProductAdmin
+  ]
+
+```
+
+A new "Tasks" menu item will show up (below the Dashboard item) with your tasks as well as some tiny bits of information about each task like the following image:
 
 ![Simple scheduled tasks](demos/kaffy_tasks.png)
 
-The `scheduled_tasks/1` function takes a schema and must return a list of tasks.
+The `task_[task_name]/1` function takes a schema and must return a list of tasks.
 
 A task is a map with the following keys:
 
@@ -985,7 +995,7 @@ The `action` function must return one of the following values:
 - `{:ok, value}` which indicates a successful run. The `value` will be passed to the `action` function in its next run.
 - `{:error, value}` which indicates a failed run. The `value` will be saved and passed again to the `action` function in its next run.
 
-In case the `action` function crashes, the task will be brought back up again in its initial state that is defined in the `scheduled_tasks/1` function and the "Started" time will change to indicate the new starting time. This will also reset the successful and failed run counts to 0.
+If the `action` function crashes, the task will be brought back up again in its initial state that is defined in the `task_[task_name]/1` function and the "Started" time will change to indicate the new starting time. This will also reset the successful and failed run counts to 0.
 
 Note that since scheduled tasks are run with `GenServer`s, they are stored and kept in memory. Having too many scheduled tasks under low memory conditions can cause an out of memory exception.
 
