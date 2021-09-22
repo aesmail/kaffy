@@ -172,6 +172,18 @@ defmodule Kaffy.ResourceForm do
 
         textarea(form, field, [value: value, rows: 4, placeholder: "JSON Content"] ++ opts)
 
+      {:parameterized, Ecto.Enum, %{values: values}} ->
+        values = Enum.map(values, &to_string/1)
+        value = Map.get(data, field, nil)
+
+        select(form, field, values, [value: value] ++ opts)
+
+      {:array, {:parameterized, Ecto.Enum, %{values: values}}} ->
+        values = Enum.map(values, &to_string/1)
+        value = Map.get(data, field, nil)
+
+        multiple_select(form, field, values, [value: value] ++ opts)
+
       {:array, _} ->
         value =
           data
