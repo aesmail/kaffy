@@ -6,6 +6,7 @@
     <title><%= Kaffy.Utils.title() %> - Kaffy</title>
     <link rel="stylesheet" href="<%= Kaffy.Utils.static_asset_path(@conn, "/kaffy/assets/vendors/fontawesome/css/all.css") %>">
     <link rel="stylesheet" href="<%= Kaffy.Utils.static_asset_path(@conn, "/kaffy/assets/vendors/css/vendor.bundle.base.css") %>">
+    <link rel="stylesheet" href="<%= Kaffy.Utils.static_asset_path(@conn, "/kaffy/assets/vendors/chosen/component-chosen.min.css") %>">
     <link rel="stylesheet" href="<%= Kaffy.Utils.static_asset_path(@conn, "/kaffy/assets/scss/style.css") %>">
     <link rel="stylesheet" href="<%= Kaffy.Utils.static_asset_path(@conn, "/kaffy/assets/vendors/flatpickr/flatpickr.min.css") %>">
     <link rel="stylesheet" href="<%= Kaffy.Utils.static_asset_path(@conn, "/kaffy/assets/css/kaffy.css") %>">
@@ -156,6 +157,7 @@
 
     <script src="<%= Kaffy.Utils.static_asset_path(@conn, "/kaffy/assets/vendors/flatpickr/flatpickr.min.js") %>"></script>
     <script src="<%= Kaffy.Utils.static_asset_path(@conn, "/kaffy/assets/vendors/chart.js/Chart.min.js") %>"></script>
+    <script src="<%= Kaffy.Utils.static_asset_path(@conn, "/kaffy/assets/vendors/chosen/chosen.jquery.min.js") %>"></script>
     <script src="<%= Kaffy.Utils.static_asset_path(@conn, "/kaffy/assets/vendors/js/ckeditor.js") %>"></script>
     <script src="<%= Kaffy.Utils.static_asset_path(@conn, "/kaffy/assets/js/off-canvas.js") %>"></script>
     <script src="<%= Kaffy.Utils.static_asset_path(@conn, "/kaffy/assets/js/hoverable-collapse.js") %>"></script>
