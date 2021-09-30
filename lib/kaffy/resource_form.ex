@@ -185,13 +185,13 @@ defmodule Kaffy.ResourceForm do
         multiple_select(form, field, values, [value: value] ++ opts)
 
       {:array, _} ->
-        case is_nil(options[:values_fn]) && is_function(options[:values_fn], 2) do
-          false ->
+        case !is_nil(options[:values_fn]) && is_function(options[:values_fn], 2) do
+          true ->
             values = options[:values_fn].(data, conn)
             value = Map.get(data, field, nil)
             multiple_select(form, field, values, [value: value] ++ opts)
 
-          true ->
+          false ->
             value =
               data
               |> Map.get(field, "")
