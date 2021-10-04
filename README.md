@@ -66,8 +66,10 @@ use Kaffy.Routes, scope: "/admin", pipe_through: [:some_plug, :authenticate]
 # [:kaffy_browser, :some_plug, :authenticate]
 
 # in your endpoint.ex
+# configure the path to your application static assets in :at
+# the path must end with `/kaffy`
 plug Plug.Static,
-  at: "/kaffy",
+  at: "/kaffy", # or "/path/to/your/static/kaffy"
   from: :kaffy,
   gzip: false,
   only: ~w(assets)
