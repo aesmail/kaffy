@@ -304,11 +304,17 @@ defmodule Kaffy.ResourceSchema do
   def get_map_fields(schema) do
     get_all_fields(schema)
     |> Enum.filter(fn
-      {_f, options} ->
-        options.type == :map
+      {_f, %{type: :map}} ->
+        true
+
+      {_f, %{type: {:array, _}}} ->
+        true
 
       f when is_atom(f) ->
         f == :map
+
+      _ ->
+        false
     end)
   end
 
