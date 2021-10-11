@@ -9,26 +9,39 @@ without the need to touch the current codebase. It was inspired by django's love
 
 ## Sections
 
-- [Live Demo](#demo)
+- [Introduction](#introduction)
+- [Sections](#sections)
+- [Sponsors](#sponsors)
+- [Demo](#demo)
 - [Minimum Requirements](#minimum-requirements)
 - [Installation](#installation)
-- [Custom Configurations](#configurations)
-- [Customize the Side Menu](#side-menu)
-- [Customize the Dashboard Page](#dashboard-page)
-- [Customize the Index Pages](#index-pages)
-- [Customize the Form Pages](#form-pages)
-- [Custom Form Fields](#custom-form-fields)
-- [Customize the Queries](#customize-the-queries)
-- [Extensions](#extensions)
-- [Embedded Schemas and JSON Fields](#embedded-schemas-and-json-fields)
-- [Searching Records](#search)
-- [Authorizing Access To Resources](#authorization)
-- [Custom Changesets](#changesets)
-- [Customizing Resource Names](#singular-vs-plural)
-- [Custom Actions](#custom-actions)
-- [Custom Callbacks When Saving Records](#callbacks)
-- [Simple Scheduled Tasks](#scheduled-tasks)
-- [The Driving Points Behind Kaffy's Development](#the-driving-points)
+    - [Add `kaffy` as a dependency](#add-kaffy-as-a-dependency)
+    - [These are the minimum configurations required](#these-are-the-minimum-configurations-required)
+- [Customizations](#customizations)
+  - [Configurations](#configurations)
+    - [Breaking change in v0.9](#breaking-change-in-v09)
+  - [Dashboard page](#dashboard-page)
+  - [Side Menu](#side-menu)
+    - [Custom Links](#custom-links)
+  - [Custom Pages](#custom-pages)
+  - [Index pages](#index-pages)
+  - [Form Pages](#form-pages)
+    - [Association Forms](#association-forms)
+  - [Custom Form Fields](#custom-form-fields)
+  - [Customize the Queries](#customize-the-queries)
+  - [Extensions](#extensions)
+  - [Embedded Schemas and JSON Fields](#embedded-schemas-and-json-fields)
+  - [Search](#search)
+  - [Authorization](#authorization)
+  - [Changesets](#changesets)
+  - [Singular vs Plural](#singular-vs-plural)
+  - [Custom Actions](#custom-actions)
+    - [Single Resource Actions](#single-resource-actions)
+    - [List Actions](#list-actions)
+  - [Callbacks](#callbacks)
+  - [Overwrite actions](#overwrite-actions)
+  - [Scheduled Tasks](#scheduled-tasks)
+- [The Driving Points](#the-driving-points)
 
 ## Sponsors
 
@@ -426,6 +439,7 @@ Options can be:
 - `:create` - can be `:editable` which means it can be edited when creating a new record, or `:readonly` which means this field is visible when creating a new record but cannot be edited, or `:hidden` which means this field shouldn't be visible when creating a new record. It is `:editable` by default.
 - `:update` - can be `:editable` which means it can be edited when updating an existing record, or `:readonly` which means this field is visible when updating a record but cannot be edited, or `:hidden` which means this field shouldn't be visible when updating record. It is `:editable` by default.
 - `:help_text` - extra "help text" to be displayed with the form field.
+- `:values_fn` - This allows passing in a function to populate the list of possible values for a `:array` field. The field will be rendered as a multi-select input. The function should be of arity 2 and the arguments are the entity and the conn. See example below
 
 Result
 
@@ -439,6 +453,20 @@ Notice that:
 
 
 Setting a field's type to `:richtext` will render a rich text editor.
+
+The `:values_fn` is passed the entity you are editing and the conn (in that order) and must return a list of tuples that represent the {name, value} to use in the multi select. An example of this is as follows:  
+```
+  def form_fields(_schema) do
+    [
+      ....
+      some_array_field: %{
+        values_fn: fn entity, conn ->
+          some_values = MyApp.Thing.fetch_values(entity.id, conn)
+          Enum.map(some_values, &{&1.name, &1.id})
+        end
+      }
+    ]
+ ```
 
 #### Association Forms
 

@@ -185,12 +185,20 @@ defmodule Kaffy.ResourceForm do
         multiple_select(form, field, values, [value: value] ++ opts)
 
       {:array, _} ->
-        value =
-          data
-          |> Map.get(field, "")
-          |> Kaffy.Utils.json().encode!(escape: :html_safe, pretty: true)
+        case !is_nil(options[:values_fn]) && is_function(options[:values_fn], 2) do
+          true ->
+            values = options[:values_fn].(data, conn)
+            value = Map.get(data, field, nil)
+            multiple_select(form, field, values, [value: value] ++ opts)
 
-        textarea(form, field, [value: value, rows: 4, placeholder: "JSON Content"] ++ opts)
+          false ->
+            value =
+              data
+              |> Map.get(field, "")
+              |> Kaffy.Utils.json().encode!(escape: :html_safe, pretty: true)
+
+            textarea(form, field, [value: value, rows: 4, placeholder: "JSON Content"] ++ opts)
+        end
 
       :file ->
         file_input(form, field, opts)
