@@ -23,18 +23,31 @@
     <tr>
         <th class="bg-light"></th>
         <%= for {field, index} <- Enum.with_index(@fields) do %>
-            <% {field, multiple, filters} = Kaffy.ResourceSchema.kaffy_field_filters(@my_resource[:schema], field) %>
+            <% {field, type, _operator, multiple, filters} = Kaffy.ResourceSchema.kaffy_field_filters(@my_resource[:schema], field) %>
             <%= if filters do %>
                 <th class="bg-light">
-                    <select class="kaffy-filter custom-select" id="kaffy-field-<%= index %>" data-field-name="<%= field %>" <%= if multiple do %> multiple<% end %>>
-                        <option value="">All</option>
-                        <%= for {human, machine} <- filters do %>
-                             <% params = Map.get(@params, to_string(field)) || "" %>
-                             <% params = String.split(params, ",") %>
+                    <%= if type == :select do %>
+                        <select class="kaffy-filter custom-select" id="kaffy-field-<%= index %>" data-field-name="<%= field %>" <%= if multiple do %> multiple<% end %>>
+                            <option value="">All</option>
+                            <%= for {human, machine} <- filters do %>
+                                <% params = Map.get(@params, to_string(field)) || "" %>
+                                <% params = String.split(params, ",") %>
 
-                            <option value="<%= machine %>"<%= if Enum.member?(params, to_string(machine)) do %> selected<% end %>><%= human %></option>
-                        <% end %>
-                    </select>
+                                <option value="<%= machine %>"<%= if Enum.member?(params, to_string(machine)) do %> selected<% end %>><%= human %></option>
+                            <% end %>
+                        </select>
+                    <% end %>
+
+                    <%= if type == :date do %>
+                        <div class="input-group mb-2 flatpickr flatpickr-wrap-date">
+                            <div class="input-group-prepend">
+                            <div class="input-group-text" data-clear="">❌</div>
+                        </div>
+                        <div class="input-group-prepend">
+                            <div class="input-group-text" data-toggle="">🗓️</div>
+                        </div>
+                        <input class="kaffy-filter form-control flatpickr-input" id="kaffy-field-<%= index %>" data-field-name="<%= field %>" value="<%= Map.get(@params, to_string(field)) %>" data-input="" placeholder="Select Date..." type="text" readonly="readonly"></div>
+                    <% end %>
                 </th>
             <% else %>
                 <th class="bg-light"></th>

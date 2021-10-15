@@ -16,7 +16,7 @@ defmodule Kaffy.ResourceQuery do
 
     {all, paged} =
       build_query(
-        schema,
+        resource,
         search_fields,
         filtered_fields,
         search,
@@ -103,7 +103,7 @@ defmodule Kaffy.ResourceQuery do
   end
 
   defp build_query(
-         schema,
+         resource,
          search_fields,
          filtered_fields,
          search,
@@ -111,7 +111,7 @@ defmodule Kaffy.ResourceQuery do
          ordering,
          current_offset
        ) do
-    query = from(s in schema)
+    query = from(s in resource[:schema])
 
     query =
       cond do
@@ -141,7 +141,7 @@ defmodule Kaffy.ResourceQuery do
           end)
       end
 
-    query = build_filtered_fields_query(query, filtered_fields)
+    query = build_filtered_fields_query(resource, query, filtered_fields)
 
     limited_query =
       from(s in query, limit: ^per_page, offset: ^current_offset, order_by: ^ordering)
@@ -149,11 +149,14 @@ defmodule Kaffy.ResourceQuery do
     {query, limited_query}
   end
 
-  defp build_filtered_fields_query(query, []), do: query
+  defp build_filtered_fields_query(_resource, query, []), do: query
 
-  defp build_filtered_fields_query(query, [filter | rest]) do
-    IO.puts("build_filtered_fields_query --------------------------------------")
-    IO.puts("query: #{inspect(query)}, filter: #{inspect(filter)}, rest: #{inspect(rest)}")
+  defp build_filtered_fields_query(resource, query, [filter | rest]) do
+    IO.puts("MSP build_filtered_fields_query ---------------------------------")
+
+    IO.puts(
+      "resource: #{inspect(resource)}, query: #{inspect(query)}, filter: #{inspect(filter)}, rest: #{inspect(rest)}"
+    )
 
     query =
       case filter.value == "" do
@@ -162,10 +165,57 @@ defmodule Kaffy.ResourceQuery do
 
         false ->
           field_name = String.to_existing_atom(filter.name)
-          filter_values = String.split(filter.value, ",")
-          from(s in query, where: field(s, ^field_name) in ^filter_values)
+
+          {type, operator} = get_field_type_and_operator(resource, field_name)
+
+          case type do
+            :date ->
+              case operator do
+                :ltoe ->
+                  from(
+                    s in query,
+                    where: field(s, ^field_name) <= ^filter.value
+                  )
+
+                :gtoe ->
+                  from(
+                    s in query,
+                    where: field(s, ^field_name) >= ^filter.value
+                  )
+
+                _ ->
+                  from(
+                    s in query,
+                    where: field(s, ^field_name) == ^filter.value
+                  )
+              end
+
+            _ ->
+              filter_values = String.split(filter.value, ",")
+
+              from(
+                s in query,
+                where: field(s, ^field_name) in ^filter_values
+              )
+          end
       end
 
-    build_filtered_fields_query(query, rest)
+    build_filtered_fields_query(resource, query, rest)
+  end
+
+  defp get_field_type_and_operator(resource, field_name) do
+    IO.puts("MSP get_field_type_and_operator ---------------------------------")
+    schema = resource[:schema]
+    admin_fields = Kaffy.ResourceAdmin.index(resource)
+    field_options = admin_fields |> Map.new() |> Map.get(field_name)
+
+    IO.puts("field_options: #{inspect(field_options)}")
+
+    {_field, type, operator, _multiple, _filters} =
+      Kaffy.ResourceSchema.kaffy_field_filters(schema, {field_name, field_options})
+
+    IO.puts("field_name: #{field_name}, type: #{type}, operator: #{operator}")
+
+    {type, operator}
   end
 end
