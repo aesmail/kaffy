@@ -1,4 +1,4 @@
-<table class="table table-striped">
+<table class="table table-striped mt-4">
     <thead>
         <%= render KaffyWeb.ResourceView, "_table_header.html", my_resource: @my_resource, fields: @fields, params: @params %>
     </thead>

@@ -163,6 +163,7 @@
     <script src="/kaffy/assets/js/select-all-checkbox.js?v=20"></script>
     <script src="/kaffy/assets/js/phoenix_html.js"></script>
     <script src="/kaffy/assets/js/dashboard.js?v=20"></script>
+    <script src="/kaffy/assets/js/map.js"></script>
     <%= for js <- Kaffy.Utils.extensions(@conn).javascripts do %>
       <%= js %>
     <% end %>

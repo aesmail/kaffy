@@ -9,6 +9,7 @@ defmodule Kaffy.ResourceQuery do
     search = Map.get(params, "search", "") |> String.trim()
     search_fields = Kaffy.ResourceAdmin.search_fields(resource)
     filtered_fields = get_filter_fields(params, resource)
+    hardcoded_filtered_fields = get_hardcoded_filter_fields(params, resource)
     ordering = get_ordering(resource, params)
 
     current_offset = (page - 1) * per_page
@@ -19,6 +20,7 @@ defmodule Kaffy.ResourceQuery do
         resource,
         search_fields,
         filtered_fields,
+        hardcoded_filtered_fields,
         search,
         per_page,
         ordering,
@@ -102,10 +104,23 @@ defmodule Kaffy.ResourceQuery do
     end)
   end
 
+  defp get_hardcoded_filter_fields(params, _resource) do
+    schema_fields = [
+      "map_marker_1_lat",
+      "map_marker_1_lon",
+      "map_marker_2_lat",
+      "map_marker_2_lon"
+    ]
+
+    filtered_fields = Enum.filter(params, fn {k, v} -> k in schema_fields and v != "" end)
+    Enum.into(filtered_fields, %{})
+  end
+
   defp build_query(
          resource,
          search_fields,
          filtered_fields,
+         hardcoded_filtered_fields,
          search,
          per_page,
          ordering,
@@ -143,6 +158,8 @@ defmodule Kaffy.ResourceQuery do
 
     query = build_filtered_fields_query(resource, query, filtered_fields)
 
+    query = build_hardcoded_filtered_fields_query(resource, query, hardcoded_filtered_fields)
+
     limited_query =
       from(s in query, limit: ^per_page, offset: ^current_offset, order_by: ^ordering)
 
@@ -164,7 +181,7 @@ defmodule Kaffy.ResourceQuery do
           query
 
         false ->
-          field_name = String.to_existing_atom(filter.name)
+          field_name = String.to_atom(filter.name)
 
           {type, operator} = get_field_type_and_operator(resource, field_name)
 
@@ -201,6 +218,25 @@ defmodule Kaffy.ResourceQuery do
       end
 
     build_filtered_fields_query(resource, query, rest)
+  end
+
+  defp build_hardcoded_filtered_fields_query(resource, query, filters) do
+    if Enum.count(filters) > 0 do
+      map_marker_1_lat = Map.get(filters, "map_marker_1_lat")
+      map_marker_1_lon = Map.get(filters, "map_marker_1_lon")
+      map_marker_2_lat = Map.get(filters, "map_marker_2_lat")
+      map_marker_2_lon = Map.get(filters, "map_marker_2_lon")
+
+      from(
+        s in query,
+        where: field(s, :home_lat) >= ^map_marker_2_lat,
+        where: field(s, :home_lat) <= ^map_marker_1_lat,
+        where: field(s, :home_long) >= ^map_marker_1_lon,
+        where: field(s, :home_long) <= ^map_marker_2_lon
+      )
+    else
+      query
+    end
   end
 
   defp get_field_type_and_operator(resource, field_name) do

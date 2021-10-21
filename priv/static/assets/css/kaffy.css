@@ -227,3 +227,10 @@ a.kaffy-order-field {
     font-size: .75rem;
     font-style: italic;
 }
+
+.modal-fullscreen {
+    width: 100vw;
+    max-width: none;
+    height: 100%;
+    margin: 0;
+}
