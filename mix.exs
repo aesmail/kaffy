@@ -7,7 +7,7 @@ defmodule Kaffy.MixProject do
     [
       app: :kaffy,
       version: @version,
-      elixir: "~> 1.7",
+      elixir: "~> 1.8",
       compilers: [:phoenix] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
       description: description(),

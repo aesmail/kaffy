@@ -53,7 +53,7 @@ Become a sponsor through Kaffy's [OpenCollective](https://opencollective.com/kaf
 
 ## Minimum Requirements
 
-- elixir 1.7.0
+- elixir 1.8.0
 - phoenix 1.4.0
 
 ## Installation
