@@ -4,16 +4,16 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title><%= Kaffy.Utils.title() %> - Kaffy</title>
-    <link rel="stylesheet" href="/kaffy/assets/vendors/fontawesome/css/all.css">
-    <link rel="stylesheet" href="/kaffy/assets/vendors/css/vendor.bundle.base.css">
-    <link rel="stylesheet" href="/kaffy/assets/scss/style.css">
-    <link rel="stylesheet" href="/kaffy/assets/vendors/flatpickr/flatpickr.min.css">
-    <link rel="stylesheet" href="/kaffy/assets/css/kaffy.css">
-    <link rel="shortcut icon" href="/kaffy/assets/images/favicon/favicon-32x32.png" />
+    <link rel="stylesheet" href="<%= Kaffy.Utils.static_asset_path(@conn, "/kaffy/assets/vendors/fontawesome/css/all.css") %>">
+    <link rel="stylesheet" href="<%= Kaffy.Utils.static_asset_path(@conn, "/kaffy/assets/vendors/css/vendor.bundle.base.css") %>">
+    <link rel="stylesheet" href="<%= Kaffy.Utils.static_asset_path(@conn, "/kaffy/assets/scss/style.css") %>">
+    <link rel="stylesheet" href="<%= Kaffy.Utils.static_asset_path(@conn, "/kaffy/assets/vendors/flatpickr/flatpickr.min.css") %>">
+    <link rel="stylesheet" href="<%= Kaffy.Utils.static_asset_path(@conn, "/kaffy/assets/css/kaffy.css") %>">
+    <link rel="shortcut icon" href="<%= Kaffy.Utils.static_asset_path(@conn, "/kaffy/assets/images/favicon/favicon-32x32.png") %>" />
     <%= for css <- Kaffy.Utils.extensions(@conn).stylesheets do %>
       <%= css %>
     <% end %>
-    <script src="/kaffy/assets/vendors/js/vendor.bundle.base.js"></script>
+    <script src="<%= Kaffy.Utils.static_asset_path(@conn, "/kaffy/assets/vendors/js/vendor.bundle.base.js") %>"></script>
   </head>
   <body>
     <div class="container-scroller">
@@ -154,15 +154,15 @@
       </div>
     </div>
 
-    <script src="/kaffy/assets/vendors/flatpickr/flatpickr.min.js"></script>
-    <script src="/kaffy/assets/vendors/chart.js/Chart.min.js"></script>
-    <script src="/kaffy/assets/vendors/js/ckeditor.js"></script>
-    <script src="/kaffy/assets/js/off-canvas.js"></script>
-    <script src="/kaffy/assets/js/hoverable-collapse.js"></script>
-    <script src="/kaffy/assets/js/misc.js"></script>
-    <script src="/kaffy/assets/js/select-all-checkbox.js?v=20"></script>
-    <script src="/kaffy/assets/js/phoenix_html.js"></script>
-    <script src="/kaffy/assets/js/dashboard.js?v=20"></script>
+    <script src="<%= Kaffy.Utils.static_asset_path(@conn, "/kaffy/assets/vendors/flatpickr/flatpickr.min.js") %>"></script>
+    <script src="<%= Kaffy.Utils.static_asset_path(@conn, "/kaffy/assets/vendors/chart.js/Chart.min.js") %>"></script>
+    <script src="<%= Kaffy.Utils.static_asset_path(@conn, "/kaffy/assets/vendors/js/ckeditor.js") %>"></script>
+    <script src="<%= Kaffy.Utils.static_asset_path(@conn, "/kaffy/assets/js/off-canvas.js") %>"></script>
+    <script src="<%= Kaffy.Utils.static_asset_path(@conn, "/kaffy/assets/js/hoverable-collapse.js") %>"></script>
+    <script src="<%= Kaffy.Utils.static_asset_path(@conn, "/kaffy/assets/js/misc.js") %>"></script>
+    <script src="<%= Kaffy.Utils.static_asset_path(@conn, "/kaffy/assets/js/select-all-checkbox.js?v=20") %>"></script>
+    <script src="<%= Kaffy.Utils.static_asset_path(@conn, "/kaffy/assets/js/phoenix_html.js") %>"></script>
+    <script src="<%= Kaffy.Utils.static_asset_path(@conn, "/kaffy/assets/js/dashboard.js?v=20") %>"></script>
     <%= for js <- Kaffy.Utils.extensions(@conn).javascripts do %>
       <%= js %>
     <% end %>

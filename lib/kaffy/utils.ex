@@ -10,6 +10,14 @@ defmodule Kaffy.Utils do
   end
 
   @doc """
+  Returns the static path to the asset.
+  """
+  @spec static_asset_path(Plug.Conn.t(), String.t()) :: String.t()
+  def static_asset_path(conn, asset_path) do
+    router().static_path(conn, asset_path)
+  end
+
+  @doc """
   Returns the :admin_logo config if present, otherwise returns Kaffy default logo.
   """
   @spec logo(Plug.Conn.t()) :: String.t()
