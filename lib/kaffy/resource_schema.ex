@@ -210,7 +210,7 @@ defmodule Kaffy.ResourceSchema do
       is_binary(value) ->
         String.slice(value, 0, 140)
 
-      is_list(value) ->
+      is_list(value) and Enum.any?(value, &is_atom/1) ->
         pretty_list(value)
 
       true ->
