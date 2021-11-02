@@ -1,4 +1,4 @@
-name: Kaffy CI
+name: Kaffy CI (Elixir 1.10)
 
 on:
   push:
@@ -12,9 +12,21 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        otp: ['22.3']
-        elixir: ['1.8.2', '1.9.4', '1.10.4', '1.11.4', '1.12.3']
-    
+        otp: ['21', '22', '23', '24']
+        elixir: ['1.10.3', '1.11.4', '1.12']
+        # Exclude invalid combinations of Elixir and OTP
+        exclude:
+          - otp: '21'
+            elixir: '1.12'
+          - otp: '24'
+            elixir: '1.10.3'
+        # Include the release candidate for the next Elixir, but don't 
+        # fail CI.
+        include:
+          - elixir: '1.13'
+            otp: '24'
+            experimental: true
+
     steps:
     - uses: actions/checkout@v2
     - name: Set up Elixir
@@ -26,8 +38,8 @@ jobs:
       uses: actions/cache@v2
       with:
         path: deps
-        key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
-        restore-keys: ${{ runner.os }}-mix-
+        key: ${{ runner.os }}-${{ matrix.elixir }}-${{ matrix.otp }}-mix-${{ hashFiles('**/mix.lock') }}
+        restore-keys: ${{ runner.os }}-${{ matrix.elixir }}-${{ matrix.otp }}-mix-
     - name: Install dependencies
       run: mix deps.get
     - name: Run tests
