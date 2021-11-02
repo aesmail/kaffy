@@ -323,7 +323,9 @@ defmodule Kaffy.ResourceSchema do
   end
 
   defp pretty_list([]), do: ""
+  defp pretty_list([item] = list) when not is_binary(item), do: list
   defp pretty_list([item]), do: to_string(item)
+  defp pretty_list([a | _rest] = list) when not is_binary(a), do: list
   defp pretty_list([a, b]), do: "#{a} and #{b}"
   defp pretty_list([a, b, c]), do: "#{a}, #{b} and #{c}"
   defp pretty_list([a, b, c, d]), do: "#{a}, #{b}, #{c} and #{d}"
