@@ -121,22 +121,83 @@ defmodule Kaffy.ResourceQuery do
         true ->
           term =
             search
+            |> String.trim()
             |> String.replace("%", "\%")
             |> String.replace("_", "\_")
 
-          term = "%#{term}%"
+          {term, term_type} =
+            case Decimal.parse(term) do
+              {:ok, value} ->
+                # this is the return value for the decimal package pre-2.0
+                number = if value.exp >= 0, do: :integer, else: :decimal
+
+                case number do
+                  :integer ->
+                    v = Decimal.to_integer(value) |> to_string()
+                    {v, number}
+
+                  :decimal ->
+                    {term, number}
+                end
+
+              {value, ""} ->
+                # this is the return value for the decimal package since 2.0
+                number = if Decimal.integer?(value), do: :integer, else: :decimal
+
+                case number do
+                  :integer ->
+                    v = Decimal.to_integer(value) |> to_string()
+                    {v, number}
+
+                  :decimal ->
+                    {term, number}
+                end
+
+              _ ->
+                {term, :string}
+            end
 
           Enum.reduce(search_fields, query, fn
-            {association, fields}, q ->
+            {association, fields}, q when is_list(fields) ->
               query = from(s in q, join: a in assoc(s, ^association))
 
               Enum.reduce(fields, query, fn f, current_query ->
-                from([..., r] in current_query,
-                  or_where: ilike(type(field(r, ^f), :string), ^term)
-                )
+                the_association = Kaffy.ResourceSchema.association(schema, association).queryable
+
+                if Kaffy.ResourceSchema.field_type(the_association, f) == :string or
+                     term_type == :string do
+                  term = "%#{term}%"
+
+                  from([..., r] in current_query,
+                    or_where: ilike(type(field(r, ^f), :string), ^term)
+                  )
+                else
+                  if Kaffy.ResourceSchema.field_type(schema, f) in [:id, :integer] and
+                       term_type == :decimal do
+                    current_query
+                  else
+                    from([..., r] in current_query,
+                      or_where: field(r, ^f) == ^term
+                    )
+                  end
+                end
               end)
 
+            {f, t}, q when is_atom(t) ->
+              if Kaffy.ResourceSchema.field_type(schema, f) == :string or term_type == :string do
+                term = "%#{term}%"
+                from(s in q, or_where: ilike(type(field(s, ^f), :string), ^term))
+              else
+                if Kaffy.ResourceSchema.field_type(schema, f) in [:id, :integer] and
+                     term_type == :decimal do
+                  q
+                else
+                  from(s in q, or_where: field(s, ^f) == ^term)
+                end
+              end
+
             f, q ->
+              term = "%#{term}%"
               from(s in q, or_where: ilike(type(field(s, ^f), :string), ^term))
           end)
       end

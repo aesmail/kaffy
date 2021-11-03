@@ -456,7 +456,7 @@ Notice that:
 
 Setting a field's type to `:richtext` will render a rich text editor.
 
-The `:values_fn` is passed the entity you are editing and the conn (in that order) and must return a list of tuples that represent the {name, value} to use in the multi select. An example of this is as follows:  
+The `:values_fn` is passed the entity you are editing and the conn (in that order) and must return a list of tuples that represent the {name, value} to use in the multi select. An example of this is as follows:
 ```
   def form_fields(_schema) do
     [
@@ -475,7 +475,7 @@ The `:values_fn` is passed the entity you are editing and the conn (in that orde
 A `belongs_to` association should be referenced by the field name, *not* the association name. For example, a schema with the following association:
 
 ```
-schema "my_model" do 
+schema "my_model" do
   ...
   belongs_to :owner, App.Owners.Owner
   ...
@@ -657,14 +657,14 @@ Kaffy has support for ecto's [embedded schemas](https://hexdocs.pm/ecto/Ecto.Sch
 
 Kaffy provides very basic search capabilities.
 
-Currently, only `:string` and `:text` fields are supported for search.
+Supported field types are: `:string`, `:textarea`, `:richtext`, `:id`, `:integer`, and `:decimal`.
 
 If you need to customize the list of fields to search against, define the `search_fields/1` function.
 
 ```elixir
 defmodule MyApp.Blog.PostAdmin do
   def search_fields(_schema) do
-    [:title, :slug, :body]
+    [:id, :title, :body, :views]
   end
 end
 ```
@@ -678,6 +678,7 @@ defmodule MyApp.Blog.PostAdmin do
     [
       :title,
       :body,
+      :view,
       category: [:name, :description]
     ]
   end
@@ -685,9 +686,8 @@ end
 ```
 
 This function takes a schema and returns a list of schema fields that you want to search.
-All the fields must be of type `:string` or `:text`.
 
-If this function is not defined, Kaffy will return all `:string` and `:text` fields by default.
+If this function is not defined, Kaffy will return all fields with supported types by default.
 
 ### Authorization
 
