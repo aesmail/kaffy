@@ -8,8 +8,8 @@ defmodule Kaffy.ResourceQuery do
     page = Map.get(params, "page", "1") |> String.to_integer()
     search = Map.get(params, "search", "") |> String.trim()
     search_fields = Kaffy.ResourceAdmin.search_fields(resource)
-    filtered_fields = get_filter_fields(params, resource)
-    ordering = get_ordering(resource, params)
+    filtered_fields = get_filter_fields(conn.query_params, resource)
+    ordering = get_ordering(resource, conn.query_params)
 
     current_offset = (page - 1) * per_page
     schema = resource[:schema]
