@@ -68,7 +68,7 @@ defmodule Kaffy.ResourceSchema do
   end
 
   defp fields_to_be_removed(schema) do
-    # if schema defines belongs_to assocations, remove assoc fields and keep their actual *_id fields.
+    # if schema defines belongs_to associations, remove assoc fields and keep their actual *_id fields.
     schema.__changeset__()
     |> Enum.reduce([], fn {field, type}, all ->
       case type do
@@ -210,6 +210,9 @@ defmodule Kaffy.ResourceSchema do
       is_binary(value) ->
         String.slice(value, 0, 140)
 
+      is_list(value) ->
+        pretty_list(value)
+
       true ->
         value
     end
@@ -302,15 +305,28 @@ defmodule Kaffy.ResourceSchema do
   def get_map_fields(schema) do
     get_all_fields(schema)
     |> Enum.filter(fn
-      {_f, options} ->
-        options.type == :map
+      {_f, %{type: :map}} ->
+        true
+
+      {_f, %{type: {:array, _}}} ->
+        true
 
       f when is_atom(f) ->
         f == :map
+
+      _ ->
+        false
     end)
   end
 
   def widgets(_resource) do
     []
   end
+
+  defp pretty_list([]), do: ""
+  defp pretty_list([item]), do: to_string(item)
+  defp pretty_list([a, b]), do: "#{a} and #{b}"
+  defp pretty_list([a, b, c]), do: "#{a}, #{b} and #{c}"
+  defp pretty_list([a, b, c, d]), do: "#{a}, #{b}, #{c} and #{d}"
+  defp pretty_list([a, b, c | rest]), do: "#{a}, #{b}, #{c} and #{length(rest)} others..."
 end

@@ -10,6 +10,14 @@ defmodule Kaffy.Utils do
   end
 
   @doc """
+  Returns the static path to the asset.
+  """
+  @spec static_asset_path(Plug.Conn.t(), String.t()) :: String.t()
+  def static_asset_path(conn, asset_path) do
+    router().static_path(conn, asset_path)
+  end
+
+  @doc """
   Returns the :admin_logo config if present, otherwise returns Kaffy default logo.
   """
   @spec logo(Plug.Conn.t()) :: String.t()
@@ -282,7 +290,7 @@ defmodule Kaffy.Utils do
   def is_module(thing), do: is_atom(thing) && function_exported?(thing, :__info__, 1)
 
   @doc """
-  Returns whether the dashbaord link should be displayed or hidden. Default behavior is to show the dashboard link.
+  Returns whether the dashboard link should be displayed or hidden. Default behavior is to show the dashboard link.
   This option is taken from the :hide_dashboard config option.
 
       iex> show_dashboard?()

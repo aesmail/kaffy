@@ -9,26 +9,39 @@ without the need to touch the current codebase. It was inspired by django's love
 
 ## Sections
 
-- [Live Demo](#demo)
+- [Introduction](#introduction)
+- [Sections](#sections)
+- [Sponsors](#sponsors)
+- [Demo](#demo)
 - [Minimum Requirements](#minimum-requirements)
 - [Installation](#installation)
-- [Custom Configurations](#configurations)
-- [Customize the Side Menu](#side-menu)
-- [Customize the Dashboard Page](#dashboard-page)
-- [Customize the Index Pages](#index-page)
-- [Customize the Form Pages](#form-page)
-- [Custom Form Fields](#custom-form-fields)
-- [Customize the Queries](#customize-the-queries)
-- [Extensions](#extensions)
-- [Embedded Schemas and JSON Fields](#embedded-schemas-and-json-fields)
-- [Searching Records](#search)
-- [Authorizing Access To Resources](#authorization)
-- [Custom Changesets](#changesets)
-- [Customizing Resource Names](#singular-vs-plural)
-- [Custom Actions](#custom-actions)
-- [Custom Callbacks When Saving Records](#callbacks)
-- [Simple Scheduled Tasks](#scheduled-tasks)
-- [The Driving Points Behind Kaffy's Development](#the-driving-points)
+    - [Add `kaffy` as a dependency](#add-kaffy-as-a-dependency)
+    - [These are the minimum configurations required](#these-are-the-minimum-configurations-required)
+- [Customizations](#customizations)
+  - [Configurations](#configurations)
+    - [Breaking change in v0.9](#breaking-change-in-v09)
+  - [Dashboard page](#dashboard-page)
+  - [Side Menu](#side-menu)
+    - [Custom Links](#custom-links)
+  - [Custom Pages](#custom-pages)
+  - [Index pages](#index-pages)
+  - [Form Pages](#form-pages)
+    - [Association Forms](#association-forms)
+  - [Custom Form Fields](#custom-form-fields)
+  - [Customize the Queries](#customize-the-queries)
+  - [Extensions](#extensions)
+  - [Embedded Schemas and JSON Fields](#embedded-schemas-and-json-fields)
+  - [Search](#search)
+  - [Authorization](#authorization)
+  - [Changesets](#changesets)
+  - [Singular vs Plural](#singular-vs-plural)
+  - [Custom Actions](#custom-actions)
+    - [Single Resource Actions](#single-resource-actions)
+    - [List Actions](#list-actions)
+  - [Callbacks](#callbacks)
+  - [Overwrite actions](#overwrite-actions)
+  - [Scheduled Tasks](#scheduled-tasks)
+- [The Driving Points](#the-driving-points)
 
 ## Sponsors
 
@@ -40,7 +53,7 @@ Become a sponsor through Kaffy's [OpenCollective](https://opencollective.com/kaf
 
 ## Minimum Requirements
 
-- elixir 1.7.0
+- elixir 1.8.0
 - phoenix 1.4.0
 
 ## Installation
@@ -66,8 +79,10 @@ use Kaffy.Routes, scope: "/admin", pipe_through: [:some_plug, :authenticate]
 # [:kaffy_browser, :some_plug, :authenticate]
 
 # in your endpoint.ex
+# configure the path to your application static assets in :at
+# the path must end with `/kaffy`
 plug Plug.Static,
-  at: "/kaffy",
+  at: "/kaffy", # or "/path/to/your/static/kaffy"
   from: :kaffy,
   gzip: false,
   only: ~w(assets)
@@ -193,7 +208,7 @@ Currently, kaffy provides support for 4 types of widgets:
 
 - `text` widgets. Suitable for display relatively long textual information. Candidates: a short review, a specific message for the admin, etc.
 - `tidbit` widgets. Suitable for tiny bits of information (one word, or one number). Cadidates: total sales, a specific date, system status ("Healthy", "Down"), etc.
-- `progress` widgets. Suitable for measuring progres in terms of percentages. Candidates: task progress, survey results, memory usage, etc.
+- `progress` widgets. Suitable for measuring progress in terms of percentages. Candidates: task progress, survey results, memory usage, etc.
 - `chart` widgets. Suitable for displaying chart data with X and Y values. Candidates: any measurable number over a period of time (e.g. sales, visits, etc).
 
 Widgets have shared options:
@@ -201,7 +216,7 @@ Widgets have shared options:
 - `:type` (required) is the type of the widget. Valid options are `text`, `tidbit`, `progress`, and `chart`.
 - `:title` (required) is the title for the widget. What this widget is about.
 - `:content` (required) is the main content of the widget. This can be a string or a map depending on the type of widget.
-- `:order` (optional) is the displaying order of the wigdet. Widgets are display in order based on this value. The default value is 999.
+- `:order` (optional) is the displaying order of the widget. Widgets are display in order based on this value. The default value is 999.
 - `:width` (optional) is the width the widget should occupy on the page. Valid values are 1 to 12. The default for tidbits is 3 and the others 6.
 - `:percentage` (required for progress widgets) is the percentage value for the progress. This must be an integer.
 - `:icon` (optional for tidbit widgets) is the icon displayed next to the tidbit's `content`. Any FontAwesome-valid icon is valid here. For example: `thumbs-up`.
@@ -426,6 +441,7 @@ Options can be:
 - `:create` - can be `:editable` which means it can be edited when creating a new record, or `:readonly` which means this field is visible when creating a new record but cannot be edited, or `:hidden` which means this field shouldn't be visible when creating a new record. It is `:editable` by default.
 - `:update` - can be `:editable` which means it can be edited when updating an existing record, or `:readonly` which means this field is visible when updating a record but cannot be edited, or `:hidden` which means this field shouldn't be visible when updating record. It is `:editable` by default.
 - `:help_text` - extra "help text" to be displayed with the form field.
+- `:values_fn` - This allows passing in a function to populate the list of possible values for a `:array` field. The field will be rendered as a multi-select input. The function should be of arity 2 and the arguments are the entity and the conn. See example below
 
 Result
 
@@ -439,6 +455,46 @@ Notice that:
 
 
 Setting a field's type to `:richtext` will render a rich text editor.
+
+The `:values_fn` is passed the entity you are editing and the conn (in that order) and must return a list of tuples that represent the {name, value} to use in the multi select. An example of this is as follows:  
+```
+  def form_fields(_schema) do
+    [
+      ....
+      some_array_field: %{
+        values_fn: fn entity, conn ->
+          some_values = MyApp.Thing.fetch_values(entity.id, conn)
+          Enum.map(some_values, &{&1.name, &1.id})
+        end
+      }
+    ]
+ ```
+
+#### Association Forms
+
+A `belongs_to` association should be referenced by the field name, *not* the association name. For example, a schema with the following association:
+
+```
+schema "my_model" do 
+  ...
+  belongs_to :owner, App.Owners.Owner
+  ...
+end
+```
+
+Would define `form_fields/1` like so:
+
+```
+def form_fields(_) do
+  [
+    ...
+    owner_id: nil,
+    ...
+  ]
+end
+```
+
+**NOTE:** `many_to_many` associations are currently not supported.
 
 ### Custom Form Fields
 
@@ -877,7 +933,7 @@ Sometimes you may need to overwrite the way Kaffy is creating, updating, or dele
 
 You can define you own Admin function to perform those actions. This can be useful if you are creating complex records, importing files, etc...
 
-The function that can be overwriten are:
+The function that can be overwritten are:
 
 - `insert/2`
 - `update/2`
@@ -909,11 +965,11 @@ end
 
 Kaffy supports simple scheduled tasks. Tasks are functions that are run periodically. Behind the scenes, they are put inside `GenServer`s and supervised with a `DynamicSupervisor`.
 
-To create scheduled tasks, simply define a `scheduled_tasks/1` function in your admin module:
+To setup scheduled tasks, first define a `task_[task_name]/1` function in your admin module that returns a list of tasks:
 
 ```elixir
 defmodule MyApp.Products.ProductAdmin do
-  def scheduled_tasks(_) do
+  def task_products do
     [
       %{
         name: "Cache Product Count",
@@ -939,11 +995,21 @@ defmodule MyApp.Products.ProductAdmin do
 end
 ```
 
-Once you create your scheduled tasks, a new "Tasks" menu item will show up (below the Dashboard item) listing all your tasks with some tiny bits of information about each task like the following image:
+Once this is done, add the admin module to the `scheduled_tasks` option in your config:
+```elixir
+config :kaffy,
+  ...
+  scheduled_tasks: [
+    MyApp.Products.ProductAdmin
+  ]
+
+```
+
+A new "Tasks" menu item will show up (below the Dashboard item) with your tasks as well as some tiny bits of information about each task like the following image:
 
 ![Simple scheduled tasks](demos/kaffy_tasks.png)
 
-The `scheduled_tasks/1` function takes a schema and must return a list of tasks.
+The `task_[task_name]/1` function takes a schema and must return a list of tasks.
 
 A task is a map with the following keys:
 
@@ -959,7 +1025,7 @@ The `action` function must return one of the following values:
 - `{:ok, value}` which indicates a successful run. The `value` will be passed to the `action` function in its next run.
 - `{:error, value}` which indicates a failed run. The `value` will be saved and passed again to the `action` function in its next run.
 
-In case the `action` function crashes, the task will be brought back up again in its initial state that is defined in the `scheduled_tasks/1` function and the "Started" time will change to indicate the new starting time. This will also reset the successful and failed run counts to 0.
+If the `action` function crashes, the task will be brought back up again in its initial state that is defined in the `task_[task_name]/1` function and the "Started" time will change to indicate the new starting time. This will also reset the successful and failed run counts to 0.
 
 Note that since scheduled tasks are run with `GenServer`s, they are stored and kept in memory. Having too many scheduled tasks under low memory conditions can cause an out of memory exception.
 
