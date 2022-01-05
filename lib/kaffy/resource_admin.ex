@@ -293,6 +293,16 @@ defmodule Kaffy.ResourceAdmin do
     Utils.get_assigned_value_or_default(resource, :list_actions, nil, [conn], false)
   end
 
+  def crud_actions(resource, conn) do
+    Utils.get_assigned_value_or_default(
+      resource,
+      :crud_actions,
+      [:new, :show, :update, :delete],
+      [conn],
+      false
+    )
+  end
+
   def widgets(resource, conn) do
     Utils.get_assigned_value_or_default(
       resource,
