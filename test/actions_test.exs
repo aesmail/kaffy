@@ -1,6 +1,7 @@
 defmodule ActionsTest do
   use ExUnit.Case
-  use Phoenix.ConnTest
+  import Plug.Conn
+  import Phoenix.ConnTest
 
   import Mock
   alias Phoenix.Controller, as: PhoenixController
