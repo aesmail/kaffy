@@ -43,6 +43,27 @@ defmodule Kaffy.ResourceAdmin do
   end
 
   @doc """
+  `search_fields/1` takes a schema and must return a list of `:string` fields to search against when typing in the search box.
+
+  If `search_fields/1` is not defined, Kaffy will return all the `:string` fields of the schema.
+
+  Example:
+
+  ```elixir
+  def search_fields(_schema) do
+    [:title, :slug, :body]
+  end
+  ```
+  """
+  def index_description(resource) do
+    Utils.get_assigned_value_or_default(
+      resource,
+      :index_description,
+      ResourceSchema.index_description(resource)
+    )
+  end
+
+  @doc """
   form_fields/1 takes a schema and returns a keyword list of fields and their options for the new/edit form.
 
   Supported options are:

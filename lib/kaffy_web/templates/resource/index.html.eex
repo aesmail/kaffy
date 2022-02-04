@@ -20,8 +20,12 @@
 
     <div class="card-body table-responsive w-100">
       <div class="card-description">
+          <div class="row">
+              <div class="col-auto mr-auto">
+                  <p><%= Kaffy.ResourceAdmin.index_description(@my_resource)%></p>
+              </div>
+          </div>
         <div class="row">
-
           <div class="col-auto mr-auto">
             <input id="kaffy-search-field" type="text" name="search" value="<%= Map.get(@params, "search", "") %>" class="form-control bg-transparent" placeholder="Search <%= Kaffy.ResourceAdmin.plural_name(@my_resource) %>...">
           </div>
