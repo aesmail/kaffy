@@ -1,6 +1,8 @@
 defmodule Kaffy.ResourceForm do
   use Phoenix.HTML
 
+  import Ecto.Query, only: [from: 2]
+
   def form_label_string({field, options}), do: Map.get(options, :label, field)
   def form_label_string(field) when is_atom(field), do: field
 
@@ -268,6 +270,7 @@ defmodule Kaffy.ResourceForm do
   end
 
   defp text_or_assoc(conn, schema, form, field, opts) do
+
     actual_assoc =
       Enum.filter(Kaffy.ResourceSchema.associations(schema), fn a ->
         Kaffy.ResourceSchema.association(schema, a).owner_key == field
@@ -318,7 +321,14 @@ defmodule Kaffy.ResourceForm do
             end
 
           false ->
-            options = Kaffy.Utils.repo().all(assoc)
+            assoc_config = Kaffy.ResourceAdmin.form_association_select_title(conn.assigns.my_resource)
+
+            options = case assoc_config[assoc][:order_by] do
+              nil ->
+                Kaffy.Utils.repo().all(assoc)
+              order_by ->
+                Kaffy.Utils.repo().all(from a in assoc, order_by: ^order_by)
+            end
 
             fields = Kaffy.ResourceSchema.fields(assoc)
 
@@ -330,23 +340,37 @@ defmodule Kaffy.ResourceForm do
                      options.type.type == :string)
               end)
 
-            popular_strings =
-              string_fields
-              |> Enum.filter(fn {f, _} -> f in [:name, :title] end)
-              |> Enum.at(0)
 
-            string_field =
-              case is_nil(popular_strings) do
-                true -> (Enum.at(string_fields, 0) || {:id}) |> elem(0)
-                false -> elem(popular_strings, 0)
+
+            case assoc_config[assoc][:option_name_func] do
+              nil ->
+                popular_strings =
+                  string_fields
+                  |> Enum.filter(fn {f, _} -> f in [:name, :title] end)
+                  |> Enum.at(0)
+
+                string_field =
+                  case is_nil(popular_strings) do
+                    true -> (Enum.at(string_fields, 0) || {:id}) |> elem(0)
+                    false -> elem(popular_strings, 0)
+                  end
+
+                select(
+                  form,
+                  field,
+                  Enum.map(options, fn o -> {Map.get(o, string_field, "Resource ##{o.id}"), o.id} end),
+                  class: "custom-select"
+                )
+
+              option_name_func ->
+                select(
+                  form,
+                  field,
+                  Enum.map(options, fn o -> {option_name_func.(o), o.id} end),
+                  class: "custom-select"
+                )
               end
 
-            select(
-              form,
-              field,
-              Enum.map(options, fn o -> {Map.get(o, string_field, "Resource ##{o.id}"), o.id} end),
-              class: "custom-select"
-            )
         end
 
       false ->

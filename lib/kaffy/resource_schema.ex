@@ -30,6 +30,8 @@ defmodule Kaffy.ResourceSchema do
     Keyword.drop(fields(schema), to_be_removed)
   end
 
+  def form_association_select_title(_schema), do: nil
+
   def cast_fields(schema) do
     to_be_removed =
       fields_to_be_removed(schema) ++
