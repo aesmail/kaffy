@@ -340,8 +340,6 @@ defmodule Kaffy.ResourceForm do
                      options.type.type == :string)
               end)
 
-            require IEx; IEx.pry()
-
             case assoc_config[assoc][:option_name_func] do
               nil ->
                 popular_strings =
@@ -355,8 +353,6 @@ defmodule Kaffy.ResourceForm do
                     false -> elem(popular_strings, 0)
                   end
 
-                IEx.pry()
-
                 select(
                   form,
                   field,
@@ -365,8 +361,6 @@ defmodule Kaffy.ResourceForm do
                 )
 
               option_name_func ->
-
-                IEx.pry()
 
                 select(
                   form,
