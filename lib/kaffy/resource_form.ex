@@ -288,7 +288,7 @@ defmodule Kaffy.ResourceForm do
         assoc = Kaffy.ResourceSchema.association_schema(schema, field_no_id)
         option_count = Kaffy.ResourceQuery.cached_total_count(assoc, true, assoc)
 
-        case option_count > 100 do
+        case option_count > 1000 do
           true ->
             target_context = Kaffy.Utils.get_context_for_schema(conn, assoc)
             target_resource = Kaffy.Utils.get_schema_key(conn, target_context, assoc)
@@ -340,7 +340,7 @@ defmodule Kaffy.ResourceForm do
                      options.type.type == :string)
               end)
 
-
+            require IEx; IEx.pry()
 
             case assoc_config[assoc][:option_name_func] do
               nil ->
@@ -355,6 +355,8 @@ defmodule Kaffy.ResourceForm do
                     false -> elem(popular_strings, 0)
                   end
 
+                IEx.pry()
+
                 select(
                   form,
                   field,
@@ -363,6 +365,9 @@ defmodule Kaffy.ResourceForm do
                 )
 
               option_name_func ->
+
+                IEx.pry()
+
                 select(
                   form,
                   field,
