@@ -20,7 +20,79 @@
 
     <div class="card-body table-responsive w-100">
       <div class="card-description">
-        <div class="row">
+
+
+        <%= if @my_resource[:schema] == InformedOpinions.Accounts.User do %>
+          <div class="row align-items-center">
+            <div class="col-12">
+              <h3 class="mb-4">Custom filters </h3>
+              <p class="mt-2">Step 1: locate your users
+            </div>
+            <div class="col-9">
+              <div class="row">
+                <div class="col-3">
+                  <button type="button" class="btn btn-secondary form-control" data-bs-toggle="modal" data-bs-target="#modalMap">
+                      Open Map
+                  </button>
+                </div>
+                <label class="col-form-label">M1:</label>
+                <div class="col">
+                  <input class="form-control-plaintext" data-field-name="map_marker_1_lat" value="<%= Map.get(@params, "map_marker_1_lat", "") %>" data-input="" type="text" readonly />
+                </div>
+                <div class="col">
+                  <input class="form-control-plaintext" data-field-name="map_marker_1_lon" value="<%= Map.get(@params, "map_marker_1_lon", "") %>" data-input="" type="text" readonly />
+                </div>
+                <label class="col-form-label">M2:</label>
+                <div class="col">
+                  <input class="form-control-plaintext" data-field-name="map_marker_2_lat" value="<%= Map.get(@params, "map_marker_2_lat", "") %>" data-input="" type="text" readonly />
+                </div>
+                <div class="col">
+                  <input class="form-control-plaintext" data-field-name="map_marker_2_lon" value="<%= Map.get(@params, "map_marker_2_lon", "") %>" data-input="" type="text" readonly />
+                </div>
+              </div>
+            </div>
+            <div class="col">
+            </div>
+          </div>
+
+          <div class="row align-items-center mt-4">
+            <div class="col-12">
+              <p class="mt-5">Step 2: filter by age
+            </div>
+
+            <div class="col-9">
+              <div class="row">
+                <div class="col-3">
+                </div>
+                <label class="col-form-label">Min Age</label>
+                <div class="col">
+                  <input id="user_min_age" class="form-control" data-field-name="user_min_age" value="<%= Map.get(@params, "user_min_age", "") %>" data-input="" type="number" />
+                </div>
+                <label class="col-form-label">Max Age</label>
+                <div class="col">
+                  <input id="user_max_age" class="form-control" data-field-name="user_max_age" value="<%= Map.get(@params, "user_max_age", "") %>" data-input="" type="number" />
+                </div>
+              </div>
+            </div>
+            <div class="col-12">
+              <p class="mt-5">Step 3: submit to execute the custom filters then continue with Kaffy filters below!
+            </div>
+
+            <div class="col-3">
+              <button id="hardcodedFiltersSubmit" type="button" class="btn btn-primary form-control" >
+                  Submit!
+              </button>
+            </div>
+          </div>
+        <% end %>
+
+        <div class="row mt-5">
+          <div class="col-12">
+            <h3 >Kaffy filters</h3>
+          </div>
+        </div>
+
+        <div class="row mt-2">
 
           <div class="col-auto mr-auto">
             <input id="kaffy-search-field" type="text" name="search" value="<%= Map.get(@params, "search", "") %>" class="form-control bg-transparent" placeholder="Search <%= Kaffy.ResourceAdmin.plural_name(@my_resource) %>...">
@@ -51,36 +123,6 @@
           </div>
         </div>
       </div>
-
-      <%= if @my_resource[:schema] == InformedOpinions.Accounts.User do %>
-        <div class="row align-items-center">
-          <div class="col-9">
-            <div class="row">
-              <div class="col-3">
-                <button type="button" class="btn btn-secondary form-control" data-bs-toggle="modal" data-bs-target="#modalMap">
-                    Open Map
-                </button>
-              </div>
-              <label class="col-form-label">M1:</label>
-              <div class="col">
-                <input class="form-control-plaintext" data-field-name="map_marker_1_lat" value="<%= Map.get(@params, "map_marker_1_lat", "") %>" data-input="" type="text" readonly />
-              </div>
-              <div class="col">
-                <input class="form-control-plaintext" data-field-name="map_marker_1_lon" value="<%= Map.get(@params, "map_marker_1_lon", "") %>" data-input="" type="text" readonly />
-              </div>
-              <label class="col-form-label">M2:</label>
-              <div class="col">
-                <input class="form-control-plaintext" data-field-name="map_marker_2_lat" value="<%= Map.get(@params, "map_marker_2_lat", "") %>" data-input="" type="text" readonly />
-              </div>
-              <div class="col">
-                <input class="form-control-plaintext" data-field-name="map_marker_2_lon" value="<%= Map.get(@params, "map_marker_2_lon", "") %>" data-input="" type="text" readonly />
-              </div>
-            </div>
-          </div>
-          <div class="col">
-          </div>
-        </div>
-      <% end %>
 
       <%= render KaffyWeb.ResourceView, "_table.html", conn: @conn, fields: @fields, context: @context, resource: @resource, my_resource: @my_resource, entries: @entries, params: @params %>
     </div>
@@ -120,6 +162,8 @@
   <input id="custom-filter-map_marker_1_lon" type="hidden" name="map_marker_1_lon" value="<%= Map.get(@params, "map_marker_1_lon", "") %>" />
   <input id="custom-filter-map_marker_2_lat" type="hidden" name="map_marker_2_lat" value="<%= Map.get(@params, "map_marker_2_lat", "") %>" />
   <input id="custom-filter-map_marker_2_lon" type="hidden" name="map_marker_2_lon" value="<%= Map.get(@params, "map_marker_2_lon", "") %>" />
+  <input id="custom-filter-user_min_age" type="hidden" name="user_min_age" value="<%= Map.get(@params, "user_min_age", "") %>" />
+  <input id="custom-filter-user_max_age" type="hidden" name="user_max_age" value="<%= Map.get(@params, "user_max_age", "") %>" />
   <input id="kaffy-filter-search" type="hidden" name="search" value="<%= Map.get(@params, "search", "") %>" />
   <input id="kaffy-filter-page" type="hidden" name="page" value="<%= Map.get(@params, "page", "1") %>" />
   <input id="kaffy-filter-limit" type="hidden" name="limit" value="<%= Map.get(@params, "limit", "100") %>" />

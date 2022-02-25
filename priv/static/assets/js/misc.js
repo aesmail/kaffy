@@ -8,9 +8,9 @@ var infoColor = getComputedStyle(document.body).getPropertyValue('--info');
 var darkColor = getComputedStyle(document.body).getPropertyValue('--dark');
 var lightColor = getComputedStyle(document.body).getPropertyValue('--light');
 
-(function ($) {
+(function($) {
   'use strict';
-  $(function () {
+  $(function() {
     var body = $('body');
     var contentWrapper = $('.content-wrapper');
     var scroller = $('.container-scroller');
@@ -19,7 +19,7 @@ var lightColor = getComputedStyle(document.body).getPropertyValue('--light');
 
     //Close other submenu in sidebar on opening any
 
-    sidebar.on('show.bs.collapse', '.collapse', function () {
+    sidebar.on('show.bs.collapse', '.collapse', function() {
       sidebar.find('.collapse.show').collapse('hide');
     });
 
@@ -35,7 +35,7 @@ var lightColor = getComputedStyle(document.body).getPropertyValue('--light');
       }
     }
 
-    $('[data-toggle="minimize"]').on("click", function () {
+    $('[data-toggle="minimize"]').on("click", function() {
       if ((body.hasClass('sidebar-toggle-display')) || (body.hasClass('sidebar-absolute'))) {
         body.toggleClass('sidebar-hidden');
       } else {
@@ -99,6 +99,20 @@ var lightColor = getComputedStyle(document.body).getPropertyValue('--light');
       enableSeconds: true,
       enableTime: true,
       dateFormat: "Z"
+    });
+
+    $("#user_min_age").change(function() {
+      var filterForm = $("#kaffy-filters-form");
+      filterForm.children("input#custom-filter-user_min_age").val($(this).val());
+    });
+
+    $("#user_max_age").change(function() {
+      var filterForm = $("#kaffy-filters-form");
+      filterForm.children("input#custom-filter-user_max_age").val($(this).val());
+    });
+
+    $('#hardcodedFiltersSubmit').on("click", function() {
+      $("#kaffy-filters-form").submit();
     });
   });
 

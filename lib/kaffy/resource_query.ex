@@ -109,7 +109,9 @@ defmodule Kaffy.ResourceQuery do
       "map_marker_1_lat",
       "map_marker_1_lon",
       "map_marker_2_lat",
-      "map_marker_2_lon"
+      "map_marker_2_lon",
+      "user_min_age",
+      "user_max_age"
     ]
 
     filtered_fields = Enum.filter(params, fn {k, v} -> k in schema_fields and v != "" end)
@@ -220,20 +222,67 @@ defmodule Kaffy.ResourceQuery do
     build_filtered_fields_query(resource, query, rest)
   end
 
-  defp build_hardcoded_filtered_fields_query(resource, query, filters) do
-    if Enum.count(filters) > 0 do
-      map_marker_1_lat = Map.get(filters, "map_marker_1_lat")
-      map_marker_1_lon = Map.get(filters, "map_marker_1_lon")
-      map_marker_2_lat = Map.get(filters, "map_marker_2_lat")
-      map_marker_2_lon = Map.get(filters, "map_marker_2_lon")
+  defp build_hardcoded_filtered_fields_query(_resource, query, filters) do
+    IO.puts("MSP build_hardcoded_filtered_fields_query ---------------------------------")
+    IO.puts("query: #{inspect(query)}, filters: #{inspect(filters)}")
 
-      from(
-        s in query,
-        where: field(s, :home_lat) >= ^map_marker_2_lat,
-        where: field(s, :home_lat) <= ^map_marker_1_lat,
-        where: field(s, :home_long) >= ^map_marker_1_lon,
-        where: field(s, :home_long) <= ^map_marker_2_lon
-      )
+    if Enum.count(filters) > 0 do
+      query =
+        if Map.has_key?(filters, "map_marker_1_lat") &&
+             Map.has_key?(filters, "map_marker_1_lon") &&
+             Map.has_key?(filters, "map_marker_2_lat") &&
+             Map.has_key?(filters, "map_marker_2_lon") do
+          map_marker_1_lat = Map.get(filters, "map_marker_1_lat")
+          map_marker_1_lon = Map.get(filters, "map_marker_1_lon")
+          map_marker_2_lat = Map.get(filters, "map_marker_2_lat")
+          map_marker_2_lon = Map.get(filters, "map_marker_2_lon")
+
+          from(
+            s in query,
+            where: field(s, :home_lat) >= ^map_marker_2_lat,
+            where: field(s, :home_lat) <= ^map_marker_1_lat,
+            where: field(s, :home_long) >= ^map_marker_1_lon,
+            where: field(s, :home_long) <= ^map_marker_2_lon
+          )
+        else
+          query
+        end
+
+      query =
+        if Map.has_key?(filters, "user_min_age") &&
+             Map.has_key?(filters, "user_max_age") do
+          user_min_age = Map.get(filters, "user_min_age", 0)
+          user_max_age = Map.get(filters, "user_max_age", 200)
+
+          today = DateTime.utc_now()
+          one_year_in_seconds = 365 * 24 * 60 * 60
+
+          min_age =
+            DateTime.add(
+              today,
+              String.to_integer(user_min_age) *
+                one_year_in_seconds * -1,
+              :second
+            )
+
+          max_age =
+            DateTime.add(
+              today,
+              String.to_integer(user_max_age) *
+                one_year_in_seconds * -1,
+              :second
+            )
+
+          from(
+            s in query,
+            where: field(s, :dob) <= ^min_age,
+            where: field(s, :dob) >= ^max_age
+          )
+        else
+          query
+        end
+
+      query
     else
       query
     end
