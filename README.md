@@ -735,7 +735,7 @@ And if that is not defined, `Ecto.Changeset.change/2` will be called.
 
 ### Singular vs Plural
 
-Some names do not follow the "add an s" rule. Sometimes you just need to change some terms to your liking.
+Kaffy makes some effor to guess a correct plural form of the resource, but in some cases it will fail. Should this happen, you may want to set a correct name yourself.
 
 This is why `singular_name/1` and `plural_name/1` are there.
 
