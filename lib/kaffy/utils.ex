@@ -127,6 +127,10 @@ defmodule Kaffy.Utils do
       l when is_list(l) -> l
       _ -> setup_resources()
     end
+    |> case do
+      {:ok, resources} -> resources
+      other -> other
+    end
   end
 
   @doc """
@@ -139,7 +143,8 @@ defmodule Kaffy.Utils do
   """
   @spec contexts(Plug.Conn.t()) :: [atom()]
   def contexts(conn) do
-    full_resources(conn)
+    conn
+    |> full_resources()
     |> Enum.map(fn {context, _options} -> context end)
   end
 

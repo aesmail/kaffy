@@ -52,7 +52,8 @@ defmodule KaffyWeb.ResourceController do
   end
 
   def index(conn, %{"context" => context, "resource" => resource} = params) do
-    my_resource = Kaffy.Utils.get_resource(conn, context, resource)
+    adapter = Kaffy.Adapters.Data.Ecto.Adapter.env(:data_adapter)
+    my_resource = adapter.get_resource(conn)
 
     case can_proceed?(my_resource, conn) do
       false ->
@@ -60,7 +61,7 @@ defmodule KaffyWeb.ResourceController do
 
       true ->
         fields = Kaffy.ResourceAdmin.index(my_resource)
-        {filtered_count, entries} = Kaffy.ResourceQuery.list_resource(conn, my_resource, params)
+        {filtered_count, entries} = adapter.list(conn)
         items_per_page = Map.get(params, "limit", "100") |> String.to_integer()
         page = Map.get(params, "page", "1") |> String.to_integer()
         has_next = round(filtered_count / items_per_page) > page
