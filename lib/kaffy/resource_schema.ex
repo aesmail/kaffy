@@ -307,9 +307,6 @@ defmodule Kaffy.ResourceSchema do
       {_f, %{type: :map}} ->
         true
 
-      {_f, %{type: {:array, _}}} ->
-        true
-
       f when is_atom(f) ->
         f == :map
 
