@@ -7,7 +7,7 @@ defmodule Kaffy.MixProject do
     [
       app: :kaffy,
       version: @version,
-      elixir: "~> 1.8",
+      elixir: "~> 1.10",
       compilers: [:phoenix] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
       description: description(),
@@ -30,8 +30,8 @@ defmodule Kaffy.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:phoenix, "~> 1.4"},
-      {:phoenix_html, "~> 2.13 or ~> 3.0"},
+      {:phoenix, "~> 1.5"},
+      {:phoenix_html, "~> 3.0"},
       {:mock, "~> 0.3.0", only: :test},
       {:ecto, "~> 3.0"},
       {:ex_doc, ">= 0.0.0", only: :dev, runtime: false}
@@ -48,7 +48,7 @@ defmodule Kaffy.MixProject do
       licenses: ["MIT"],
       links: %{
         "GitHub" => "https://github.com/aesmail/kaffy",
-        "Demo" => "https://kaffy.gigalixirapp.com/admin/"
+        "Demo" => "https://kaffy.fly.dev/admin/"
       }
     ]
   end
