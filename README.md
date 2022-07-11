@@ -49,7 +49,7 @@ Become a sponsor through Kaffy's [OpenCollective](https://opencollective.com/kaf
 
 ## Demo
 
-[Check out the simple demo here](https://kaffy.gigalixirapp.com/admin/)
+[Check out the simple demo here](https://kaffy.fly.dev/admin/)
 
 ## Minimum Requirements
 
