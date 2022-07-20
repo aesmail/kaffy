@@ -17,7 +17,7 @@
   </head>
   <body>
     <div class="container-scroller">
-      <nav class="navbar default-layout-navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
+      <nav class="navbar default-layout-navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row" style="background-color: <%= Application.get_env(:kaffy, :nav_bg_color, "aliceblue") %>">
         <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
           <%= link to: Kaffy.Utils.router().kaffy_home_path(@conn, :index), class: "navbar-brand brand-logo" do %>
             <img src="<%= Kaffy.Utils.logo(@conn) %>" alt="logo" />
