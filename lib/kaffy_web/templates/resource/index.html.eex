@@ -9,12 +9,14 @@
             <div id="checkbox-selected-count" class="checkbox-selected-count float-right"></div>
           </h3>
         </div>
+        <%= if :new in Kaffy.ResourceAdmin.crud_actions(@my_resource, @conn) do %>
         <div class="col-auto">
           <%= link to: Kaffy.Utils.router().kaffy_resource_path(@conn, :new, @context, @resource), class: "btn btn-outline-primary" do %>
             <i class="fas fa-plus"></i>
             New <%= Kaffy.ResourceAdmin.singular_name(@my_resource) %>
           <% end %>
         </div>
+        <% end %>
       </div>
     </div>
 
