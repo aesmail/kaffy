@@ -1,10 +1,10 @@
-### v0.9.2 (2020-08-03)
+### v0.9.2 (2022-08-03)
 
 ### Bug Fixes
 
 - Display records from schemas which contain fields with names "context" and "resource".
 
-### v0.9.1 (2020-07-11)
+### v0.9.1 (2022-07-11)
 #### Bug Fixes
 
 - Clicking on the "Select all" checkbox and performing an action wasn't working properly (#129).
