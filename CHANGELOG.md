@@ -1,11 +1,17 @@
-### v0.9.1 (in development)
+### v0.9.2 (2020-08-03)
 
+### Bug Fixes
+
+- Display records from schemas which contain fields with names "context" and "resource".
+
+### v0.9.1 (2020-07-11)
 #### Bug Fixes
 
 - Clicking on the "Select all" checkbox and performing an action wasn't working properly (#129).
 - A resource with a `{:array, _}` field type used to crash when rendering the form page (#130).
 - Tidbit icons weren't shown properly.
 - Schemas with `has_many` or `many_to_many` associations crashed when trying to save if the schema doesn't have a default `changeset/2` function.
+- Support phoenix 1.6
 
 ### v0.9.0 (2020-07-02)
 
