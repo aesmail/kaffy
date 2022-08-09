@@ -116,8 +116,8 @@
                         <%= if Map.has_key?(extra, :use_select) && extra.use_select do %>
                           <label><%= extra.title %></label>
                           <select data-title="<%= extra.title %>" name="kaffy-input[<%= extra.name %>]" class="form-select w-100 kaffy-list-action-input">
-                            <%= for option <- extra.options do %>
-                              <option value="<%= Enum.at(option, 1) %>"><%= Enum.at(option, 0) %></option>
+                            <%= for [text, value] <- extra.options do %>
+                              <option value="<%= value %>"><%= text %></option>
                             <% end %>
                           </select>
                         <% else %>
