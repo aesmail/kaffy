@@ -33,9 +33,7 @@ defmodule Kaffy.ResourceForm do
     end
   end
 
-  def form_field(changeset, form, field, opts \\ [])
-
-  def form_field(changeset, form, {field, options}, opts) do
+  def form_field(changeset, form, {field, options}, opts \\ []) do
     options = options || %{}
 
     type =
@@ -59,7 +57,7 @@ defmodule Kaffy.ResourceForm do
 
     cond do
       !is_nil(choices) ->
-        select(form, field, choices, class: "custom-select")
+        select(form, field, choices, class: "custom-select", disabled: permission == :readonly)
 
       true ->
         build_html_input(
