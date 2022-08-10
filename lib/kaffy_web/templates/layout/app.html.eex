@@ -111,6 +111,15 @@
                     </div>
                 </li>
             <% end %>
+
+            <%= for custom_link <- Kaffy.ResourceAdmin.collect_links(@conn, :bottom) do %>
+              <li class="nav-item">
+                <%= link to: custom_link.url, method: custom_link.method, class: "nav-link", target: custom_link.target do %>
+                  <span class="menu-title"><%= custom_link.name %></span>
+                  <i class="fas fa-<%= custom_link.icon %> menu-icon"></i>
+                <% end %>
+              </li>
+            <% end %>
           </ul>
         </nav>
 
