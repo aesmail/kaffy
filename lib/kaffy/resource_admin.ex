@@ -281,7 +281,7 @@ defmodule Kaffy.ResourceAdmin do
   ```
   """
   def plural_name(resource) do
-    default = singular_name(resource) <> "s"
+    default = singular_name(resource) |> Kaffy.Inflector.pluralize()
     Utils.get_assigned_value_or_default(resource, :plural_name, default)
   end
 
