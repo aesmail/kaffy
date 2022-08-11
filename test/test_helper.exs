@@ -1,4 +1,5 @@
 ExUnit.start()
+Application.put_env(:phoenix, :json_library, Jason)
 
 defmodule KaffyTest.Schemas.Person do
   use Ecto.Schema

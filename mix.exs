@@ -9,6 +9,7 @@ defmodule Kaffy.MixProject do
       version: @version,
       elixir: "~> 1.10",
       compilers: [:phoenix] ++ Mix.compilers(),
+      elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       description: description(),
       package: package(),
@@ -27,6 +28,10 @@ defmodule Kaffy.MixProject do
     ]
   end
 
+  # Specifies which paths to compile per environment.
+  defp elixirc_paths(:test), do: ["lib", "test/fixtures"]
+  defp elixirc_paths(_), do: ["lib"]
+
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
@@ -34,7 +39,8 @@ defmodule Kaffy.MixProject do
       {:phoenix_html, "~> 3.0"},
       {:mock, "~> 0.3.0", only: :test},
       {:ecto, "~> 3.0"},
-      {:ex_doc, ">= 0.0.0", only: :dev, runtime: false}
+      {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
+      {:jason, "~> 1.3", only: :test}
     ]
   end
 
