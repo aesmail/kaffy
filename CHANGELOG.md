@@ -9,15 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- The `:readonly` option was ignored when defining `:choices` for a specific field in `form_fields` #225
-- Fix generating forms for embeds and enums #234
+- The `:readonly` option was ignored when defining `:choices` for a specific field in `form_fields` (#225)
+- Fix generating forms for embeds and enums (#234)
 
 ### Added
 
-- Added the option to disable creating new records #188
-- A new `:bottom` option to display menu items at the bottom of the side menu #237
-- A smarter inflector covering more plural cases #233
-- Better documentation generation for ExDocs #214
+- Added the option to disable creating new records (#188)
+- A new `:bottom` option to display menu items at the bottom of the side menu (#237)
+- A smarter inflector covering more plural cases (#233)
+- Better documentation generation for ExDocs (#214)
+- Allow list actions to have select inputs (#238)
 
 ## v0.9.2 (2022-08-03)
 
