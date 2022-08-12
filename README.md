@@ -60,8 +60,8 @@ Become a sponsor through Kaffy's [OpenCollective](https://opencollective.com/kaf
 
 ## Minimum Requirements
 
-- Elixir 1.8.0
-- Phoenix 1.4.0
+- Elixir 1.10.0
+- Phoenix 1.5.0
 
 ## Installation
 
@@ -69,7 +69,7 @@ Become a sponsor through Kaffy's [OpenCollective](https://opencollective.com/kaf
 ```elixir
 def deps do
   [
-    {:kaffy, "~> 0.9.0"}
+    {:kaffy, "~> 0.9.2"}
   ]
 end
 ```
