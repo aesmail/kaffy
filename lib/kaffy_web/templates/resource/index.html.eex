@@ -113,8 +113,17 @@
                   <div class="modal-body">
                     <%= for extra <- extra_inputs do %>
                       <div class="form-group">
-                        <label><%= extra.title %></label>
-                        <input type="text" data-title="<%= extra.title %>" name="kaffy-input[<%= extra.name %>]" value="<%= extra.default %>" class="form-control kaffy-list-action-input" />
+                        <%= if Map.has_key?(extra, :use_select) && extra.use_select do %>
+                          <label><%= extra.title %></label>
+                          <select data-title="<%= extra.title %>" name="kaffy-input[<%= extra.name %>]" class="form-select w-100 kaffy-list-action-input">
+                            <%= for [text, value] <- extra.options do %>
+                              <option value="<%= value %>"><%= text %></option>
+                            <% end %>
+                          </select>
+                        <% else %>
+                          <label><%= extra.title %></label>
+                          <input type="text" data-title="<%= extra.title %>" name="kaffy-input[<%= extra.name %>]" value="<%= extra.default %>" class="form-control kaffy-list-action-input" />
+                        <% end %>
                       </div>
                     <% end %>
                   </div>
