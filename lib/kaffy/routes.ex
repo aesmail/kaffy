@@ -1,6 +1,6 @@
 defmodule Kaffy.Routes do
   @moduledoc """
-  Kaffy.Routes must be "used" in your phoenix routes:
+  Kaffy.Routes must be "used" in your Phoenix routes:
 
   ```elixir
   use Kaffy.Routes, scope: "/admin", pipe_through: [:browser, :authenticate]

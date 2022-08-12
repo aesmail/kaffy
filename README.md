@@ -1,6 +1,13 @@
-<img src="https://opencollective.com/kaffy/tiers/sponsor/badge.svg?label=sponsor&color=brightgreen" />
+# Kaffy
 
-![What You Get](demos/kaffy_index.png)
+[![Sponsor](https://opencollective.com/kaffy/tiers/sponsor/badge.svg?label=sponsor&color=brightgreen)](https://opencollective.com/kaffy)
+[![Module Version](https://img.shields.io/hexpm/v/kaffy.svg)](https://hex.pm/packages/kaffy)
+[![Hex Docs](https://img.shields.io/badge/hex-docs-lightgreen.svg)](https://hexdocs.pm/kaffy/)
+[![Total Download](https://img.shields.io/hexpm/dt/kaffy.svg)](https://hex.pm/packages/kaffy)
+[![License](https://img.shields.io/hexpm/l/kaffy.svg)](https://github.com/aesmail/kaffy/blob/master/LICENSE.md)
+[![Last Updated](https://img.shields.io/github/last-commit/aesmail/kaffy.svg)](https://github.com/aesmail/kaffy/commits/master)
+
+![What You Get](assets/kaffy_index.png)
 
 ## Introduction
 
@@ -53,12 +60,12 @@ Become a sponsor through Kaffy's [OpenCollective](https://opencollective.com/kaf
 
 ## Minimum Requirements
 
-- elixir 1.8.0
-- phoenix 1.4.0
+- Elixir 1.8.0
+- Phoenix 1.4.0
 
 ## Installation
 
-#### Add `kaffy` as a dependency
+#### Add `:kaffy` as a dependency
 ```elixir
 def deps do
   [
@@ -202,7 +209,7 @@ resources: [
 
 Kaffy supports dashboard customizations through `widgets`.
 
-![Dashboard page widgets](demos/kaffy_dashboard.png)
+![Dashboard page widgets](assets/kaffy_dashboard.png)
 
 Currently, kaffy provides support for 4 types of widgets:
 
@@ -303,7 +310,7 @@ end
 
 Kaffy allows you to add custom pages like the following:
 
-![Custom Pages](demos/kaffy_custom_pages.png)
+![Custom Pages](assets/kaffy_custom_pages.png)
 
 To add custom pages, you need to define the `custom_pages/2` function in your admin module:
 
@@ -362,7 +369,7 @@ end
 
 Result
 
-![Customized index page](demos/kaffy_index.png)
+![Customized index page](assets/kaffy_index.png)
 
 Notice that the keyword list keys don't necessarily have to be schema fields as long as you provide a `:value` option.
 
@@ -394,7 +401,7 @@ end
 
 Result
 
-![Product filters](demos/kaffy_filters.png)
+![Product filters](assets/kaffy_filters.png)
 
 If you need to change the order of the records, define `ordering/1`:
 
@@ -446,7 +453,7 @@ Options can be:
 
 Result
 
-![Customized show/edit page](demos/kaffy_form.png)
+![Customized show/edit page](assets/kaffy_form.png)
 
 Notice that:
 
@@ -457,26 +464,27 @@ Notice that:
 
 Setting a field's type to `:richtext` will render a rich text editor.
 
-The `:values_fn` is passed the entity you are editing and the conn (in that order) and must return a list of tuples that represent the {name, value} to use in the multi select. An example of this is as follows:  
-```
-  def form_fields(_schema) do
-    [
-      ....
-      some_array_field: %{
-        values_fn: fn entity, conn ->
-          some_values = MyApp.Thing.fetch_values(entity.id, conn)
-          Enum.map(some_values, &{&1.name, &1.id})
-        end
-      }
-    ]
+The `:values_fn` is passed the entity you are editing and the conn (in that order) and must return a list of tuples that represent the {name, value} to use in the multi select. An example of this is as follows:
+
+```elixir
+def form_fields(_schema) do
+  [
+    ....
+    some_array_field: %{
+      values_fn: fn entity, conn ->
+        some_values = MyApp.Thing.fetch_values(entity.id, conn)
+        Enum.map(some_values, &{&1.name, &1.id})
+      end
+    }
+  ]
  ```
 
 #### Association Forms
 
 A `belongs_to` association should be referenced by the field name, *not* the association name. For example, a schema with the following association:
 
-```
-schema "my_model" do 
+```elixir
+schema "my_model" do
   ...
   belongs_to :owner, App.Owners.Owner
   ...
@@ -485,7 +493,7 @@ end
 
 Would define `form_fields/1` like so:
 
-```
+```elixir
 def form_fields(_) do
   [
     ...
@@ -611,8 +619,8 @@ end
 
 ### Extensions
 
-Extensions allow you to define custom css, javascript, and html.
-For example, you need to use a specific javascript library or customize the look and feel of Kaffy.
+Extensions allow you to define custom CSS, JavaScript, and HTML.
+For example, you need to use a specific JavaScript library or customize the look and feel of Kaffy.
 This is where extensions come in handy.
 
 Extensions are elixir modules which special functions.
@@ -652,7 +660,7 @@ You can check [this issue](https://github.com/aesmail/kaffy/issues/54) to see an
 
 ### Embedded Schemas and JSON Fields
 
-Kaffy has support for ecto's [embedded schemas](https://hexdocs.pm/ecto/Ecto.Schema.html#embedded_schema/1) and json fields. When you define a field as a `:map`, Kaffy will automatically display a textarea with a placeholder to hint that JSON content is expected. When you have an embedded schema, Kaffy will try to render each field inline with the form of the parent schema.
+Kaffy has support for Ecto's [embedded schemas](https://hexdocs.pm/ecto/Ecto.Schema.html#embedded_schema/1) and JSON fields. When you define a field as a `:map`, Kaffy will automatically display a textarea with a placeholder to hint that JSON content is expected. When you have an embedded schema, Kaffy will try to render each field inline with the form of the parent schema.
 
 ### Search
 
@@ -670,7 +678,7 @@ defmodule MyApp.Blog.PostAdmin do
 end
 ```
 
-Kaffy allows to search for fields across associations. The following tells kaffy to search posts by title and body and category's name and description:
+Kaffy allows to search for fields across associations. The following tells Kaffy to search posts by title and body and category's name and description:
 
 ```elixir
 # Post has a belongs_to :category association
@@ -784,7 +792,7 @@ defmodule MyApp.Blog.ProductAdmin
 
 Result
 
-![Single actions](demos/kaffy_resource_actions.png)
+![Single actions](assets/kaffy_resource_actions.png)
 
 `resource_actions/1` takes a `conn` and must return a keyword list.
 The keys must be atoms defining the unique action "keys".
@@ -832,7 +840,7 @@ end
 
 Result
 
-![List actions](demos/kaffy_list_actions.png)
+![List actions](assets/kaffy_list_actions.png)
 
 `list_actions/1` takes a `conn` and must return a keyword list.
 The keys must be atoms defining the unique action "keys".
@@ -844,7 +852,7 @@ The defined `:inputs` option will display a popup with a form that contains defi
 After submitting the popup form, the extra values, along with the selected resources, are passed to the `:action` function.
 In the example above, `change_price/2` will receive the selected products with a map of extra inputs, like: `%{"new_price" => "3.5"}` for example.
 
-![MultiStep actions](demos/kaffy_multistep_actions.png)
+![MultiStep actions](assets/kaffy_multistep_actions.png)
 
 List actions must return one of the following:
 
@@ -1008,7 +1016,7 @@ config :kaffy,
 
 A new "Tasks" menu item will show up (below the Dashboard item) with your tasks as well as some tiny bits of information about each task like the following image:
 
-![Simple scheduled tasks](demos/kaffy_tasks.png)
+![Simple scheduled tasks](assets/kaffy_tasks.png)
 
 The `task_[task_name]/1` function takes a schema and must return a list of tasks.
 
@@ -1051,8 +1059,16 @@ A few points that encouraged the creation and development of Kaffy:
 - Highly flexible and customizable.
   - Provide as many configurable options as possible.
 - As few dependencies as possible.
-  - Currently kaffy only depends on phoenix and ecto.
+  - Currently kaffy only depends on Phoenix and Ecto.
 - Simple authorization.
   - I need to limit access for some admins to some schemas.
 - Sensible, modifiable, default assumptions.
   - When the package assumes something, this assumption should be sensible and modifiable when needed.
+
+
+## Copyright and License
+
+Copyright (c) 2020 Abdullah Esmail
+
+This work is free. You can redistribute it and/or modify it under the
+terms of the MIT License. See the [LICENSE.md](./LICENSE.md) file for more details.
