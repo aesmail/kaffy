@@ -1,4 +1,4 @@
-<h1 class="mt-4">Tasks</h1>
+<h1 class="mt-4"><%= Kaffy.Tasks.title() %></h1>
 
 <div class="row mt-3 col-md-12">
     <table class="table table-striped">

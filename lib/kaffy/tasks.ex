@@ -1,4 +1,13 @@
 defmodule Kaffy.Tasks do
+  def title() do
+    module = Kaffy.Utils.get_task_modules() |> List.first()
+
+    case Kaffy.Utils.has_function?(module, :title) do
+      true -> module.title()
+      false -> "Tasks"
+    end
+  end
+
   def collect_tasks() do
     Kaffy.Utils.get_task_modules()
     |> Enum.map(fn m ->

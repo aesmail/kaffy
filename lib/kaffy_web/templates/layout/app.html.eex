@@ -55,7 +55,7 @@
             <%= if not Enum.empty?(tasks) do %>
               <li class="nav-item">
                 <%= link to: Kaffy.Utils.router().kaffy_task_path(@conn, :index), class: "nav-link" do %>
-                    <span class="menu-title">Tasks</span>
+                    <span class="menu-title"><%= Kaffy.Tasks.title() %></span>
                     <i class="fas fa-clock menu-icon"></i>
                 <% end %>
               </li>
@@ -63,7 +63,7 @@
 
             <%= for custom_link <- Kaffy.ResourceAdmin.collect_links(@conn, :top) do %>
               <li class="nav-item">
-                <%= link to: custom_link.url, method: custom_link.method, class: "nav-link", target: custom_link.target do %>
+                <%= link to: custom_link.url, method: custom_link.method, class: "nav-link", target: custom_link.target, data: Map.get(custom_link, :data, []) do %>
                   <span class="menu-title"><%= custom_link.name %></span>
                   <i class="fas fa-<%= custom_link.icon %> menu-icon"></i>
                 <% end %>
@@ -103,7 +103,7 @@
                             <%= if Kaffy.ResourceAdmin.authorized?(options, @conn) do %>
                                 <li class="nav-item"><%= link Kaffy.ResourceAdmin.plural_name(options), to: Kaffy.Utils.router().kaffy_resource_path(@conn, :index, context, resource), class: "nav-link" %></li>
                                 <%= for custom_link <- Kaffy.ResourceAdmin.custom_links(options, :sub) do %>
-                                    <li class="nav-item"><%= link custom_link.name, to: custom_link.url, class: "nav-link", target: custom_link.target %></li>
+                                    <li class="nav-item"><%= link custom_link.name, to: custom_link.url, class: "nav-link", target: custom_link.target, data: Map.get(custom_link, :data, []) %></li>
                                 <% end %>
                             <% end %>
                         <% end %>
@@ -114,7 +114,7 @@
 
             <%= for custom_link <- Kaffy.ResourceAdmin.collect_links(@conn, :bottom) do %>
               <li class="nav-item">
-                <%= link to: custom_link.url, method: custom_link.method, class: "nav-link", target: custom_link.target do %>
+                <%= link to: custom_link.url, method: custom_link.method, class: "nav-link", target: custom_link.target, data: Map.get(custom_link, :data, []) do %>
                   <span class="menu-title"><%= custom_link.name %></span>
                   <i class="fas fa-<%= custom_link.icon %> menu-icon"></i>
                 <% end %>
