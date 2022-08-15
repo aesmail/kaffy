@@ -182,11 +182,11 @@ defmodule Kaffy.ResourceForm do
         values = Enum.map(values, &to_string/1)
         value = Map.get(data, field, nil)
 
-        select(form, field, values, [value: value] ++ opts)
+        select(form, field, values, [class: "custom-select", value: value] ++ opts)
 
       {:parameterized, Ecto.Enum, %{mappings: mappings}} ->
         value = Map.get(data, field, nil)
-        select(form, field, mappings, [value: value] ++ opts)
+        select(form, field, mappings, [class: "custom-select", value: value] ++ opts)
 
       {:array, {:parameterized, Ecto.Enum, %{values: values}}} ->
         values = Enum.map(values, &to_string/1)
@@ -218,7 +218,7 @@ defmodule Kaffy.ResourceForm do
         file_input(form, field, opts)
 
       :select ->
-        select(form, field, opts)
+        select(form, field, [class: "custom-select"] ++ opts)
 
       :date ->
         flatpickr_date(form, field, opts)
