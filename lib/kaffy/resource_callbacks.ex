@@ -171,7 +171,8 @@ defmodule Kaffy.ResourceCallbacks do
   end
 
   defp before_delete(conn, resource, entry) do
-    changeset = Kaffy.ResourceAdmin.update_changeset(resource, entry, %{})
+    # changeset = Kaffy.ResourceAdmin.update_changeset(resource, entry, %{})
+    changeset = Ecto.Changeset.change(entry)
 
     Utils.get_assigned_value_or_default(
       resource,
