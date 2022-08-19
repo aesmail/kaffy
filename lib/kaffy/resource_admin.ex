@@ -307,7 +307,26 @@ defmodule Kaffy.ResourceAdmin do
   end
 
   def list_actions(resource, conn) do
-    Utils.get_assigned_value_or_default(resource, :list_actions, nil, [conn], false)
+    delete_action =
+      case authorized?(resource, conn) do
+        true ->
+          [
+            delete_action: %{
+              name: "Delete selected records",
+              action: fn _, entries ->
+                Enum.map(entries, fn entry ->
+                  Kaffy.ResourceCallbacks.delete_callbacks(conn, resource, entry)
+                end)
+              end
+            }
+          ]
+
+        false ->
+          []
+      end
+
+    delete_action ++
+      Utils.get_assigned_value_or_default(resource, :list_actions, [], [conn], false)
   end
 
   def widgets(resource, conn) do
