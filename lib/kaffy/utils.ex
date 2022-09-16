@@ -428,4 +428,8 @@ defmodule Kaffy.Utils do
   def get_task_modules() do
     env(:scheduled_tasks, [])
   end
+
+  def visible?(options) do
+    Keyword.get(options, :in_menu, true)
+  end
 end
