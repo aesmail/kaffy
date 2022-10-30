@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add missing "custom-select" classes to some `select` tags.
 - Ensure that extension modules are loaded.
+- Save enum fields with their cast values.
 
 ## v0.9.3 (2022-08-13)
 

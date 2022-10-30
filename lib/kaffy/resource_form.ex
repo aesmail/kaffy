@@ -184,9 +184,19 @@ defmodule Kaffy.ResourceForm do
 
         select(form, field, values, [class: "custom-select", value: value] ++ opts)
 
-      {:parameterized, Ecto.Enum, %{mappings: mappings}} ->
+      {:parameterized, Ecto.Enum, %{mappings: mappings, on_cast: on_cast}} ->
         value = Map.get(data, field, nil)
-        select(form, field, mappings, [class: "custom-select", value: value] ++ opts)
+
+        # NOTE enum_options preserves the order of enum defined in the schema
+        enum_options =
+          Enum.map(mappings, fn {k, _} ->
+            k = to_string(k)
+            v = Map.get(on_cast, k)
+            k = String.capitalize(k)
+            {k, v}
+          end)
+
+        select(form, field, enum_options, [class: "custom-select", value: value] ++ opts)
 
       {:array, {:parameterized, Ecto.Enum, %{values: values}}} ->
         values = Enum.map(values, &to_string/1)
@@ -194,9 +204,19 @@ defmodule Kaffy.ResourceForm do
 
         multiple_select(form, field, values, [value: value] ++ opts)
 
-      {:array, {:parameterized, Ecto.Enum, %{mappings: mappings}}} ->
+      {:array, {:parameterized, Ecto.Enum, %{mappings: mappings, on_cast: on_cast}}} ->
         value = Map.get(data, field, nil)
-        multiple_select(form, field, mappings, [value: value] ++ opts)
+
+        # NOTE enum_options preserves the order of enum defined in the schema
+        enum_options =
+          Enum.map(mappings, fn {k, _} ->
+            k = to_string(k)
+            v = Map.get(on_cast, k)
+            k = String.capitalize(k)
+            {k, v}
+          end)
+
+        multiple_select(form, field, enum_options, [value: value] ++ opts)
 
       {:array, _} ->
         case !is_nil(options[:values_fn]) && is_function(options[:values_fn], 2) do
