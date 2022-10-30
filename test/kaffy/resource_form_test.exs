@@ -51,14 +51,14 @@ defmodule Kaffy.ResourceFormTest do
       html = render_field(:travel_type)
       assert html =~ ~r/dummy\[travel_type]/
       assert html =~ ~r/^<select/
-      assert html =~ ~r/<option value="undisclosed">other<\/option>/
+      assert html =~ ~r/<option value="undisclosed">Other<\/option>/
     end
 
     test "render enum array field" do
       html = render_field(:means_of_transport)
       assert html =~ ~r/dummy\[means_of_transport]/
       assert html =~ ~r/^<select id="dummy_means_of_transport" multiple/
-      assert html =~ ~r/<option value="ferry">ferry<\/option>/
+      assert html =~ ~r/<option value="ferry">Ferry<\/option>/
     end
 
     test "render embed" do
@@ -81,7 +81,7 @@ defmodule Kaffy.ResourceFormTest do
     end
   end
 
-  def render_field(name, opts \\ Keyword.new) do
+  def render_field(name, opts \\ Keyword.new()) do
     schema = Keyword.get(opts, :schema, %TravelSchema{})
     field_opts = Keyword.get(opts, :field_opts, %{})
 
