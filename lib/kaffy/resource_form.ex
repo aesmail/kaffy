@@ -182,7 +182,14 @@ defmodule Kaffy.ResourceForm do
         values = Enum.map(values, &to_string/1)
         value = Map.get(data, field, nil)
 
-        select(form, field, values, [class: "custom-select", value: value] ++ opts)
+        # NOTE enum_options preserves the order of enum defined in the schema
+        enum_options =
+          Enum.map(values, fn v ->
+            capitalized = String.capitalize(v)
+            {capitalized, v}
+          end)
+
+        select(form, field, enum_options, [class: "custom-select", value: value] ++ opts)
 
       {:parameterized, Ecto.Enum, %{mappings: mappings, on_cast: on_cast}} ->
         value = Map.get(data, field, nil)
@@ -202,7 +209,14 @@ defmodule Kaffy.ResourceForm do
         values = Enum.map(values, &to_string/1)
         value = Map.get(data, field, nil)
 
-        multiple_select(form, field, values, [value: value] ++ opts)
+        # NOTE enum_options preserves the order of enum defined in the schema
+        enum_options =
+          Enum.map(values, fn v ->
+            capitalized = String.capitalize(v)
+            {capitalized, v}
+          end)
+
+        multiple_select(form, field, enum_options, [value: value] ++ opts)
 
       {:array, {:parameterized, Ecto.Enum, %{mappings: mappings, on_cast: on_cast}}} ->
         value = Map.get(data, field, nil)

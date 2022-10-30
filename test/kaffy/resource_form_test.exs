@@ -51,7 +51,7 @@ defmodule Kaffy.ResourceFormTest do
       html = render_field(:travel_type)
       assert html =~ ~r/dummy\[travel_type]/
       assert html =~ ~r/^<select/
-      assert html =~ ~r/<option value="undisclosed">Other<\/option>/
+      assert html =~ ~r/<option value="other">Other<\/option>/
     end
 
     test "render enum array field" do
