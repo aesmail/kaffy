@@ -2,7 +2,7 @@ defmodule Kaffy.MixProject do
   use Mix.Project
 
   @source_url "https://github.com/aesmail/kaffy"
-  @version "0.9.4"
+  @version "0.9.5-rc.0"
 
   def project do
     [
