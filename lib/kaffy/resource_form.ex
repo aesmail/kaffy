@@ -236,6 +236,7 @@ defmodule Kaffy.ResourceForm do
         case !is_nil(options[:values_fn]) && is_function(options[:values_fn], 2) do
           true ->
             values = options[:values_fn].(data, conn)
+
             value =
               if is_function(options[:value_fn], 1) do
                 options[:value_fn].(data)
@@ -243,10 +244,11 @@ defmodule Kaffy.ResourceForm do
                 Map.get(data, field, nil)
               end
 
-
-
             if options[:clearable] do
-              [multiple_select(form, field, values, [value: value] ++ opts), button("clear", class: "multiple-select-clear", target: field)]
+              [
+                multiple_select(form, field, values, [value: value] ++ opts),
+                "<button target=\"#{field}\" class=\"multiple-select-clear btn btn-sm btn-outline-secondary\">Clear</button>"
+              ]
             else
               multiple_select(form, field, values, [value: value] ++ opts)
             end
