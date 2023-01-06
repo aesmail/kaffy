@@ -243,7 +243,13 @@ defmodule Kaffy.ResourceForm do
                 Map.get(data, field, nil)
               end
 
-            multiple_select(form, field, values, [value: value] ++ opts)
+
+
+            if options[:clearable] do
+              [multiple_select(form, field, values, [value: value] ++ opts), button("clear", class: "multiple-select-clear", target: field)]
+            else
+              multiple_select(form, field, values, [value: value] ++ opts)
+            end
 
           false ->
             value =
