@@ -244,7 +244,7 @@ defmodule Kaffy.ResourceForm do
                 Map.get(data, field, nil)
               end
 
-            if options[:raw_html_fn] do
+            if is_function(options[:raw_html_fn], 4) do
               [
                 multiple_select(form, field, values, [value: value] ++ opts),
                 raw(options[:raw_html_fn].(data, form, field, opts))
