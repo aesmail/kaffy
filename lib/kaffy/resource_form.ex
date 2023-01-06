@@ -247,7 +247,9 @@ defmodule Kaffy.ResourceForm do
             if options[:clearable] do
               [
                 multiple_select(form, field, values, [value: value] ++ opts),
-                "<button target=\"#{field}\" class=\"multiple-select-clear btn btn-sm btn-outline-secondary\">Clear</button>"
+                raw(
+                  "<button target=\"#{field}\" class=\"multiple-select-clear btn btn-sm btn-outline-secondary\">Clear</button>"
+                )
               ]
             else
               multiple_select(form, field, values, [value: value] ++ opts)
