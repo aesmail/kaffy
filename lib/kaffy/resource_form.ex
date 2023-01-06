@@ -248,7 +248,7 @@ defmodule Kaffy.ResourceForm do
               [
                 multiple_select(form, field, values, [value: value] ++ opts),
                 raw(
-                  "<button target=\"#{field}\" class=\"multiple-select-clear btn btn-sm btn-outline-secondary\">Clear</button>"
+                  "<span target=\"#{field}\" class=\"multiple-select-clear btn btn-sm btn-outline-secondary\">Clear</span>"
                 )
               ]
             else
