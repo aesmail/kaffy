@@ -244,12 +244,10 @@ defmodule Kaffy.ResourceForm do
                 Map.get(data, field, nil)
               end
 
-            if options[:clearable] do
+            if options[:raw_html_fn] do
               [
                 multiple_select(form, field, values, [value: value] ++ opts),
-                raw(
-                  "<span data-target=\"#{form.name}_#{field}\" class=\"multiple-select-clear btn btn-sm btn-outline-secondary\">Clear</span>"
-                )
+                raw(options[:raw_html_fn].(data, form, field, opts))
               ]
             else
               multiple_select(form, field, values, [value: value] ++ opts)
