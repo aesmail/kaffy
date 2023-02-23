@@ -32,7 +32,7 @@
             </div>
         </div>
         <div class="card-body">
-            <%= form_for @changeset, Kaffy.Utils.router().kaffy_resource_path(@conn, :update, @context, @resource, @changeset.data.id), method: :put, multipart: true, fn f -> %>
+            <%= form_for @changeset, Kaffy.Utils.router().kaffy_resource_path(@conn, :update, @context, @resource, @changeset.data.id), [method: :put, multipart: true], fn f -> %>
                 <%= for {field, options} <- Kaffy.ResourceAdmin.form_fields(@my_resource) do %>
                     <%= if options.update != :hidden do %>
                         <%= Kaffy.ResourceForm.kaffy_input @conn, @changeset, f, field, options %>
