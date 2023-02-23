@@ -48,12 +48,13 @@
                         <i class="fas fa-trash"></i> Delete
                     </button>
                 </div>
-            <% end %>>
+            <% end %>
         </div>
     </div>
 
     <!-- Modal -->
-    <%= form_for(@changeset, Kaffy.Utils.router().kaffy_resource_path(@conn, :delete, @context, @resource, @changeset.data.id), method: :delete) %>
+    <%= form_for @changeset, Kaffy.Utils.router().kaffy_resource_path(@conn, :delete, @context, @resource, @changeset.data.id), [method: :delete], fn _f -> %>
+    <% end %>
     <div class="modal fade" id="delete-modal" tabindex="-1" role="dialog" aria-labelledby="delete-modal-label" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
