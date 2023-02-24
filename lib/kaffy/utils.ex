@@ -335,6 +335,7 @@ defmodule Kaffy.Utils do
     stylesheets =
       Enum.map(exts, fn ext ->
         Code.ensure_loaded(ext)
+
         case function_exported?(ext, :stylesheets, 1) do
           true -> ext.stylesheets(conn)
           false -> []
@@ -344,6 +345,7 @@ defmodule Kaffy.Utils do
     javascripts =
       Enum.map(exts, fn ext ->
         Code.ensure_loaded(ext)
+
         case function_exported?(ext, :javascripts, 1) do
           true -> ext.javascripts(conn)
           false -> []
@@ -361,8 +363,14 @@ defmodule Kaffy.Utils do
     {convert_to_atom(context), convert_to_atom(resource)}
   end
 
+  defp convert_to_atom(value) when is_atom(value), do: value
+
   defp convert_to_atom(string) do
-    if is_binary(string), do: String.to_existing_atom(string), else: string
+    try do
+      String.to_existing_atom(string)
+    rescue
+      ArgumentError -> String.to_atom(string)
+    end
   end
 
   defp setup_resources do
