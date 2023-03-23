@@ -125,6 +125,13 @@ end
 Note that if you use Phoenix version 1.7 you also need to manually add the use of phoenix views in your project.
 Follow the instructions at https://hexdocs.pm/phoenix_view/Phoenix.View.html
 
+You will also need to change `helpers: false` to `true` as shown in example below.
+```elixir
+  def router do
+    quote do
+      use Phoenix.Router, helpers: true
+```
+
 ## Customizations
 
 ### Configurations
