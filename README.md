@@ -73,6 +73,15 @@ def deps do
   ]
 end
 ```
+as of phoenix version 1.7 you need the following dependencies
+```elixir
+def deps do
+  [
+    {:phoenix_view, "~> 2.0.2"},
+    {:kaffy, "~> 0.9.2"}
+  ]
+end
+```
 
 #### These are the minimum configurations required
 
@@ -111,6 +120,16 @@ pipeline :kaffy_browser do
   plug :protect_from_forgery
   plug :put_secure_browser_headers
 end
+```
+### Phoenix version 1.7
+Note that if you use Phoenix version 1.7 you also need to manually add the use of phoenix views in your project.
+Follow the instructions at https://hexdocs.pm/phoenix_view/Phoenix.View.html
+
+You will also need to change `helpers: false` to `true` as shown in example below.
+```elixir
+  def router do
+    quote do
+      use Phoenix.Router, helpers: true
 ```
 
 ## Customizations
