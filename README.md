@@ -63,6 +63,8 @@ Become a sponsor through Kaffy's [OpenCollective](https://opencollective.com/kaf
 - Elixir 1.10.0
 - Phoenix 1.5.0
 
+We aim to follow Elixir's [support policy](https://hexdocs.pm/elixir/compatibility-and-deprecations.html) for the minimum required Elixir version.
+
 ## Installation
 
 #### Add `:kaffy` as a dependency
