@@ -215,8 +215,9 @@ defmodule Kaffy.Utils do
   """
   @spec get_resource(Plug.Conn.t(), String.t(), String.t()) :: list()
   def get_resource(conn, context, resource) do
+    preloaded_resources = full_resources(conn)
     {context, resource} = convert_to_atoms(context, resource)
-    get_in(full_resources(conn), [context, :resources, resource])
+    get_in(preloaded_resources, [context, :resources, resource])
   end
 
   @doc """
@@ -232,8 +233,9 @@ defmodule Kaffy.Utils do
   """
   @spec schemas_for_context(Plug.Conn.t(), list()) :: list()
   def schemas_for_context(conn, context) do
+    preloaded_resources = full_resources(conn)
     context = convert_to_atom(context)
-    get_in(full_resources(conn), [context, :resources])
+    get_in(preloaded_resources, [context, :resources])
   end
 
   # @doc """
