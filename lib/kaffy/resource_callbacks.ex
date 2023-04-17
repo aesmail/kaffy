@@ -30,6 +30,9 @@ defmodule Kaffy.ResourceCallbacks do
       {:error, :not_found} ->
         Kaffy.Utils.repo().insert(changeset)
 
+      {:error, error} ->
+        {:error, error}
+
       unexpected_error ->
         {:error, unexpected_error}
     end
@@ -61,6 +64,9 @@ defmodule Kaffy.ResourceCallbacks do
     else
       {:error, :not_found} ->
         Kaffy.Utils.repo().update(changeset)
+
+      {:error, error} ->
+        {:error, error}
 
       unexpected_error ->
         {:error, unexpected_error}
@@ -164,6 +170,9 @@ defmodule Kaffy.ResourceCallbacks do
     else
       {:error, :not_found} ->
         Kaffy.Utils.repo().delete(changeset)
+
+      {:error, error} ->
+        {:error, error}
 
       unexpected_error ->
         {:error, unexpected_error}
