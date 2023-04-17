@@ -167,7 +167,7 @@ defmodule MyApp.Kaffy.Config do
         resources: [ # this line used to be "schemas" in pre v0.9
           post: [schema: MyApp.Blog.Post, admin: MyApp.SomeModule.Anywhere.PostAdmin],
           comment: [schema: MyApp.Blog.Comment],
-          tag: [schema: MyApp.Blog.Tag]
+          tag: [schema: MyApp.Blog.Tag, in_menu: false]
         ]
       ],
       inventory: [

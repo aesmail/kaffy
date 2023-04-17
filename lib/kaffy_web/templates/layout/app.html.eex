@@ -100,7 +100,7 @@
                     <div class="collapse<%= if @conn.assigns[:context] == to_string(context) do %> show<% end %>" id="<%= context %>-context">
                       <ul class="nav flex-column sub-menu">
                         <%= for {resource, options} <- Kaffy.Utils.schemas_for_context(@conn, context) do %>
-                            <%= if Kaffy.ResourceAdmin.authorized?(options, @conn) do %>
+                            <%= if Kaffy.ResourceAdmin.authorized?(options, @conn) && Kaffy.Utils.visible?(options) do %>
                                 <li class="nav-item"><%= link Kaffy.ResourceAdmin.plural_name(options), to: Kaffy.Utils.router().kaffy_resource_path(@conn, :index, context, resource), class: "nav-link" %></li>
                                 <%= for custom_link <- Kaffy.ResourceAdmin.custom_links(options, :sub) do %>
                                     <li class="nav-item"><%= link custom_link.name, to: custom_link.url, class: "nav-link", target: custom_link.target %></li>
