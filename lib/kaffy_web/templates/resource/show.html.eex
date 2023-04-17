@@ -32,7 +32,7 @@
             </div>
         </div>
         <div class="card-body">
-            <%= f = form_for(@changeset, Kaffy.Utils.router().kaffy_resource_path(@conn, :update, @context, @resource, @changeset.data.id), method: :put, multipart: true) %>
+            <%= form_for @changeset, Kaffy.Utils.router().kaffy_resource_path(@conn, :update, @context, @resource, @changeset.data.id), [method: :put, multipart: true], fn f -> %>
                 <%= for {field, options} <- Kaffy.ResourceAdmin.form_fields(@my_resource) do %>
                     <%= if options.update != :hidden do %>
                         <%= Kaffy.ResourceForm.kaffy_input @conn, @changeset, f, field, options %>
@@ -48,29 +48,30 @@
                         <i class="fas fa-trash"></i> Delete
                     </button>
                 </div>
-            </form>
+            <% end %>
         </div>
     </div>
 
     <!-- Modal -->
-    <%= form_for(@changeset, Kaffy.Utils.router().kaffy_resource_path(@conn, :delete, @context, @resource, @changeset.data.id), method: :delete) %>
-    <div class="modal fade" id="delete-modal" tabindex="-1" role="dialog" aria-labelledby="delete-modal-label" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="delete-modal-label">Are you sure?</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    You might lose this record and other related records forever if you continue. Make sure this is what you really want to do.
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-light" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-danger">Yes, delete this <%= @resource_name %></button>
+    <%= form_for @changeset, Kaffy.Utils.router().kaffy_resource_path(@conn, :delete, @context, @resource, @changeset.data.id), [method: :delete], fn _f -> %>
+        <div class="modal fade" id="delete-modal" tabindex="-1" role="dialog" aria-labelledby="delete-modal-label" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="delete-modal-label">Are you sure?</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        You might lose this record and other related records forever if you continue. Make sure this is what you really want to do.
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-danger">Yes, delete this <%= @resource_name %></button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    <% end %>
 </div>
