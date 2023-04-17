@@ -9,7 +9,7 @@ on:
 jobs:
   test:
     name: Test ${{matrix.otp}} / Elixir  ${{matrix.elixir}}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     strategy:
       matrix:
         otp: ['21', '22', '23', '24']
