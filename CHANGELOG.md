@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix changeset errors [PR#262](https://github.com/aesmail/kaffy/pull/262)
 
 ### Changed
+- Lazy load default kaffy field value [PR#255](https://github.com/aesmail/kaffy/pull/255)
 - Update phoenix html to address deprecated form_for [PR#260](https://github.com/aesmail/kaffy/pull/260)
 
 ### Added
