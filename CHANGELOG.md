@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixes
 - Fix changeset errors [PR#262](https://github.com/aesmail/kaffy/pull/262)
+- Preload resources before trying to convert resource to existing atom. [PR#266](https://github.com/aesmail/kaffy/pull/266)
 
 ### Changed
 - Lazy load default kaffy field value [PR#255](https://github.com/aesmail/kaffy/pull/255)
