@@ -2,7 +2,7 @@ defmodule Kaffy.ResourceAdmin do
   alias Kaffy.ResourceSchema
   alias Kaffy.Utils
 
-  @default_id_separator "."
+  @default_id_separator ":"
 
   @moduledoc """
   ResourceAdmin modules should be created for every schema you want to customize/configure in Kaffy.
@@ -310,13 +310,13 @@ defmodule Kaffy.ResourceAdmin do
   @doc """
   `serialize_id/2` takes a schema and record and must return a string to be used in the URL and form values.
 
-  If `serialize_id/2` is not defined, Kaffy will concatenate multiple primary keys with `"."` as a separator.
+  If `serialize_id/2` is not defined, Kaffy will concatenate multiple primary keys with `":"` as a separator.
 
   Example:
 
   ```elixir
   def serialize_id(_schema, record) do
-    Enum.join([record.post_id, record.tag_id], ".")
+    Enum.join([record.post_id, record.tag_id], ":")
   end
   ```
   """
@@ -333,13 +333,13 @@ defmodule Kaffy.ResourceAdmin do
   `deserialize_id/2` takes a schema and serialized id and must return a complete
   keyword list in the form of [{:primary_key, value}, ...].
 
-  If `deserialize_id/2` is not defined, Kaffy will split multiple primary keys with `"."` as a separator.
+  If `deserialize_id/2` is not defined, Kaffy will split multiple primary keys with `":"` as a separator.
 
   Example:
 
   ```elixir
   def serialize_id(_schema, serialized_id) do
-    Enum.zip([:post_id, :tag_id], String.split(serialized_id, "."))
+    Enum.zip([:post_id, :tag_id], String.split(serialized_id, ":"))
   end
   ```
   """
