@@ -349,11 +349,14 @@ defmodule KaffyWeb.ResourceController do
     action_record = get_action_record(actions, action_key)
     kaffy_inputs = Map.get(params, "kaffy-input", %{})
 
-    result =
-      case Map.get(action_record, :inputs, []) do
-        [] -> action_record.action.(conn, entries)
-        _ -> action_record.action.(conn, entries, kaffy_inputs)
-      end
+    result = case entries do
+      {:error, error_msg} -> {:error, error_msg}
+      entries ->
+        case Map.get(action_record, :inputs, []) do
+          [] -> action_record.action.(conn, entries)
+          _ -> action_record.action.(conn, entries, kaffy_inputs)
+        end
+    end
 
     case result do
       :ok ->
