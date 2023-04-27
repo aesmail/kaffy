@@ -312,11 +312,19 @@ defmodule Kaffy.ResourceAdmin do
 
   If `serialize_id/2` is not defined, Kaffy will concatenate multiple primary keys with `":"` as a separator.
 
-  Example:
+  Examples:
 
   ```elixir
+  # Default method with fixed keys
   def serialize_id(_schema, record) do
     Enum.join([record.post_id, record.tag_id], ":")
+  end
+
+  # ETF
+  def serialize_id(_schema, record) do
+    {record.post_id, record.tag_id}
+    |> :erlang.term_to_binary()
+    |> Base.url_encode64()
   end
   ```
   """
@@ -335,11 +343,21 @@ defmodule Kaffy.ResourceAdmin do
 
   If `deserialize_id/2` is not defined, Kaffy will split multiple primary keys with `":"` as a separator.
 
-  Example:
+  Examples:
 
   ```elixir
-  def serialize_id(_schema, serialized_id) do
+  # Default method with fixed keys
+  def deserialize_id(_schema, serialized_id) do
     Enum.zip([:post_id, :tag_id], String.split(serialized_id, ":"))
+  end
+
+  # Deserialize from ETF
+  def deserialize_id(_schema, serialized_id) do
+    {product_id, tag_id} = serialized_id
+    |> Base.url_decode64!()
+    |> :erlang.binary_to_term()
+
+    [product_id: product_id, tag_id: tag_id]
   end
   ```
   """
