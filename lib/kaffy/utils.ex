@@ -332,27 +332,30 @@ defmodule Kaffy.Utils do
   end
 
   def extensions(conn) do
-    exts = env(:extensions, [])
-
-    stylesheets =
-      Enum.map(exts, fn ext ->
+    env(:extensions, [])
+    |> Enum.reduce(
+      %{stylesheets: [], javascripts: []},
+      fn ext, acc ->
         Code.ensure_loaded(ext)
-        case function_exported?(ext, :stylesheets, 1) do
-          true -> ext.stylesheets(conn)
-          false -> []
-        end
-      end)
+        stylesheets =
+          if function_exported?(ext, :stylesheets, 1) do
+            ext.stylesheets(conn)
+          else
+            []
+          end
 
-    javascripts =
-      Enum.map(exts, fn ext ->
-        Code.ensure_loaded(ext)
-        case function_exported?(ext, :javascripts, 1) do
-          true -> ext.javascripts(conn)
-          false -> []
-        end
-      end)
+        javascripts =
+          if function_exported?(ext, :javascripts, 1) do
+            ext.javascripts(conn)
+          else
+            []
+          end
 
-    %{stylesheets: stylesheets, javascripts: javascripts}
+        %{
+          stylesheets: stylesheets ++ acc.stylesheets,
+          javascripts: javascripts ++ acc.javascripts
+        }
+      end)
   end
 
   defp env(key, default \\ nil) do

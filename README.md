@@ -247,7 +247,8 @@ Widgets have shared options:
 - `:order` (optional) is the displaying order of the widget. Widgets are display in order based on this value. The default value is 999.
 - `:width` (optional) is the width the widget should occupy on the page. Valid values are 1 to 12. The default for tidbits is 3 and the others 6.
 - `:percentage` (required for progress widgets) is the percentage value for the progress. This must be an integer.
-- `:icon` (optional for tidbit widgets) is the icon displayed next to the tidbit's `content`. Any FontAwesome-valid icon is valid here. For example: `thumbs-up`.
+- `:full_icon` (optional for tidbit widgets) is the icon displayed next to the tidbit's `content`. You have to specify the full name given by FontAwesome like `fas fa-thumbs-up`.
+- `:icon` (optional for tidbit widgets) is the icon displayed next to the tidbit's `content`. Any FontAwesome-valid icon is valid here. For example: `thumbs-up`. But it's limited to the `fas` group. For full defintion see `:full_icon`.
 
 When defining a chart widget, the content must be a map with the following required keys:
 
