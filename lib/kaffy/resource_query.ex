@@ -156,7 +156,6 @@ defmodule Kaffy.ResourceQuery do
     {query, limited_query}
   end
 
-
   defp build_list_query(_schema, [], _key_pairs) do
     {:error, "No private keys. List action not supported."}
   end
