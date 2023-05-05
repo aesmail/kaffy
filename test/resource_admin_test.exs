@@ -91,7 +91,7 @@ defmodule Kaffy.ResourceAdminTest do
     end
 
     test "custom deserialization of composite key" do
-      assert ResourceAdmin.deserialize_id([schema: Owner, admin: OwnerETFAdmin], "g2gCYQFhAg") == [person_id: "1", pet_id: "2"]
+      assert ResourceAdmin.deserialize_id([schema: Owner, admin: OwnerETFAdmin], "g2gCYQFhAg") == [person_id: 1, pet_id: 2]
     end
   end
 end
