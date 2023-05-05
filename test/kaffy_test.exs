@@ -1,12 +1,7 @@
 defmodule KaffyTest do
   use ExUnit.Case
-  doctest Kaffy
+  
   alias KaffyTest.Schemas.{Company, Person, Pet, Owner}
-  # alias KaffyTest.Admin.PersonAdmin
-
-  test "greets the world" do
-    assert Kaffy.hello() == :world
-  end
 
   test "creating a person" do
     person = %Person{}

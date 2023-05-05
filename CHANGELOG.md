@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Preload resources before trying to convert resource to existing atom. [PR#266](https://github.com/aesmail/kaffy/pull/266)
 
 ### Changed
+- Let specify the full 'path' for FontAwesome fonts [PR#186](https://github.com/aesmail/kaffy/pull/186)
 - Lazy load default kaffy field value [PR#255](https://github.com/aesmail/kaffy/pull/255)
 - Update phoenix html to address deprecated form_for [PR#260](https://github.com/aesmail/kaffy/pull/260)
 
