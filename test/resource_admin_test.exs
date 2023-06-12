@@ -7,12 +7,14 @@ defmodule Kaffy.ResourceAdminTest do
 
   defmodule CactusAdmin do
     def plural_name(_), do: "Cacti"
+    def index_description(_), do: {:safe, "Person Admin <b>Description</b>"}
   end
 
   defmodule Person do
   end
 
   defmodule PersonAdmin do
+    def index_description(_), do: "Person Admin Description"
   end
 
   defmodule Nested.Node do
@@ -41,6 +43,22 @@ defmodule Kaffy.ResourceAdminTest do
 
     test "use non-standard plural form" do
       assert ResourceAdmin.plural_name(schema: Person, admin: PersonAdmin) == "People"
+    end
+  end
+
+  describe "index_description/1" do
+    test "nil if index_description is not defined as function in admin" do
+      refute ResourceAdmin.index_description(schema: Nested.Node, admin: NestedNodeAdmin)
+    end
+
+    test "string if index_description is defined as function in admin" do
+      assert ResourceAdmin.index_description(schema: Person, admin: PersonAdmin) ==
+               "Person Admin Description"
+    end
+
+    test "{:safe, html} if index_description is defined as function in admin" do
+      assert ResourceAdmin.index_description(schema: Cactus, admin: CactusAdmin) ==
+               {:safe, "Person Admin <b>Description</b>"}
     end
   end
 end
