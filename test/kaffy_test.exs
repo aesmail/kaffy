@@ -1,7 +1,7 @@
 defmodule KaffyTest do
   use ExUnit.Case
-  alias KaffyTest.Schemas.{Company, Person, Pet}
-  # alias KaffyTest.Admin.PersonAdmin
+  
+  alias KaffyTest.Schemas.{Company, Person, Pet, Owner}
 
   test "creating a person" do
     person = %Person{}
@@ -24,8 +24,12 @@ defmodule KaffyTest do
     end
 
     test "primary_key/1 should return a primary key" do
-      assert [:id] == ResourceSchema.primary_key(Person)
-      assert [:id] == ResourceSchema.primary_key(Pet)
+      assert [:id] == ResourceSchema.primary_keys(Person)
+      assert [:id] == ResourceSchema.primary_keys(Pet)
+    end
+
+    test "primary_key/1 should return a composite key" do
+      assert [:person_id, :pet_id] == ResourceSchema.primary_keys(Owner)
     end
 
     test "kaffy_field_name/2 should return the name of the field" do

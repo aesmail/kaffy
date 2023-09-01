@@ -4,17 +4,17 @@
     </thead>
 
     <tbody>
-        <%= for entry <- @entries do %>
+        <%= for {entry, index} <- Enum.with_index(@entries) do %>
             <tr>
                 <td>
                     <div class="custom-control custom-checkbox">
-                        <input type="checkbox" class="custom-control-input select-item kaffy-resource-checkbox" id="kaffy-select-<%= entry.id %>" name="resource" value="<%= entry.id %>"/>
-                        <label class="custom-control-label" for="kaffy-select-<%= entry.id %>"></label>
+                        <input type="checkbox" class="custom-control-input select-item kaffy-resource-checkbox" id="kaffy-select-<%= index %>" name="resource" value="<%= Kaffy.ResourceAdmin.serialize_id(@my_resource, entry) %>"/>
+                        <label class="custom-control-label" for="kaffy-select-<%= index %>"></label>
                     </div>
                 </td>
                 <%= for {field, index} <- Enum.with_index(@fields) do %>
                     <%= if index == 0 do %>
-                        <td><%= link Kaffy.ResourceSchema.kaffy_field_value(@conn, entry, field), to: Kaffy.Utils.router().kaffy_resource_path(@conn, :show, @context, @resource, entry.id) %></td>
+                        <td><%= link Kaffy.ResourceSchema.kaffy_field_value(@conn, entry, field), to: Kaffy.Utils.router().kaffy_resource_path(@conn, :show, @context, @resource, Kaffy.ResourceAdmin.serialize_id(@my_resource, entry)) %></td>
                     <% else %>
                         <td><%= Kaffy.ResourceSchema.kaffy_field_value(@conn, entry, field) %></td>
                     <% end %>

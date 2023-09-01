@@ -52,7 +52,9 @@ defmodule Kaffy.ResourceQuery do
 
   def fetch_resource(conn, resource, id) do
     schema = resource[:schema]
-    query = from(s in schema, where: s.id == ^id)
+
+    id_filter = Kaffy.ResourceAdmin.deserialize_id(resource, id)
+    query = from(s in schema, where: ^id_filter)
 
     case Kaffy.ResourceAdmin.custom_show_query(conn, resource, query) do
       {custom_query, opts} -> Kaffy.Utils.repo().one(custom_query, opts)
@@ -65,8 +67,13 @@ defmodule Kaffy.ResourceQuery do
   def fetch_list(resource, ids) do
     schema = resource[:schema]
 
-    from(s in schema, where: s.id in ^ids)
-    |> Kaffy.Utils.repo().all()
+    primary_keys = Kaffy.ResourceSchema.primary_keys(schema)
+    ids = Enum.map(ids, &Kaffy.ResourceAdmin.deserialize_id(resource, &1))
+
+    case build_list_query(schema, primary_keys, ids) do
+      {:error, error_msg} -> {:error, error_msg}
+      query -> Kaffy.Utils.repo().all(query)
+    end
   end
 
   def total_count(schema, do_cache, query, opts \\ [])
@@ -147,6 +154,21 @@ defmodule Kaffy.ResourceQuery do
       from(s in query, limit: ^per_page, offset: ^current_offset, order_by: ^ordering)
 
     {query, limited_query}
+  end
+
+  defp build_list_query(_schema, [], _key_pairs) do
+    {:error, "No private keys. List action not supported."}
+  end
+
+  defp build_list_query(schema, [primary_key], ids) do
+    ids = Enum.map(ids, fn [{_key, id}] -> id end)
+    from(s in schema, where: field(s, ^primary_key) in ^ids)
+  end
+
+  defp build_list_query(schema, _composite_key, key_pairs) do
+    Enum.reduce(key_pairs, schema, fn pair, query_acc ->
+      from query_acc, or_where: ^pair
+    end)
   end
 
   defp build_filtered_fields_query(query, []), do: query
