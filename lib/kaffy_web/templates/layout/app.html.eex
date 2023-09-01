@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title><%= Kaffy.Utils.title() %> - Kaffy</title>
+    <title><%= Kaffy.Utils.title() %></title>
     <link rel="stylesheet" href="<%= Kaffy.Utils.static_asset_path(@conn, "/kaffy/assets/vendors/fontawesome/css/all.css") %>">
     <link rel="stylesheet" href="<%= Kaffy.Utils.static_asset_path(@conn, "/kaffy/assets/vendors/css/vendor.bundle.base.css") %>">
     <link rel="stylesheet" href="<%= Kaffy.Utils.static_asset_path(@conn, "/kaffy/assets/scss/style.css") %>">
@@ -20,10 +20,10 @@
       <nav class="navbar default-layout-navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
         <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
           <%= link to: Kaffy.Utils.router().kaffy_home_path(@conn, :index), class: "navbar-brand brand-logo" do %>
-            <%= Kaffy.Utils.logo(@conn) %>
+            <%= Kaffy.Utils.logo(@conn, :full) %>
           <% end %>
           <%= link to: Kaffy.Utils.router().kaffy_home_path(@conn, :index), class: "navbar-brand brand-logo-mini" do %>
-            <img src="<%= Kaffy.Utils.logo_mini(@conn) %>"  alt="logo" />
+            <%= Kaffy.Utils.logo(@conn, :mini) %>
           <% end %>
         </div>
         <div class="navbar-menu-wrapper d-flex align-items-stretch">
