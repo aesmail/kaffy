@@ -157,6 +157,8 @@ defmodule Kaffy.Utils do
     end
   end
 
+  def auto_detect_resources(), do: setup_resources()
+
   @doc """
   Returns a list of contexts as atoms.
 
