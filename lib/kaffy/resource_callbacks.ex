@@ -88,6 +88,10 @@ defmodule Kaffy.ResourceCallbacks do
         {:error, entry, error} -> repo.rollback({entry, error})
       end
     end)
+    |> case do
+      {:ok, _} -> :ok
+      err -> err
+    end
   end
 
   defp before_insert(conn, resource, changeset) do
