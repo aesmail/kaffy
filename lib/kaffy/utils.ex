@@ -10,6 +10,14 @@ defmodule Kaffy.Utils do
   end
 
   @doc """
+  Returns the :admin_footer config if present, otherwise returns default copyright.
+  """
+  @spec footer() :: String.t() | {:safe, String.t()}
+  def footer() do
+    env(:admin_footer, "Copyright © 2022 Kaffy. All rights reserved.")
+  end
+
+  @doc """
   Returns the static path to the asset.
   """
   @spec static_asset_path(Plug.Conn.t(), String.t()) :: String.t()

@@ -9,7 +9,7 @@
         <div class="card-header">
             <div class="row justify-content-between">
                 <div class="col-auto mr-auto">
-                    <h1><%= @resource_name %> #<%= @changeset.data.id %></h1>
+                    <h1><%= @resource_name %> #<%= Kaffy.ResourceAdmin.serialize_id(@my_resource, @changeset.data) %></h1>
                 </div>
                 <div class="col-auto">
                     <%= if Kaffy.ResourceAdmin.resource_actions(@my_resource, @conn) do %>
@@ -20,7 +20,7 @@
                                 </button>
                                 <div class="dropdown-menu">
                                     <%= for {action_key, options} <- Kaffy.ResourceAdmin.resource_actions(@my_resource, @conn) do %>
-                                        <%= form_tag(Kaffy.Utils.router().kaffy_resource_path(@conn, :single_action, @context, @resource, @changeset.data.id, to_string(action_key)), method: :post) %>
+                                        <%= form_tag(Kaffy.Utils.router().kaffy_resource_path(@conn, :single_action, @context, @resource, Kaffy.ResourceAdmin.serialize_id(@my_resource, @changeset.data), to_string(action_key)), method: :post) %>
                                             <input type="submit" name="submit" value="<%= options.name %>" class="dropdown-item" />
                                         </form>
                                     <% end %>
@@ -32,7 +32,7 @@
             </div>
         </div>
         <div class="card-body">
-            <%= form_for @changeset, Kaffy.Utils.router().kaffy_resource_path(@conn, :update, @context, @resource, @changeset.data.id), [method: :put, multipart: true], fn f -> %>
+            <%= form_for @changeset, Kaffy.Utils.router().kaffy_resource_path(@conn, :update, @context, @resource, Kaffy.ResourceAdmin.serialize_id(@my_resource, @changeset.data)), [method: :put, multipart: true], fn f -> %>
                 <%= for {field, options} <- Kaffy.ResourceAdmin.form_fields(@my_resource) do %>
                     <%= if options.update != :hidden do %>
                         <%= Kaffy.ResourceForm.kaffy_input @conn, @changeset, f, field, options %>
@@ -53,7 +53,7 @@
     </div>
 
     <!-- Modal -->
-    <%= form_for @changeset, Kaffy.Utils.router().kaffy_resource_path(@conn, :delete, @context, @resource, @changeset.data.id), [method: :delete], fn _f -> %>
+    <%= form_for @changeset, Kaffy.Utils.router().kaffy_resource_path(@conn, :delete, @context, @resource, Kaffy.ResourceAdmin.serialize_id(@my_resource, @changeset.data)), [method: :delete], fn _f -> %>
         <div class="modal fade" id="delete-modal" tabindex="-1" role="dialog" aria-labelledby="delete-modal-label" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">

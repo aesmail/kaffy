@@ -349,11 +349,14 @@ defmodule KaffyWeb.ResourceController do
     action_record = get_action_record(actions, action_key)
     kaffy_inputs = Map.get(params, "kaffy-input", %{})
 
-    result =
-      case Map.get(action_record, :inputs, []) do
-        [] -> action_record.action.(conn, entries)
-        _ -> action_record.action.(conn, entries, kaffy_inputs)
-      end
+    result = case entries do
+      {:error, error_msg} -> {:error, error_msg}
+      entries ->
+        case Map.get(action_record, :inputs, []) do
+          [] -> action_record.action.(conn, entries)
+          _ -> action_record.action.(conn, entries, kaffy_inputs)
+        end
+    end
 
     case result do
       :ok ->
@@ -391,6 +394,9 @@ defmodule KaffyWeb.ResourceController do
   end
 
   defp redirect_to_resource(conn, context, resource, entry) do
+    my_resource = Kaffy.Utils.get_resource(conn, context, resource)
+    id = Kaffy.ResourceAdmin.serialize_id(my_resource, entry)
+
     redirect(conn,
       to:
         Kaffy.Utils.router().kaffy_resource_path(
@@ -398,7 +404,7 @@ defmodule KaffyWeb.ResourceController do
           :show,
           context,
           resource,
-          entry.id
+          id
         )
     )
   end

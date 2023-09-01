@@ -47,8 +47,14 @@ defmodule Kaffy.ResourceForm do
         opts
       end
 
+    # Check if any primary key fields are nil
+    is_create_event = changeset.data.__struct__
+      |> Kaffy.ResourceSchema.primary_keys()
+      |> Enum.map(&Map.get(changeset.data, &1))
+      |> Enum.any?(&is_nil/1)
+
     permission =
-      case is_nil(changeset.data.id) do
+      case is_create_event do
         true -> Map.get(options, :create, :editable)
         false -> Map.get(options, :update, :editable)
       end
@@ -115,13 +121,13 @@ defmodule Kaffy.ResourceForm do
         textarea(form, field, [value: value, rows: 4, placeholder: "JSON Content"] ++ opts)
 
       :id ->
-        case Kaffy.ResourceSchema.primary_key(schema) == [field] do
+        case field in Kaffy.ResourceSchema.primary_keys(schema) do
           true -> text_input(form, field, opts)
           false -> text_or_assoc(conn, schema, form, field, opts)
         end
 
       :binary_id ->
-        case Kaffy.ResourceSchema.primary_key(schema) == [field] do
+        case field in Kaffy.ResourceSchema.primary_keys(schema) do
           true -> text_input(form, field, opts)
           false -> text_or_assoc(conn, schema, form, field, opts)
         end
