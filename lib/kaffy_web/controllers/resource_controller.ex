@@ -92,6 +92,9 @@ defmodule KaffyWeb.ResourceController do
     my_resource = Kaffy.Utils.get_resource(conn, context, resource)
     schema = my_resource[:schema]
     resource_name = Kaffy.ResourceAdmin.singular_name(my_resource)
+    can_edit = :edit in Kaffy.ResourceAdmin.default_actions(my_resource)
+    can_delete = :delete in Kaffy.ResourceAdmin.default_actions(my_resource)
+    form_method = if can_edit or can_delete, do: :put, else: :get
 
     case can_proceed?(my_resource, conn) do
       false ->
@@ -109,7 +112,10 @@ defmodule KaffyWeb.ResourceController do
             my_resource: my_resource,
             resource_name: resource_name,
             schema: schema,
-            entry: entry
+            entry: entry,
+            can_edit: can_edit,
+            can_delete: can_delete,
+            form_method: form_method
           )
         else
           put_flash(conn, :error, "The resource you are trying to visit does not exist!")
@@ -349,14 +355,17 @@ defmodule KaffyWeb.ResourceController do
     action_record = get_action_record(actions, action_key)
     kaffy_inputs = Map.get(params, "kaffy-input", %{})
 
-    result = case entries do
-      {:error, error_msg} -> {:error, error_msg}
-      entries ->
-        case Map.get(action_record, :inputs, []) do
-          [] -> action_record.action.(conn, entries)
-          _ -> action_record.action.(conn, entries, kaffy_inputs)
-        end
-    end
+    result =
+      case entries do
+        {:error, error_msg} ->
+          {:error, error_msg}
+
+        entries ->
+          case Map.get(action_record, :inputs, []) do
+            [] -> action_record.action.(conn, entries)
+            _ -> action_record.action.(conn, entries, kaffy_inputs)
+          end
+      end
 
     case result do
       :ok ->
