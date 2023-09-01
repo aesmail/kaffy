@@ -135,7 +135,7 @@ defmodule Kaffy.ResourceQuery do
 
           Enum.reduce(search_fields, query, fn
             {association, fields}, q ->
-              query = from(s in q, join: a in assoc(s, ^association))
+              query = from(s in q, left_join: a in assoc(s, ^association))
 
               Enum.reduce(fields, query, fn f, current_query ->
                 from([..., r] in current_query,

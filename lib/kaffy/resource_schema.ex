@@ -19,6 +19,8 @@ defmodule Kaffy.ResourceSchema do
     end
   end
 
+  def index_description(_schema), do: nil
+
   def index_fields(schema) do
     Keyword.drop(fields(schema), fields_to_be_removed(schema))
   end
@@ -309,6 +311,9 @@ defmodule Kaffy.ResourceSchema do
     get_all_fields(schema)
     |> Enum.filter(fn
       {_f, %{type: :map}} ->
+        true
+
+      {_f, %{type: {:array, _}}} ->
         true
 
       f when is_atom(f) ->

@@ -22,6 +22,14 @@
 
     <div class="card-body table-responsive w-100">
       <div class="card-description">
+        <%= if index_description = Kaffy.ResourceAdmin.index_description(@my_resource) do %>
+          <div class="row">
+              <div class="col-auto mr-auto">
+                  <p><%= index_description %></p>
+              </div>
+          </div>
+        <% end %>
+
         <div class="row">
 
           <div class="col-auto mr-auto">

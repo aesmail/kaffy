@@ -8,12 +8,14 @@ defmodule Kaffy.ResourceAdminTest do
 
   defmodule CactusAdmin do
     def plural_name(_), do: "Cacti"
+    def index_description(_), do: {:safe, "Person Admin <b>Description</b>"}
   end
 
   defmodule Person do
   end
 
   defmodule PersonAdmin do
+    def index_description(_), do: "Person Admin Description"
   end
 
   defmodule PetAdmin do
@@ -92,6 +94,22 @@ defmodule Kaffy.ResourceAdminTest do
 
     test "custom deserialization of composite key" do
       assert ResourceAdmin.deserialize_id([schema: Owner, admin: OwnerETFAdmin], "g2gCYQFhAg") == [person_id: 1, pet_id: 2]
+    end
+  end
+  
+  describe "index_description/1" do
+    test "nil if index_description is not defined as function in admin" do
+      refute ResourceAdmin.index_description(schema: Nested.Node, admin: NestedNodeAdmin)
+    end
+
+    test "string if index_description is defined as function in admin" do
+      assert ResourceAdmin.index_description(schema: Person, admin: PersonAdmin) ==
+               "Person Admin Description"
+    end
+
+    test "{:safe, html} if index_description is defined as function in admin" do
+      assert ResourceAdmin.index_description(schema: Cactus, admin: CactusAdmin) ==
+               {:safe, "Person Admin <b>Description</b>"}
     end
   end
 end
