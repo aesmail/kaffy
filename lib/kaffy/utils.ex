@@ -20,13 +20,26 @@ defmodule Kaffy.Utils do
   @doc """
   Returns the :admin_logo config if present, otherwise returns Kaffy default logo.
   """
-  @spec logo(Plug.Conn.t()) :: String.t()
-  def logo(conn) do
-    admin_logo = env(:admin_logo, "/kaffy/assets/images/logo.png")
+  @spec logo(Plug.Conn.t()) :: {:safe, String.t()}
+  def logo(_conn) do
+    default_kaffy_logo = "/kaffy/assets/images/logo.png"
+    admin_logo = env(:admin_logo, default_kaffy_logo)
+    IO.inspect(admin_logo, label: "admin_logo")
 
-    case String.starts_with?(admin_logo, "http") do
-      true -> admin_logo
-      false -> router().static_path(conn, admin_logo)
+    cond do
+      is_list(admin_logo) ->
+        url = Keyword.get(admin_logo, :url, default_kaffy_logo)
+        css_class = Keyword.get(admin_logo, :class)
+        css_style = Keyword.get(admin_logo, :style)
+
+        tag =
+          ~s[<img src="#{url}" alt="logo" class="#{css_class}" style="#{css_style}" />]
+
+        {:safe, tag}
+
+      true ->
+        tag = ~s[<img src="#{admin_logo}" alt="logo" />]
+        {:safe, tag}
     end
   end
 
