@@ -12,6 +12,35 @@ defmodule Kaffy.ResourceAdmin do
   """
 
   @doc """
+  Allows a description to be injected into the index view of a resource's index
+  view. This is helpful when you want to provide information to the user about the index page.
+  Return value can be a string, or {:safe, string) tuple.  If :safe tuple is used, HTML will be rendered.
+
+  `index_description/1` takes a schema and must return a `String.t()` or tuple `{:safe, String.t()}`.
+
+  If `index_description/1` is not defined, Kaffy will return nil.
+
+  ## Examples:
+
+  ```elixir
+  def index_description(resource) do
+    "This will show up on the index page."
+  end
+
+  def index_description(resource) do
+    {:safe, "This will show up on the index page.  <b>This will be bold!</b>."}
+  end
+  ```
+  """
+  def index_description(resource) do
+    Utils.get_assigned_value_or_default(
+      resource,
+      :index_description,
+      ResourceSchema.index_description(resource)
+    )
+  end
+
+  @doc """
   `index/1` takes the schema module and should return a keyword list of fields and
   their options.
 

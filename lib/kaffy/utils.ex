@@ -363,7 +363,8 @@ defmodule Kaffy.Utils do
           stylesheets: stylesheets ++ acc.stylesheets,
           javascripts: javascripts ++ acc.javascripts
         }
-      end)
+      end
+    )
   end
 
   defp env(key, default \\ nil) do
