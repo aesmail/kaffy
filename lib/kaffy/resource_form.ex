@@ -406,7 +406,10 @@ defmodule Kaffy.ResourceForm do
             select(
               form,
               field,
-              Enum.map(options, fn o -> {Map.get(o, string_field, "Resource ##{o.id}"), o.id} end),
+              [{nil, nil}] ++
+                Enum.map(options, fn o ->
+                  {Map.get(o, string_field, "Resource ##{o.id}"), o.id}
+                end),
               class: "custom-select"
             )
         end
