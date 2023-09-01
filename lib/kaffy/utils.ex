@@ -22,7 +22,12 @@ defmodule Kaffy.Utils do
   """
   @spec logo(Plug.Conn.t()) :: String.t()
   def logo(conn) do
-    router().static_path(conn, env(:admin_logo, "/kaffy/assets/images/logo.png"))
+    admin_logo = env(:admin_logo, "/kaffy/assets/images/logo.png")
+
+    case String.starts_with?(admin_logo, "http") do
+      true -> admin_logo
+      false -> router().static_path(conn, admin_logo)
+    end
   end
 
   @doc """
@@ -337,6 +342,7 @@ defmodule Kaffy.Utils do
       %{stylesheets: [], javascripts: []},
       fn ext, acc ->
         Code.ensure_loaded(ext)
+
         stylesheets =
           if function_exported?(ext, :stylesheets, 1) do
             ext.stylesheets(conn)
@@ -355,7 +361,8 @@ defmodule Kaffy.Utils do
           stylesheets: stylesheets ++ acc.stylesheets,
           javascripts: javascripts ++ acc.javascripts
         }
-      end)
+      end
+    )
   end
 
   defp env(key, default \\ nil) do
