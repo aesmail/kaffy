@@ -28,17 +28,37 @@ defmodule Kaffy.Utils do
   @doc """
   Returns the :admin_logo config if present, otherwise returns Kaffy default logo.
   """
-  @spec logo(Plug.Conn.t()) :: String.t()
-  def logo(conn) do
-    router().static_path(conn, env(:admin_logo, "/kaffy/assets/images/logo.png"))
-  end
+  @spec logo(Plug.Conn.t()) :: {:safe, String.t()}
+  def logo(_conn, logo_version \\ :full) do
+    default_kaffy_logo =
+      case logo_version do
+        :full -> "/kaffy/assets/images/logo.png"
+        :mini -> "/kaffy/assets/images/logo-mini.png"
+      end
 
-  @doc """
-  Returns the :admin_logo_mini config if present, otherwise returns Kaffy default logo.
-  """
-  @spec logo_mini(Plug.Conn.t()) :: String.t()
-  def logo_mini(conn) do
-    router().static_path(conn, env(:admin_logo_mini, "/kaffy/assets/images/logo-mini.png"))
+    config_key =
+      case logo_version do
+        :full -> :admin_logo
+        :mini -> :admin_logo_mini
+      end
+
+    admin_logo = env(config_key, default_kaffy_logo)
+
+    cond do
+      is_list(admin_logo) ->
+        url = Keyword.get(admin_logo, :url, default_kaffy_logo)
+        css_class = Keyword.get(admin_logo, :class)
+        css_style = Keyword.get(admin_logo, :style)
+
+        tag =
+          ~s[<img src="#{url}" alt="logo" class="#{css_class}" style="#{css_style}" />]
+
+        {:safe, tag}
+
+      true ->
+        tag = ~s[<img src="#{admin_logo}" alt="logo" />]
+        {:safe, tag}
+    end
   end
 
   @doc """
@@ -136,6 +156,8 @@ defmodule Kaffy.Utils do
       _ -> setup_resources()
     end
   end
+
+  def auto_detect_resources(), do: setup_resources()
 
   @doc """
   Returns a list of contexts as atoms.
@@ -345,6 +367,7 @@ defmodule Kaffy.Utils do
       %{stylesheets: [], javascripts: []},
       fn ext, acc ->
         Code.ensure_loaded(ext)
+
         stylesheets =
           if function_exported?(ext, :stylesheets, 1) do
             ext.stylesheets(conn)

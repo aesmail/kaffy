@@ -359,7 +359,9 @@ defmodule Kaffy.ResourceAdmin do
   """
   def serialize_id(resource, entry) do
     schema = resource[:schema]
-    default = schema
+
+    default =
+      schema
       |> ResourceSchema.primary_keys()
       |> Enum.map_join(@default_id_separator, &Map.get(entry, &1))
 
@@ -393,7 +395,9 @@ defmodule Kaffy.ResourceAdmin do
   def deserialize_id(resource, id) do
     schema = resource[:schema]
     id_list = String.split(id, @default_id_separator)
-    default = schema
+
+    default =
+      schema
       |> ResourceSchema.primary_keys()
       |> Enum.zip(id_list)
 
@@ -405,7 +409,32 @@ defmodule Kaffy.ResourceAdmin do
   end
 
   def list_actions(resource, conn) do
-    Utils.get_assigned_value_or_default(resource, :list_actions, nil, [conn], false)
+    delete_action =
+      case authorized?(resource, conn) && :delete in default_actions(resource) do
+        true ->
+          [
+            delete_action: %{
+              name: "Delete selected records",
+              action: fn _, entries ->
+                Kaffy.Utils.repo().transaction(fn ->
+                  Enum.map(entries, fn entry ->
+                    Kaffy.ResourceCallbacks.delete_callbacks(conn, resource, entry)
+                  end)
+                end)
+                |> case do
+                  {:ok, _} -> :ok
+                  err -> err
+                end
+              end
+            }
+          ]
+
+        false ->
+          []
+      end
+
+    delete_action ++
+      Utils.get_assigned_value_or_default(resource, :list_actions, [], [conn], false)
   end
 
   def widgets(resource, conn) do

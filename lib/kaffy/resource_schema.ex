@@ -88,6 +88,9 @@ defmodule Kaffy.ResourceSchema do
         {:assoc, %Ecto.Association.Has{cardinality: :one}} ->
           [field | all]
 
+        {:assoc, %Ecto.Association.ManyToMany{}} ->
+          [field | all]
+
         _ ->
           all
       end

@@ -68,31 +68,37 @@ defmodule ActionsTest do
   end
 
   defmodule ActionsCompositeKeyAdmin do
-    @string_action "test_action"
-    @response %{product_id: 1, tag_id: 1}
+    @string_action :test_action
+    @response %{person_id: 1, pet_id: 1}
 
     def index(_), do: []
 
     def resource_actions(_conn) do
-      %{
-        @string_action => %{
-          name: "Test Action",
-          action: fn _, _ ->
-            {:ok, @response}
-          end
+      [
+        {
+          @string_action,
+          %{
+            name: "Test Action",
+            action: fn _, _ ->
+              {:ok, @response}
+            end
+          }
         }
-      }
+      ]
     end
 
     def list_actions(_conn) do
-      %{
-        @string_action => %{
-          name: "Test Action",
-          action: fn _, _ ->
-            :ok
-          end
+      [
+        {
+          @string_action,
+          %{
+            name: "Test Action",
+            action: fn _, _ ->
+              :ok
+            end
+          }
         }
-      }
+      ]
     end
   end
 
@@ -177,7 +183,7 @@ defmodule ActionsTest do
   end
 
   test "single action handles composite primary keys", %{conn: conn} do
-    with_mock Kaffy.ResourceQuery, fetch_resource: fn _, _, _ -> %{product_id: 1, tag_id: 1} end do
+    with_mock Kaffy.ResourceQuery, fetch_resource: fn _, _, _ -> %{person_id: 1, pet_id: 1} end do
       result_conn =
         ResourceController.single_action(conn, %{
           "context" => "composite",
@@ -191,7 +197,8 @@ defmodule ActionsTest do
   end
 
   test "list action handles composite primary keys", %{conn: conn} do
-    with_mock Kaffy.ResourceQuery, fetch_list: fn _, _ -> [%{product_id: 1, tag_id: 1}, %{product_id: 1, tag_id: 2}] end do
+    with_mock Kaffy.ResourceQuery,
+      fetch_list: fn _, _ -> [%{person_id: 1, pet_id: 1}, %{person_id: 1, pet_id: 2}] end do
       result_conn =
         ResourceController.list_action(conn, %{
           "context" => "composite",

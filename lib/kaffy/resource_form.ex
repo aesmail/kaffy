@@ -48,7 +48,8 @@ defmodule Kaffy.ResourceForm do
       end
 
     # Check if any primary key fields are nil
-    is_create_event = changeset.data.__struct__
+    is_create_event =
+      changeset.data.__struct__
       |> Kaffy.ResourceSchema.primary_keys()
       |> Enum.map(&Map.get(changeset.data, &1))
       |> Enum.any?(&is_nil/1)
@@ -305,20 +306,27 @@ defmodule Kaffy.ResourceForm do
     opts = Keyword.put(opts, :id, "inlineFormInputGroup")
     opts = Keyword.put(opts, :placeholder, placeholder)
     opts = Keyword.put(opts, :"data-input", "")
+    editable = not Keyword.get(opts, :readonly, false)
 
-    [
-      {:safe, ~s(
-            <div class="input-group mb-2 flatpickr #{fp_class}">
-              <div class="input-group-prepend">
-                <div class="input-group-text" data-clear>❌</div>
-              </div>
-              <div class="input-group-prepend">
-                <div class="input-group-text" data-toggle>#{icon}</div>
-              </div>
-          )},
-      text_input(form, field, opts),
-      {:safe, "</div>"}
-    ]
+    case editable do
+      true ->
+        [
+          {:safe, ~s(
+              <div class="input-group mb-2 flatpickr #{fp_class}">
+                <div class="input-group-prepend">
+                  <div class="input-group-text" data-clear>❌</div>
+                </div>
+                <div class="input-group-prepend">
+                  <div class="input-group-text" data-toggle>#{icon}</div>
+                </div>
+            )},
+          text_input(form, field, opts),
+          {:safe, "</div>"}
+        ]
+
+      false ->
+        text_input(form, field, opts)
+    end
   end
 
   defp text_or_assoc(conn, schema, form, field, opts) do
@@ -398,7 +406,10 @@ defmodule Kaffy.ResourceForm do
             select(
               form,
               field,
-              Enum.map(options, fn o -> {Map.get(o, string_field, "Resource ##{o.id}"), o.id} end),
+              [{nil, nil}] ++
+                Enum.map(options, fn o ->
+                  {Map.get(o, string_field, "Resource ##{o.id}"), o.id}
+                end),
               class: "custom-select"
             )
         end
