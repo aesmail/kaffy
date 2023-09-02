@@ -5,19 +5,37 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## v0.10.0-rc.0 (2023-09-02)
 
 ### Fixes
 - Fix changeset errors [PR#262](https://github.com/aesmail/kaffy/pull/262)
 - Preload resources before trying to convert resource to existing atom. [PR#266](https://github.com/aesmail/kaffy/pull/266)
+- Include `many_to_many` fields in `fields_to_be_removed/1`.
+- Fix array fields not being saved properly.
+- Fix `:readonly` and `:editable` options for datetime fields.
+- Default to `nil` for `belongs_to` fields.
+- Fix issue with datetime fields sometimes being updated unexpectedly.
 
 ### Changed
+- Minimum Elixir version is now 1.11.4.
+- Add `phoenix_view` package to deps.
 - Let specify the full 'path' for FontAwesome fonts [PR#186](https://github.com/aesmail/kaffy/pull/186)
 - Lazy load default kaffy field value [PR#255](https://github.com/aesmail/kaffy/pull/255)
 - Update phoenix html to address deprecated form_for [PR#260](https://github.com/aesmail/kaffy/pull/260)
+- Use left_join when building search query [PR#273](https://github.com/aesmail/kaffy/pull/273)
+- Remove the "- Kaffy" suffix from page titles.
 
 ### Added
 -  Support hiding menu entries [PR#248](https://github.com/aesmail/kaffy/pull/248)
+- Add support for composite primary keys [PR#270](https://github.com/aesmail/kaffy/pull/270)
+- Index page description [PR#274](https://github.com/aesmail/kaffy/pull/274)
+- Footer can be specified in config [PR#275](https://github.com/aesmail/kaffy/pull/275)
+- Provide more flexibility for customizing the `admin_logo` and `admin_logo_mini` options.
+- Add the ability to "bulk delete" resources from the index page.
+- Hide save and delete buttons on the show page based on available actions.
+- Add `Kaffy.Utils.auto_detect_resources/0` which returns the list of auto-detected resources (Kaffy's attempt at discovering the list of schema/admin modules).
+
+
 
 ## v0.9.4 (2022-10-31)
 
