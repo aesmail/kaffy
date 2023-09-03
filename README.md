@@ -1,6 +1,6 @@
 # Kaffy
 
-[![Sponsor](https://opencollective.com/kaffy/tiers/sponsor/badge.svg?label=sponsor&color=brightgreen)](https://opencollective.com/kaffy)
+[![Sponsor](https://img.shields.io/liberapay/receives/aesmail.svg?logo=liberapay)](https://liberapay.com/aesmail/donate)
 [![Module Version](https://img.shields.io/hexpm/v/kaffy.svg)](https://hex.pm/packages/kaffy)
 [![Hex Docs](https://img.shields.io/badge/hex-docs-lightgreen.svg)](https://hexdocs.pm/kaffy/)
 [![Total Download](https://img.shields.io/hexpm/dt/kaffy.svg)](https://hex.pm/packages/kaffy)
@@ -80,7 +80,7 @@ as of phoenix version 1.7 you need the following dependencies
 def deps do
   [
     {:phoenix_view, "~> 2.0.2"},
-    {:kaffy, "~> 0.9.2"}
+    {:kaffy, "~> 0.9.4"}
   ]
 end
 ```
