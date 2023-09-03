@@ -52,7 +52,7 @@ without the need to touch the current codebase. It was inspired by django's love
 
 ## Sponsors
 
-Become a sponsor through Kaffy's [OpenCollective](https://opencollective.com/kaffy) page.
+Support the deveopment of Kaffy and become a sponsor through my [Liberapay account](https://liberapay.com/aesmail/).
 
 ## Demo
 
@@ -60,7 +60,7 @@ Become a sponsor through Kaffy's [OpenCollective](https://opencollective.com/kaf
 
 ## Minimum Requirements
 
-- Elixir 1.10.0
+- Elixir 1.11.4
 - Phoenix 1.5.0
 
 We aim to follow Elixir's [support policy](https://hexdocs.pm/elixir/compatibility-and-deprecations.html) for the minimum required Elixir version.
@@ -71,7 +71,7 @@ We aim to follow Elixir's [support policy](https://hexdocs.pm/elixir/compatibili
 ```elixir
 def deps do
   [
-    {:kaffy, "~> 0.9.2"}
+    {:kaffy, "~> 0.9.4"}
   ]
 end
 ```
