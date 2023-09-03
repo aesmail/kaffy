@@ -30,6 +30,7 @@ defmodule Kaffy.ResourceSchema do
       fields_to_be_removed(schema) ++
         primary_keys(schema) ++
         [:inserted_at, :updated_at]
+
     Keyword.drop(fields(schema), to_be_removed)
   end
 
