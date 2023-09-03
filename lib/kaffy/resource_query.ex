@@ -105,7 +105,9 @@ defmodule Kaffy.ResourceQuery do
     filtered_fields = Enum.filter(params, fn {k, v} -> k in schema_fields and v != "" end)
 
     Enum.map(filtered_fields, fn {name, value} ->
-      %{name: name, value: value}
+      f = String.to_existing_atom(name)
+      field_type = Kaffy.ResourceSchema.field_type(resource[:schema], f)
+      %{name: name, value: value, type: field_type}
     end)
   end
 
@@ -167,7 +169,7 @@ defmodule Kaffy.ResourceQuery do
 
   defp build_list_query(schema, _composite_key, key_pairs) do
     Enum.reduce(key_pairs, schema, fn pair, query_acc ->
-      from query_acc, or_where: ^pair
+      from(query_acc, or_where: ^pair)
     end)
   end
 
@@ -181,7 +183,14 @@ defmodule Kaffy.ResourceQuery do
 
         false ->
           field_name = String.to_existing_atom(filter.name)
-          from(s in query, where: field(s, ^field_name) == ^filter.value)
+
+          case filter.type do
+            {:array, :string} ->
+              from(s in query, where: ^filter.value in field(s, ^field_name))
+
+            _ ->
+              from(s in query, where: field(s, ^field_name) == ^filter.value)
+          end
       end
 
     build_filtered_fields_query(query, rest)
