@@ -1,6 +1,5 @@
 # Kaffy
 
-[![Sponsor](https://img.shields.io/liberapay/receives/aesmail.svg?logo=liberapay)](https://liberapay.com/aesmail/donate)
 [![Module Version](https://img.shields.io/hexpm/v/kaffy.svg)](https://hex.pm/packages/kaffy)
 [![Hex Docs](https://img.shields.io/badge/hex-docs-lightgreen.svg)](https://hexdocs.pm/kaffy/)
 [![Total Download](https://img.shields.io/hexpm/dt/kaffy.svg)](https://hex.pm/packages/kaffy)
@@ -52,7 +51,7 @@ without the need to touch the current codebase. It was inspired by django's love
 
 ## Sponsors
 
-Support the deveopment of Kaffy and become a sponsor through my [Liberapay account](https://liberapay.com/aesmail/).
+If you or your company wants to sponsor the development of Kaffy, please reach out to me at <aesmail@hey.com>.
 
 ## Demo
 
