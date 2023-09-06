@@ -130,8 +130,10 @@ defmodule KaffyWeb.ResourceController do
     my_resource = Kaffy.Utils.get_resource(conn, context, resource)
     schema = my_resource[:schema]
     params = Kaffy.ResourceParams.decode_map_fields(resource, schema, params)
-
     resource_name = Kaffy.ResourceAdmin.singular_name(my_resource) |> String.capitalize()
+    can_edit = :edit in Kaffy.ResourceAdmin.default_actions(my_resource)
+    can_delete = :delete in Kaffy.ResourceAdmin.default_actions(my_resource)
+    form_method = if can_edit or can_delete, do: :put, else: :get
 
     case can_proceed?(my_resource, conn) do
       false ->
@@ -184,7 +186,10 @@ defmodule KaffyWeb.ResourceController do
               my_resource: my_resource,
               resource_name: resource_name,
               schema: schema,
-              entry: entry
+              entry: entry,
+              can_edit: can_edit,
+              can_delete: can_delete,
+              form_method: form_method
             )
 
           {:error, {entry, error}} when is_binary(error) ->
@@ -199,7 +204,10 @@ defmodule KaffyWeb.ResourceController do
               my_resource: my_resource,
               resource_name: resource_name,
               schema: schema,
-              entry: entry
+              entry: entry,
+              can_edit: can_edit,
+              can_delete: can_delete,
+              form_method: form_method
             )
         end
     end
