@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## v0.10.0-rc.1 (Unreleased)
 
+### Fixes
+- Crash when updating records.
+
 ### Added
 - Support for filtering `{:array, :string}` fielsd [PR#285](https://github.com/aesmail/kaffy/pull/262)
 
