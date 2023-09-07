@@ -90,19 +90,19 @@
             <% end %>
 
             <%= for context <- Kaffy.Utils.contexts(@conn) do %>
-                <li class="nav-item<%= if @conn.assigns[:context] == to_string(context) do %> active<% end %>">
-                    <a class="nav-link <%= if @conn.assigns[:context] != to_string(context) do %> collapsed<% end %>"
+                <li class="nav-item<%= if @conn.path_params["context"] == to_string(context) do %> active<% end %>">
+                    <a class="nav-link <%= if @conn.path_params["context"] != to_string(context) do %> collapsed<% end %>"
                        href="#<%= context %>-context" data-toggle="collapse" aria-expanded="false" aria-controls="<%= context %>-context">
                         <span class="menu-title"><%= Kaffy.Utils.context_name(@conn, context) %></span>
                         <i class="menu-arrow"></i>
                         <i class="fas fa-bars menu-icon"></i>
                     </a>
-                    <div class="collapse<%= if @conn.assigns[:context] == to_string(context) do %> show<% end %>" id="<%= context %>-context">
+                    <div class="collapse<%= if @conn.path_params["context"] == to_string(context) do %> show<% end %>" id="<%= context %>-context">
                       <ul class="nav flex-column sub-menu">
+                        <%= if Kaffy.Utils.context_admins_include_function?(@conn, context, :widgets) do %>
+                            <li class="nav-item"><%= link "Dashboard", to: Kaffy.Utils.router().kaffy_context_dashboard_path(@conn, :dashboard, context), class: "nav-link" %></li>
+                        <% end %>
                         <%= for {resource, options} <- Kaffy.Utils.schemas_for_context(@conn, context) do %>
-                            <%= if Kaffy.Utils.show_context_dashboard?() do %>
-                                <li class="nav-item"><%= link "Dashboard", to: Kaffy.Utils.router().kaffy_context_dashboard_path(@conn, :dashboard, context), class: "nav-link" %></li>
-                            <% end %>
                             <%= if Kaffy.ResourceAdmin.authorized?(options, @conn) && Kaffy.Utils.visible?(options) do %>
                                 <li class="nav-item"><%= link Kaffy.ResourceAdmin.plural_name(options), to: Kaffy.Utils.router().kaffy_resource_path(@conn, :index, context, resource), class: "nav-link" %></li>
                                 <%= for custom_link <- Kaffy.ResourceAdmin.custom_links(options, :sub) do %>

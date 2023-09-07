@@ -310,9 +310,18 @@ defmodule Kaffy.Utils do
       true
   """
   @spec has_function?(module(), atom()) :: boolean()
+  def has_function?(nil, _), do: false
+
   def has_function?(admin, func) do
     functions = admin.__info__(:functions)
     Keyword.has_key?(functions, func)
+  end
+
+  def context_admins_include_function?(conn, context, func) do
+    schemas_for_context(conn, context)
+    |> Enum.filter(fn {_, options} -> Keyword.has_key?(options, :admin) end)
+    |> Enum.map(fn {_, options} -> has_function?(Keyword.get(options, :admin), func) end)
+    |> Enum.any?()
   end
 
   @doc """
@@ -391,7 +400,7 @@ defmodule Kaffy.Utils do
   end
 
   def show_context_dashboard?() do
-    env(:enable_context_dashboard, true)
+    env(:enable_context_dashboards, true)
   end
 
   defp env(key, default \\ nil) do
