@@ -99,7 +99,7 @@
                     </a>
                     <div class="collapse<%= if @conn.path_params["context"] == to_string(context) do %> show<% end %>" id="<%= context %>-context">
                       <ul class="nav flex-column sub-menu">
-                        <%= if Kaffy.Utils.context_admins_include_function?(@conn, context, :widgets) do %>
+                        <%= if Kaffy.Utils.show_context_dashboards?() and Kaffy.Utils.context_admins_include_function?(@conn, context, :widgets) do %>
                             <li class="nav-item"><%= link "Dashboard", to: Kaffy.Utils.router().kaffy_context_dashboard_path(@conn, :dashboard, context), class: "nav-link" %></li>
                         <% end %>
                         <%= for {resource, options} <- Kaffy.Utils.schemas_for_context(@conn, context) do %>

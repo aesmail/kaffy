@@ -399,7 +399,7 @@ defmodule Kaffy.Utils do
     )
   end
 
-  def show_context_dashboard?() do
+  def show_context_dashboards?() do
     env(:enable_context_dashboards, true)
   end
 

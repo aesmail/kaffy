@@ -446,18 +446,9 @@ defmodule Kaffy.ResourceAdmin do
     )
   end
 
-  def show_context_dashboard?(resource, conn) do
-    Utils.get_assigned_value_or_default(
-      resource,
-      :show_context_dashboard?,
-      Utils.show_context_dashboard?(),
-      [conn]
-    )
-  end
-
   def collect_widgets(conn, context \\ :kaffy_dashboard) do
     main_dashboard? = context == :kaffy_dashboard
-    show_context_dashboard? = Kaffy.Utils.show_context_dashboard?()
+    show_context_dashboard? = Kaffy.Utils.show_context_dashboards?()
 
     conn
     |> Kaffy.Utils.contexts()
