@@ -446,8 +446,17 @@ defmodule Kaffy.ResourceAdmin do
     )
   end
 
-  def collect_widgets(conn) do
-    Enum.reduce(Kaffy.Utils.contexts(conn), [], fn c, all ->
+  def collect_widgets(conn, context \\ :kaffy_dashboard) do
+    IO.inspect(context, label: "coming from context")
+    main_dashboard? = context == :kaffy_dashboard
+    show_context_dashboard? = Kaffy.Utils.show_context_dashboard?()
+
+    conn
+    |> Kaffy.Utils.contexts()
+    |> Enum.filter(fn c -> main_dashboard? or (show_context_dashboard? and c == context) end)
+    |> Enum.reduce([], fn c, all ->
+      IO.inspect(c, label: "collect_widgets context")
+
       widgets =
         Enum.reduce(Kaffy.Utils.schemas_for_context(conn, c), [], fn {_, resource}, all ->
           all ++ Kaffy.ResourceAdmin.widgets(resource, conn)

@@ -5,6 +5,13 @@ defmodule KaffyWeb.ResourceController do
   use Phoenix.HTML
   alias Kaffy.Pagination
 
+  def dashboard(conn, %{"context" => context}) do
+    render(conn, "dashboard.html",
+      layout: {KaffyWeb.LayoutView, "app.html"},
+      context: String.to_existing_atom(context)
+    )
+  end
+
   def index(
         conn,
         %{

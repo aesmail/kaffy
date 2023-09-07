@@ -8,6 +8,9 @@ defmodule KaffyWeb.HomeController do
   end
 
   def dashboard(conn, _params) do
-    render(conn, "index.html", layout: {KaffyWeb.LayoutView, "app.html"})
+    render(conn, "index.html",
+      layout: {KaffyWeb.LayoutView, "app.html"},
+      context: :kaffy_dashboard
+    )
   end
 end

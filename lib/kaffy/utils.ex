@@ -390,6 +390,10 @@ defmodule Kaffy.Utils do
     )
   end
 
+  def show_context_dashboard?() do
+    env(:enable_context_dashboard, true)
+  end
+
   defp env(key, default \\ nil) do
     Application.get_env(:kaffy, key, default)
   end
