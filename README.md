@@ -106,9 +106,18 @@ plug Plug.Static,
 
 # in your config/config.exs
 config :kaffy,
-  otp_app: :my_app,
-  ecto_repo: MyApp.Repo,
-  router: MyAppWeb.Router
+  # required keys
+  otp_app: :my_app, # required
+  ecto_repo: MyApp.Repo, # required
+  router: MyAppWeb.Router, # required
+  # optional keys
+  admin_title: "My Awesome App",
+  admin_logo: "/images/logo.png",
+  admin_logo_mini: "/images/logo-mini.png",
+  hide_dashboard: true,
+  home_page: [schema: [:accounts, :user]],
+  enable_context_dashboards: true, # since v0.10.0
+  admin_footer: "Kaffy &copy; 2023" # since v0.10.0
 ```
 
 Note that providing pipelines with the `:pipe_through` option will add those pipelines to kaffy's `:kaffy_browser` pipeline which is defined as follows:
@@ -151,7 +160,9 @@ config :kaffy,
   admin_title: "My Awesome App",
   admin_logo: "/images/logo.png",
   admin_logo_mini: "/images/logo-mini.png",
+  admin_footer: "Kaffy &copy; 2023",
   hide_dashboard: false,
+  enable_context_dashboards: true,
   home_page: [kaffy: :dashboard],
   ecto_repo: MyApp.Repo,
   router: MyAppWeb.Router,

@@ -35,6 +35,11 @@ defmodule Kaffy.Routes do
         get("/dashboard", HomeController, :dashboard, as: :kaffy_dashboard)
         get("/tasks", TaskController, :index, as: :kaffy_task)
         get("/p/:slug", PageController, :index, as: :kaffy_page)
+
+        if Kaffy.Utils.show_context_dashboards?() do
+          get("/:context", ResourceController, :dashboard, as: :kaffy_context_dashboard)
+        end
+
         get("/:context/:resource", ResourceController, :index, as: :kaffy_resource)
         post("/:context/:resource", ResourceController, :create, as: :kaffy_resource)
 
