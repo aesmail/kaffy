@@ -7,6 +7,8 @@ defmodule KaffyWeb.LayoutView do
 
   use Phoenix.HTML
 
+  def get_flash(conn), do: conn.assigns.flash
+
   def get_flash(conn, key) do
     [mod, func, args] =
       cond do
