@@ -59,10 +59,18 @@ If you or your company wants to sponsor the development of Kaffy, please reach o
 
 ## Minimum Requirements
 
-- Elixir 1.11.4
-- Phoenix 1.5.0
+Starting with v0.10.0, Kaffy will officially support the latest two phoenix versions.
 
-We aim to follow Elixir's [support policy](https://hexdocs.pm/elixir/compatibility-and-deprecations.html) for the minimum required Elixir version.
+| Kaffy   | Supported phoenix versions |
+|---------|----------------------------|
+| v0.10.0 | 1.6, 1.7                   |
+| v0.9.X  | 1.5, 1.6, 1.7              |
+|         |                            |
+
+
+## Support Policy
+
+The latest released `major.minor` version will be supported. For example, if the latest version is `0.9.0`, then `0.9.1` will be released with bug fixes. If a new version `0.10.0` is released, then `0.9.1` will no longer receive bug fixes or security patches.
 
 ## Installation
 

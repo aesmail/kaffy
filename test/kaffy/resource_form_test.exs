@@ -86,7 +86,8 @@ defmodule Kaffy.ResourceFormTest do
     field_opts = Keyword.get(opts, :field_opts, %{})
 
     changeset = Ecto.Changeset.change(schema, %{})
-    form = Phoenix.HTML.Form.form_for(:dummy, "/")
+
+    form = Phoenix.HTML.FormData.to_form(changeset.changes, as: :dummy)
     ast = ResourceForm.form_field(changeset, form, {name, field_opts})
 
     case ast do
