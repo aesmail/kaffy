@@ -96,8 +96,15 @@ defmodule Kaffy.Utils do
   """
   @spec get_version_of(atom()) :: String.t()
   def get_version_of(package) do
-    {:ok, version} = :application.get_key(package, :vsn)
-    to_string(version)
+    case package do
+      :elixir ->
+        System.version()
+
+      _ ->
+        {:ok, version} = :application.get_key(package, :vsn)
+        version
+    end
+    |> to_string()
   end
 
   @doc """
@@ -468,5 +475,10 @@ defmodule Kaffy.Utils do
 
   def visible?(options) do
     Keyword.get(options, :in_menu, true)
+  end
+
+  def version_match?(app, version) do
+    get_version_of(app)
+    |> Version.match?(version)
   end
 end

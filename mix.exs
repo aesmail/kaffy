@@ -5,11 +5,19 @@ defmodule Kaffy.MixProject do
   @version "0.10.0-rc.1"
 
   def project do
+    elixir_version = System.version()
+
+    included_compilers =
+      cond do
+        Version.match?(elixir_version, "~> 1.13") -> []
+        true -> [:phoenix]
+      end
+
     [
       app: :kaffy,
       version: @version,
       elixir: "~> 1.11",
-      compilers: [:phoenix] ++ Mix.compilers(),
+      compilers: included_compilers ++ Mix.compilers(),
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       description: description(),
