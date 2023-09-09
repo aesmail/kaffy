@@ -5,19 +5,11 @@ defmodule Kaffy.MixProject do
   @version "0.10.0-rc.1"
 
   def project do
-    elixir_version = System.version()
-
-    included_compilers =
-      cond do
-        Version.match?(elixir_version, "~> 1.13") -> []
-        true -> [:phoenix]
-      end
-
     [
       app: :kaffy,
       version: @version,
-      elixir: "~> 1.11",
-      compilers: included_compilers ++ Mix.compilers(),
+      elixir: "~> 1.12",
+      compilers: Mix.compilers(),
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       description: description(),
@@ -43,7 +35,7 @@ defmodule Kaffy.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:phoenix, "~> 1.5"},
+      {:phoenix, "~> 1.6"},
       {:phoenix_html, "~> 3.0"},
       {:phoenix_view, "~> 2.0.2"},
       {:mock, "~> 0.3.3", only: :test},
