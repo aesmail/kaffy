@@ -454,6 +454,16 @@ defmodule MyApp.Blog.PostAdmin do
 end
 ```
 
+If you need to hide the "New <Schema>" button, you can define the `default_actions/1` function in your admin module:
+
+```elixir
+defmodule MyApp.Blog.PostAdmin do
+  def default_actions(_schema) do
+    # default actions are [:new, :edit, :delete] by default.
+    [:delete] # cannot create or edit posts, can only delete.
+  end
+end
+```
 
 ### Form Pages
 
@@ -517,6 +527,17 @@ def form_fields(_schema) do
       end
     }
   ]
+ ```
+
+ If you don't want users to be able to edit or delete records, you can define the `default_actions/1` function in your admin module:
+
+ ```elixir
+defmodule MyApp.Blog.PostAdmin do
+  def default_actions(_schema) do
+    # default actions are [:new, :edit, :delete] by default.
+    [:new] # only create records, cannot edit or delete.
+  end
+end
  ```
 
 #### Association Forms
