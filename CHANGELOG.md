@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixes
 - Crash when updating records.
+- Removes elixir and phoenix deprecation warnings [PR#288](https://github.com/aesmail/kaffy/pull/288)
 
 ### Added
 - Support for filtering `{:array, :string}` fielsd [PR#285](https://github.com/aesmail/kaffy/pull/262)
