@@ -59,10 +59,18 @@ If you or your company wants to sponsor the development of Kaffy, please reach o
 
 ## Minimum Requirements
 
-- Elixir 1.11.4
-- Phoenix 1.5.0
+Starting with v0.10.0, Kaffy will officially support the latest two phoenix versions.
 
-We aim to follow Elixir's [support policy](https://hexdocs.pm/elixir/compatibility-and-deprecations.html) for the minimum required Elixir version.
+| Kaffy   | Supported phoenix versions |
+|---------|----------------------------|
+| v0.10.0 | 1.6, 1.7                   |
+| v0.9.X  | 1.5, 1.6, 1.7              |
+|         |                            |
+
+
+## Support Policy
+
+The latest released `major.minor` version will be supported. For example, if the latest version is `0.9.0`, then `0.9.1` will be released with bug fixes. If a new version `0.10.0` is released, then `0.9.1` will no longer receive bug fixes or security patches.
 
 ## Installation
 
@@ -106,9 +114,18 @@ plug Plug.Static,
 
 # in your config/config.exs
 config :kaffy,
-  otp_app: :my_app,
-  ecto_repo: MyApp.Repo,
-  router: MyAppWeb.Router
+  # required keys
+  otp_app: :my_app, # required
+  ecto_repo: MyApp.Repo, # required
+  router: MyAppWeb.Router, # required
+  # optional keys
+  admin_title: "My Awesome App",
+  admin_logo: "/images/logo.png",
+  admin_logo_mini: "/images/logo-mini.png",
+  hide_dashboard: true,
+  home_page: [schema: [:accounts, :user]],
+  enable_context_dashboards: true, # since v0.10.0
+  admin_footer: "Kaffy &copy; 2023" # since v0.10.0
 ```
 
 Note that providing pipelines with the `:pipe_through` option will add those pipelines to kaffy's `:kaffy_browser` pipeline which is defined as follows:
@@ -151,7 +168,9 @@ config :kaffy,
   admin_title: "My Awesome App",
   admin_logo: "/images/logo.png",
   admin_logo_mini: "/images/logo-mini.png",
+  admin_footer: "Kaffy &copy; 2023",
   hide_dashboard: false,
+  enable_context_dashboards: true,
   home_page: [kaffy: :dashboard],
   ecto_repo: MyApp.Repo,
   router: MyAppWeb.Router,
@@ -435,6 +454,16 @@ defmodule MyApp.Blog.PostAdmin do
 end
 ```
 
+If you need to hide the "New <Schema>" button, you can define the `default_actions/1` function in your admin module:
+
+```elixir
+defmodule MyApp.Blog.PostAdmin do
+  def default_actions(_schema) do
+    # default actions are [:new, :edit, :delete] by default.
+    [:delete] # cannot create or edit posts, can only delete.
+  end
+end
+```
 
 ### Form Pages
 
@@ -498,6 +527,17 @@ def form_fields(_schema) do
       end
     }
   ]
+ ```
+
+ If you don't want users to be able to edit or delete records, you can define the `default_actions/1` function in your admin module:
+
+ ```elixir
+defmodule MyApp.Blog.PostAdmin do
+  def default_actions(_schema) do
+    # default actions are [:new, :edit, :delete] by default.
+    [:new] # only create records, cannot edit or delete.
+  end
+end
  ```
 
 #### Association Forms

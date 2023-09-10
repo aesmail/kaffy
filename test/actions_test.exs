@@ -1,6 +1,6 @@
 defmodule ActionsTest do
   use ExUnit.Case
-  use Phoenix.ConnTest
+  import Phoenix.ConnTest
 
   import Mock
   alias Phoenix.Controller, as: PhoenixController
@@ -164,7 +164,7 @@ defmodule ActionsTest do
           "id" => "id"
         })
 
-      assert %{"success" => _} = get_flash(result_conn)
+      assert %{"success" => _} = KaffyWeb.LayoutView.get_flash(result_conn)
     end
   end
 
@@ -178,7 +178,7 @@ defmodule ActionsTest do
           "id" => "id"
         })
 
-      assert %{"success" => _} = get_flash(result_conn)
+      assert %{"success" => _} = KaffyWeb.LayoutView.get_flash(result_conn)
     end
   end
 
@@ -192,7 +192,7 @@ defmodule ActionsTest do
           "id" => "1:1"
         })
 
-      assert %{"success" => _} = get_flash(result_conn)
+      assert %{"success" => _} = KaffyWeb.LayoutView.get_flash(result_conn)
     end
   end
 
@@ -207,7 +207,7 @@ defmodule ActionsTest do
           "id" => "1:1,1:2"
         })
 
-      assert %{"success" => _} = get_flash(result_conn)
+      assert %{"success" => _} = KaffyWeb.LayoutView.get_flash(result_conn)
     end
   end
 end

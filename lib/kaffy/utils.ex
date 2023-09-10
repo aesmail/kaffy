@@ -96,8 +96,15 @@ defmodule Kaffy.Utils do
   """
   @spec get_version_of(atom()) :: String.t()
   def get_version_of(package) do
-    {:ok, version} = :application.get_key(package, :vsn)
-    to_string(version)
+    case package do
+      :elixir ->
+        System.version()
+
+      _ ->
+        {:ok, version} = :application.get_key(package, :vsn)
+        version
+    end
+    |> to_string()
   end
 
   @doc """
@@ -310,9 +317,18 @@ defmodule Kaffy.Utils do
       true
   """
   @spec has_function?(module(), atom()) :: boolean()
+  def has_function?(nil, _), do: false
+
   def has_function?(admin, func) do
     functions = admin.__info__(:functions)
     Keyword.has_key?(functions, func)
+  end
+
+  def context_admins_include_function?(conn, context, func) do
+    schemas_for_context(conn, context)
+    |> Enum.filter(fn {_, options} -> Keyword.has_key?(options, :admin) end)
+    |> Enum.map(fn {_, options} -> has_function?(Keyword.get(options, :admin), func) end)
+    |> Enum.any?()
   end
 
   @doc """
@@ -388,6 +404,10 @@ defmodule Kaffy.Utils do
         }
       end
     )
+  end
+
+  def show_context_dashboards?() do
+    env(:enable_context_dashboards, true)
   end
 
   defp env(key, default \\ nil) do
@@ -468,5 +488,10 @@ defmodule Kaffy.Utils do
 
   def visible?(options) do
     Keyword.get(options, :in_menu, true)
+  end
+
+  def version_match?(app, version) do
+    get_version_of(app)
+    |> Version.match?(version)
   end
 end

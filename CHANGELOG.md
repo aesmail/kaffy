@@ -5,14 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## v0.10.0-rc.1 (Unreleased)
+## v0.10.0-rc.1 (2023-09-09)
 
 ### Fixes
 - Crash when updating records.
+- Removes elixir and phoenix deprecation warnings [PR#288](https://github.com/aesmail/kaffy/pull/288)
 
 ### Added
-- Support for filtering `{:array, :string}` fielsd [PR#285](https://github.com/aesmail/kaffy/pull/262)
+- Support for filtering `{:array, :string}` fields [PR#285](https://github.com/aesmail/kaffy/pull/262)
+- Per-context dashboard [PR#287](https://github.com/aesmail/kaffy/pull/287)
 
+### Changed
+- Minimum phoenix version is now 1.6. This means that the minimum Elixir version is now 1.12 (see support policy).
 
 ## v0.10.0-rc.0 (2023-09-02)
 
