@@ -312,7 +312,7 @@ defmodule KaffyWeb.ResourceController do
         entry = Kaffy.ResourceQuery.fetch_resource(conn, my_resource, id)
 
         case Kaffy.ResourceCallbacks.delete_callbacks(conn, my_resource, entry) do
-          {:ok, _deleted} ->
+          :ok ->
             put_flash(conn, :success, "The record was deleted successfully")
             |> redirect(
               to: Kaffy.Utils.router().kaffy_resource_path(conn, :index, context, resource)
