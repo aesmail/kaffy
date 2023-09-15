@@ -133,6 +133,9 @@ defmodule Kaffy.ResourceForm do
           false -> text_or_assoc(conn, schema, form, field, opts)
         end
 
+      :hidden ->
+        hidden_input(form, field, opts)
+
       :string ->
         text_input(form, field, opts)
 

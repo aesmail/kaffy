@@ -74,7 +74,7 @@ defmodule Kaffy.ResourceAdmin do
   end
 
   @doc """
-  form_fields/1 takes a schema and returns a keyword list of fields and their options for the new/edit form.
+  form_fields/2 takes a schema and a conn struct returns a keyword list of fields and their options for the new/edit form.
 
   Supported options are:
 
@@ -89,31 +89,32 @@ defmodule Kaffy.ResourceAdmin do
 
   If you want to remove a field from being rendered, just remove it from the list.
 
-  If form_fields/1 is not defined, Kaffy will return all the fields with
+  If form_fields/2 is not defined, Kaffy will return all the fields with
   their default types based on the schema.
 
   ## Examples
 
   ```elixir
-  def form_fields(_schema) do
+  def form_fields(_schema, _conn) do
     [
       title: %{label: "Subject"},
       slug: nil,
       image: %{type: :file},
       status: %{choices: [{"Pending", "pending"}, {"Published", "published"}]},
       body: %{type: :textarea, rows: 3},
-      views: %{permission: :read}
+      views: %{create: :hidden, update: :readonly}
     ]
   end
   ```
   """
-  def form_fields(resource) do
+  def form_fields(resource, conn) do
     schema = resource[:schema]
 
     Utils.get_assigned_value_or_default(
       resource,
       :form_fields,
-      ResourceSchema.form_fields(schema)
+      ResourceSchema.form_fields(schema),
+      [conn]
     )
     |> set_default_field_options(schema)
   end
