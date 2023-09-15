@@ -87,6 +87,10 @@ defmodule Kaffy.ResourceForm do
     data = schema
     {conn, opts} = Keyword.pop(opts, :conn)
     opts = Keyword.put(opts, :readonly, readonly)
+
+    opts =
+      if Map.has_key?(options, :value), do: Keyword.put(opts, :value, options.value), else: opts
+
     schema = schema.__struct__
 
     case type do
@@ -134,6 +138,8 @@ defmodule Kaffy.ResourceForm do
         end
 
       :hidden ->
+        IO.inspect(options, label: "hidden field options")
+        IO.inspect(opts, label: "hidden field opts")
         hidden_input(form, field, opts)
 
       :string ->
@@ -470,7 +476,10 @@ defmodule Kaffy.ResourceForm do
         help_text = form_help_text({field, options})
 
         content_tag :div, class: "form-group #{error_class}" do
-          label_tag = if ft != :boolean, do: form_label(form, {field, options}), else: ""
+          label_tag =
+            if ft != :boolean && options.type != :hidden,
+              do: form_label(form, {field, options}),
+              else: ""
 
           field_tag =
             form_field(changeset, form, {field, options},
