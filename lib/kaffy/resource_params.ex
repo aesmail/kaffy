@@ -7,9 +7,15 @@ defmodule Kaffy.ResourceParams do
     attrs =
       Map.get(params, resource, %{})
       |> Enum.map(fn {k, v} ->
-        case k in map_fields && String.length(v) > 0 do
-          true -> {k, Kaffy.Utils.json().decode!(v)}
-          false -> {k, v}
+        case is_list(v) do
+          true ->
+            {k, v}
+
+          false ->
+            case k in map_fields && String.length(v) > 0 do
+              true -> {k, Kaffy.Utils.json().decode!(v)}
+              false -> {k, v}
+            end
         end
       end)
       |> Map.new()
