@@ -20,10 +20,10 @@
       <nav class="navbar default-layout-navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
         <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
           <%= link to: Kaffy.Utils.router().kaffy_home_path(@conn, :index), class: "navbar-brand brand-logo" do %>
-            <img src="<%= Kaffy.Utils.logo(@conn) %>" alt="logo" />
+            <%= Kaffy.Utils.logo(@conn, :full) %>
           <% end %>
           <%= link to: Kaffy.Utils.router().kaffy_home_path(@conn, :index), class: "navbar-brand brand-logo-mini" do %>
-            <img src="<%= Kaffy.Utils.logo_mini(@conn) %>" alt="logo" />
+            <%= Kaffy.Utils.logo(@conn, :mini) %>
           <% end %>
         </div>
         <div class="navbar-menu-wrapper d-flex align-items-stretch">
@@ -49,7 +49,7 @@
 
           <footer class="footer">
             <div class="d-sm-flex justify-content-center justify-content-sm-between">
-              <span class="text-muted text-center text-sm-left d-block d-sm-inline-block">Copyright © 2020 Kaffy. All rights reserved.</span>
+              <span class="text-muted text-center text-sm-left d-block d-sm-inline-block">Copyright © 2022 Kaffy. All rights reserved.</span>
             </div>
           </footer>
 

@@ -1,6 +1,6 @@
 defmodule Kaffy.Routes do
   @moduledoc """
-  Kaffy.Routes must be "used" in your phoenix routes:
+  Kaffy.Routes must be "used" in your Phoenix routes:
 
   ```elixir
   use Kaffy.Routes, scope: "/admin", pipe_through: [:browser, :authenticate]
@@ -25,6 +25,7 @@ defmodule Kaffy.Routes do
         plug(:fetch_flash)
         plug(:protect_from_forgery)
         plug(:put_secure_browser_headers)
+        plug(:put_root_layout, {KaffyWeb.LayoutView, :root})
       end
 
       scope unquote(scoped), KaffyWeb do
@@ -34,6 +35,11 @@ defmodule Kaffy.Routes do
         get("/dashboard", HomeController, :dashboard, as: :kaffy_dashboard)
         get("/tasks", TaskController, :index, as: :kaffy_task)
         get("/p/:slug", PageController, :index, as: :kaffy_page)
+
+        if Kaffy.Utils.show_context_dashboards?() do
+          get("/:context", ResourceController, :dashboard, as: :kaffy_context_dashboard)
+        end
+
         get("/:context/:resource", ResourceController, :index, as: :kaffy_resource)
         post("/:context/:resource", ResourceController, :create, as: :kaffy_resource)
 

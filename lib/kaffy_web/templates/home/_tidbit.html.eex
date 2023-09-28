@@ -1,7 +1,10 @@
-<div class="col-md-<%= @widget.width %> grid-margin stretch-card">
-    <div class="card shadow border-left-success">
+<% color = Map.get(@widget, :color, "success") %>
+<% width = Map.get(@widget, :width, 3) %>
+
+<div class="col-md-<%= width %> grid-margin stretch-card">
+    <div class="card shadow border-left-<%= color %>">
         <div class="card-body">
-            <p class="font-weight-normal mb-1 text-success"><strong><%= @widget.title %></strong> <i class="fa fa-<%= @widget.icon %> float-right"></i></p>
+            <p class="font-weight-normal mb-1 text-<%= color %>"><strong><%= @widget.title %></strong> <i class="<%= if @widget[:full_icon] do %><%= @widget.full_icon %><% else %>fas fa-<%= @widget.icon %><% end %> float-right"></i></p>
             <h2 class="mt-1"><%= @widget.content %></h2>
         </div>
     </div>

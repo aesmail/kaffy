@@ -9,17 +9,27 @@
             <div id="checkbox-selected-count" class="checkbox-selected-count float-right"></div>
           </h3>
         </div>
-        <div class="col-auto">
-          <%= link to: Kaffy.Utils.router().kaffy_resource_path(@conn, :new, @context, @resource), class: "btn btn-outline-primary" do %>
-            <i class="fas fa-plus"></i>
-            New <%= Kaffy.ResourceAdmin.singular_name(@my_resource) %>
-          <% end %>
-        </div>
+        <%= if :new in Kaffy.ResourceAdmin.default_actions(@my_resource) do %>
+          <div class="col-auto">
+            <%= link to: Kaffy.Utils.router().kaffy_resource_path(@conn, :new, @context, @resource), class: "btn btn-outline-primary" do %>
+              <i class="fas fa-plus"></i>
+              New <%= Kaffy.ResourceAdmin.singular_name(@my_resource) %>
+            <% end %>
+          </div>
+        <% end %>
       </div>
     </div>
 
     <div class="card-body table-responsive w-100">
       <div class="card-description">
+        <%= if index_description = Kaffy.ResourceAdmin.index_description(@my_resource) do %>
+          <div class="row">
+              <div class="col-auto mr-auto">
+                  <p><%= index_description %></p>
+              </div>
+          </div>
+        <% end %>
+
         <div class="row">
 
           <div class="col-auto mr-auto">
@@ -27,7 +37,8 @@
           </div>
 
           <div class="col-auto">
-            <%= if list_actions = Kaffy.ResourceAdmin.list_actions(@my_resource, @conn) do %>
+            <% list_actions = Kaffy.ResourceAdmin.list_actions(@my_resource, @conn) %>
+            <%= if list_actions && not Enum.empty?(list_actions) do %>
               <div class="btn-group">
                 <button type="button" class="btn dropdown-toggle btn-sm btn-secondary" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   <i class="fas fa-wrench"></i> <span class="d-none d-md-inline">Actions</span>
@@ -41,7 +52,7 @@
                         </button>
                       <% else %>
                         <%= form_tag(Kaffy.Utils.router().kaffy_resource_path(@conn, :list_action, @context, @resource, to_string(action_key)), method: :post, class: "list-action", id: "#{action_key}_form") %>
-                          <input type="submit" name="submit" value="<%= options.name %>" class="dropdown-item kaffy-list-action-submit" id="<%= action_key %>_submit" />
+                          <input type="submit" name="submit" value="<%= options.name %>" class="btn btn-link dropdown-item kaffy-list-action-submit" id="<%= action_key %>_submit" onclick="return confirm('Are you sure?');" />
                         </form>
                       <% end %>
                   <% end %>
@@ -111,8 +122,17 @@
                   <div class="modal-body">
                     <%= for extra <- extra_inputs do %>
                       <div class="form-group">
-                        <label><%= extra.title %></label>
-                        <input type="text" data-title="<%= extra.title %>" name="kaffy-input[<%= extra.name %>]" value="<%= extra.default %>" class="form-control kaffy-list-action-input" />
+                        <%= if Map.has_key?(extra, :use_select) && extra.use_select do %>
+                          <label><%= extra.title %></label>
+                          <select data-title="<%= extra.title %>" name="kaffy-input[<%= extra.name %>]" class="form-select w-100 kaffy-list-action-input">
+                            <%= for [text, value] <- extra.options do %>
+                              <option value="<%= value %>"><%= text %></option>
+                            <% end %>
+                          </select>
+                        <% else %>
+                          <label><%= extra.title %></label>
+                          <input type="text" data-title="<%= extra.title %>" name="kaffy-input[<%= extra.name %>]" value="<%= extra.default %>" class="form-control kaffy-list-action-input" />
+                        <% end %>
                       </div>
                     <% end %>
                   </div>

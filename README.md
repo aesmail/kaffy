@@ -1,6 +1,12 @@
-<img src="https://opencollective.com/kaffy/tiers/sponsor/badge.svg?label=sponsor&color=brightgreen" />
+# Kaffy
 
-![What You Get](demos/kaffy_index.png)
+[![Module Version](https://img.shields.io/hexpm/v/kaffy.svg)](https://hex.pm/packages/kaffy)
+[![Hex Docs](https://img.shields.io/badge/hex-docs-lightgreen.svg)](https://hexdocs.pm/kaffy/)
+[![Total Download](https://img.shields.io/hexpm/dt/kaffy.svg)](https://hex.pm/packages/kaffy)
+[![License](https://img.shields.io/hexpm/l/kaffy.svg)](https://github.com/aesmail/kaffy/blob/master/LICENSE.md)
+[![Last Updated](https://img.shields.io/github/last-commit/aesmail/kaffy.svg)](https://github.com/aesmail/kaffy/commits/master)
+
+![What You Get](assets/kaffy_index.png)
 
 ## Introduction
 
@@ -45,24 +51,43 @@ without the need to touch the current codebase. It was inspired by django's love
 
 ## Sponsors
 
-Become a sponsor through Kaffy's [OpenCollective](https://opencollective.com/kaffy) page.
+If you or your company wants to sponsor the development of Kaffy, please reach out to me at <aesmail@hey.com>.
 
 ## Demo
 
-[Check out the simple demo here](https://kaffy.gigalixirapp.com/admin/)
+[Check out the simple demo here](https://kaffy.fly.dev/admin/)
 
 ## Minimum Requirements
 
-- elixir 1.8.0
-- phoenix 1.4.0
+Starting with v0.10.0, Kaffy will officially support the latest two phoenix versions.
+
+| Kaffy   | Supported phoenix versions |
+|---------|----------------------------|
+| v0.10.0 | 1.6, 1.7                   |
+| v0.9.X  | 1.5, 1.6, 1.7              |
+|         |                            |
+
+
+## Support Policy
+
+The latest released `major.minor` version will be supported. For example, if the latest version is `0.9.0`, then `0.9.1` will be released with bug fixes. If a new version `0.10.0` is released, then `0.9.1` will no longer receive bug fixes or security patches.
 
 ## Installation
 
-#### Add `kaffy` as a dependency
+#### Add `:kaffy` as a dependency
 ```elixir
 def deps do
   [
-    {:kaffy, "~> 0.9.0"}
+    {:kaffy, "~> 0.9.4"}
+  ]
+end
+```
+as of phoenix version 1.7 you need the following dependencies
+```elixir
+def deps do
+  [
+    {:phoenix_view, "~> 2.0.2"},
+    {:kaffy, "~> 0.9.4"}
   ]
 end
 ```
@@ -89,9 +114,18 @@ plug Plug.Static,
 
 # in your config/config.exs
 config :kaffy,
-  otp_app: :my_app,
-  ecto_repo: MyApp.Repo,
-  router: MyAppWeb.Router
+  # required keys
+  otp_app: :my_app, # required
+  ecto_repo: MyApp.Repo, # required
+  router: MyAppWeb.Router, # required
+  # optional keys
+  admin_title: "My Awesome App",
+  admin_logo: "/images/logo.png",
+  admin_logo_mini: "/images/logo-mini.png",
+  hide_dashboard: true,
+  home_page: [schema: [:accounts, :user]],
+  enable_context_dashboards: true, # since v0.10.0
+  admin_footer: "Kaffy &copy; 2023" # since v0.10.0
 ```
 
 Note that providing pipelines with the `:pipe_through` option will add those pipelines to kaffy's `:kaffy_browser` pipeline which is defined as follows:
@@ -104,6 +138,16 @@ pipeline :kaffy_browser do
   plug :protect_from_forgery
   plug :put_secure_browser_headers
 end
+```
+### Phoenix version 1.7
+Note that if you use Phoenix version 1.7 you also need to manually add the use of phoenix views in your project.
+Follow the instructions at https://hexdocs.pm/phoenix_view/Phoenix.View.html
+
+You will also need to change `helpers: false` to `true` as shown in example below.
+```elixir
+  def router do
+    quote do
+      use Phoenix.Router, helpers: true
 ```
 
 ## Customizations
@@ -124,7 +168,9 @@ config :kaffy,
   admin_title: "My Awesome App",
   admin_logo: "/images/logo.png",
   admin_logo_mini: "/images/logo-mini.png",
+  admin_footer: "Kaffy &copy; 2023",
   hide_dashboard: false,
+  enable_context_dashboards: true,
   home_page: [kaffy: :dashboard],
   ecto_repo: MyApp.Repo,
   router: MyAppWeb.Router,
@@ -139,7 +185,7 @@ defmodule MyApp.Kaffy.Config do
         resources: [ # this line used to be "schemas" in pre v0.9
           post: [schema: MyApp.Blog.Post, admin: MyApp.SomeModule.Anywhere.PostAdmin],
           comment: [schema: MyApp.Blog.Comment],
-          tag: [schema: MyApp.Blog.Tag]
+          tag: [schema: MyApp.Blog.Tag, in_menu: false]
         ]
       ],
       inventory: [
@@ -202,7 +248,7 @@ resources: [
 
 Kaffy supports dashboard customizations through `widgets`.
 
-![Dashboard page widgets](demos/kaffy_dashboard.png)
+![Dashboard page widgets](assets/kaffy_dashboard.png)
 
 Currently, kaffy provides support for 4 types of widgets:
 
@@ -219,7 +265,8 @@ Widgets have shared options:
 - `:order` (optional) is the displaying order of the widget. Widgets are display in order based on this value. The default value is 999.
 - `:width` (optional) is the width the widget should occupy on the page. Valid values are 1 to 12. The default for tidbits is 3 and the others 6.
 - `:percentage` (required for progress widgets) is the percentage value for the progress. This must be an integer.
-- `:icon` (optional for tidbit widgets) is the icon displayed next to the tidbit's `content`. Any FontAwesome-valid icon is valid here. For example: `thumbs-up`.
+- `:full_icon` (optional for tidbit widgets) is the icon displayed next to the tidbit's `content`. You have to specify the full name given by FontAwesome like `fas fa-thumbs-up`.
+- `:icon` (optional for tidbit widgets) is the icon displayed next to the tidbit's `content`. Any FontAwesome-valid icon is valid here. For example: `thumbs-up`. But it's limited to the `fas` group. For full defintion see `:full_icon`.
 
 When defining a chart widget, the content must be a map with the following required keys:
 
@@ -282,6 +329,7 @@ defmodule MyApp.Products.ProductAdmin do
     [
       %{name: "Source Code", url: "https://example.com/repo/issues", order: 2, location: :top, icon: "paperclip"},
       %{name: "Products On Site", url: "https://example.com/products", location: :sub, target: "_blank"},
+      %{name: "Support us", url: "https://example.com/products", location: :bottom, target: "_blank",  icon: "usd"},
     ]
   end
 end
@@ -293,7 +341,7 @@ end
 - `:url` to contain the actual URL.
 - `:method` the method to use with the link.
 - `:order` to hold the displayed order of this link. All `:sub` links are ordered under the schema menu item directly before the following schema.
-- `:location` can be either `:sub` or `:top`. `:sub` means it's under the schema sub-item. `:top` means it's displayed at the top of the menu below the "Dashboard" link. Links are ordered based on the `:order` value. The default value is `:sub`.
+- `:location` can be either `:sub`, `:top` or `:bottom`. `:sub` means it's under the schema sub-item. `:top` means it's displayed at the top of the menu below the "Dashboard" link. `:bottom` means it's displayed at the bottom of the menu below the last context menu item. Links are ordered based on the `:order` value. The default value is `:sub`.
 - `:icon` is the icon displayed next to the link. Any FontAwesome-valid icon is valid here. For example: `paperclip`.
 - `:target` to contain the target to open the link: `_blank` or `_self`. `_blank` will open the link in a new window/tab, `_self` will open the link in the same window. The default value is `_self`.
 
@@ -302,7 +350,7 @@ end
 
 Kaffy allows you to add custom pages like the following:
 
-![Custom Pages](demos/kaffy_custom_pages.png)
+![Custom Pages](assets/kaffy_custom_pages.png)
 
 To add custom pages, you need to define the `custom_pages/2` function in your admin module:
 
@@ -361,7 +409,7 @@ end
 
 Result
 
-![Customized index page](demos/kaffy_index.png)
+![Customized index page](assets/kaffy_index.png)
 
 Notice that the keyword list keys don't necessarily have to be schema fields as long as you provide a `:value` option.
 
@@ -393,7 +441,7 @@ end
 
 Result
 
-![Product filters](demos/kaffy_filters.png)
+![Product filters](assets/kaffy_filters.png)
 
 If you need to change the order of the records, define `ordering/1`:
 
@@ -406,6 +454,16 @@ defmodule MyApp.Blog.PostAdmin do
 end
 ```
 
+If you need to hide the "New <Schema>" button, you can define the `default_actions/1` function in your admin module:
+
+```elixir
+defmodule MyApp.Blog.PostAdmin do
+  def default_actions(_schema) do
+    # default actions are [:new, :edit, :delete] by default.
+    [:delete] # cannot create or edit posts, can only delete.
+  end
+end
+```
 
 ### Form Pages
 
@@ -445,7 +503,7 @@ Options can be:
 
 Result
 
-![Customized show/edit page](demos/kaffy_form.png)
+![Customized show/edit page](assets/kaffy_form.png)
 
 Notice that:
 
@@ -457,24 +515,38 @@ Notice that:
 Setting a field's type to `:richtext` will render a rich text editor.
 
 The `:values_fn` is passed the entity you are editing and the conn (in that order) and must return a list of tuples that represent the {name, value} to use in the multi select. An example of this is as follows:
+
+```elixir
+def form_fields(_schema) do
+  [
+    ....
+    some_array_field: %{
+      values_fn: fn entity, conn ->
+        some_values = MyApp.Thing.fetch_values(entity.id, conn)
+        Enum.map(some_values, &{&1.name, &1.id})
+      end
+    }
+  ]
+end
 ```
-  def form_fields(_schema) do
-    [
-      ....
-      some_array_field: %{
-        values_fn: fn entity, conn ->
-          some_values = MyApp.Thing.fetch_values(entity.id, conn)
-          Enum.map(some_values, &{&1.name, &1.id})
-        end
-      }
-    ]
- ```
+
+If you don't want users to be able to edit or delete records, you can define the `default_actions/1` function in your admin module:
+
+```elixir
+defmodule MyApp.Blog.PostAdmin do
+  def default_actions(_schema) do
+    # default actions are [:new, :edit, :delete] by default.
+    [:new] # only create records, cannot edit or delete.
+  end
+end
+```
 
 #### Association Forms
 
 A `belongs_to` association should be referenced by the field name, *not* the association name. For example, a schema with the following association:
 
-```
+
+```elixir
 schema "my_model" do
   ...
   belongs_to :owner, App.Owners.Owner
@@ -484,7 +556,7 @@ end
 
 Would define `form_fields/1` like so:
 
-```
+```elixir
 def form_fields(_) do
   [
     ...
@@ -610,8 +682,8 @@ end
 
 ### Extensions
 
-Extensions allow you to define custom css, javascript, and html.
-For example, you need to use a specific javascript library or customize the look and feel of Kaffy.
+Extensions allow you to define custom CSS, JavaScript, and HTML.
+For example, you need to use a specific JavaScript library or customize the look and feel of Kaffy.
 This is where extensions come in handy.
 
 Extensions are elixir modules which special functions.
@@ -651,7 +723,7 @@ You can check [this issue](https://github.com/aesmail/kaffy/issues/54) to see an
 
 ### Embedded Schemas and JSON Fields
 
-Kaffy has support for ecto's [embedded schemas](https://hexdocs.pm/ecto/Ecto.Schema.html#embedded_schema/1) and json fields. When you define a field as a `:map`, Kaffy will automatically display a textarea with a placeholder to hint that JSON content is expected. When you have an embedded schema, Kaffy will try to render each field inline with the form of the parent schema.
+Kaffy has support for Ecto's [embedded schemas](https://hexdocs.pm/ecto/Ecto.Schema.html#embedded_schema/1) and JSON fields. When you define a field as a `:map`, Kaffy will automatically display a textarea with a placeholder to hint that JSON content is expected. When you have an embedded schema, Kaffy will try to render each field inline with the form of the parent schema.
 
 ### Search
 
@@ -669,7 +741,7 @@ defmodule MyApp.Blog.PostAdmin do
 end
 ```
 
-Kaffy allows to search for fields across associations. The following tells kaffy to search posts by title and body and category's name and description:
+Kaffy allows to search for fields across associations. The following tells Kaffy to search posts by title and body and category's name and description:
 
 ```elixir
 # Post has a belongs_to :category association
@@ -735,7 +807,7 @@ And if that is not defined, `Ecto.Changeset.change/2` will be called.
 
 ### Singular vs Plural
 
-Some names do not follow the "add an s" rule. Sometimes you just need to change some terms to your liking.
+Kaffy makes some effor to guess a correct plural form of the resource, but in some cases it will fail. Should this happen, you may want to set a correct name yourself.
 
 This is why `singular_name/1` and `plural_name/1` are there.
 
@@ -783,7 +855,7 @@ defmodule MyApp.Blog.ProductAdmin
 
 Result
 
-![Single actions](demos/kaffy_resource_actions.png)
+![Single actions](assets/kaffy_resource_actions.png)
 
 `resource_actions/1` takes a `conn` and must return a keyword list.
 The keys must be atoms defining the unique action "keys".
@@ -831,7 +903,7 @@ end
 
 Result
 
-![List actions](demos/kaffy_list_actions.png)
+![List actions](assets/kaffy_list_actions.png)
 
 `list_actions/1` takes a `conn` and must return a keyword list.
 The keys must be atoms defining the unique action "keys".
@@ -839,11 +911,14 @@ The values are maps providing a human-friendly `:name` and an `:action` that is 
 
 The `change_price` action is a multi-step action.
 The defined `:inputs` option will display a popup with a form that contains defined in this option.
-`:inputs` should be a list of maps. Each input must have a `:name`, a `:title`, and a `:default` value.
+`:inputs` should be a list of maps. Each input must have a `:name` and a `:title`.
+An optional key in the input map is `:use_select`, which defaults to `false`.
+If `true`, the input becomes a `select` instead by using a passed in list called `:options`, which is a list of lists formatted like so `[[display, value], [display, value]]`.
+If `false`, a `:default` value is required for the text input.
 After submitting the popup form, the extra values, along with the selected resources, are passed to the `:action` function.
 In the example above, `change_price/2` will receive the selected products with a map of extra inputs, like: `%{"new_price" => "3.5"}` for example.
 
-![MultiStep actions](demos/kaffy_multistep_actions.png)
+![MultiStep actions](assets/kaffy_multistep_actions.png)
 
 List actions must return one of the following:
 
@@ -1007,7 +1082,7 @@ config :kaffy,
 
 A new "Tasks" menu item will show up (below the Dashboard item) with your tasks as well as some tiny bits of information about each task like the following image:
 
-![Simple scheduled tasks](demos/kaffy_tasks.png)
+![Simple scheduled tasks](assets/kaffy_tasks.png)
 
 The `task_[task_name]/1` function takes a schema and must return a list of tasks.
 
@@ -1050,8 +1125,16 @@ A few points that encouraged the creation and development of Kaffy:
 - Highly flexible and customizable.
   - Provide as many configurable options as possible.
 - As few dependencies as possible.
-  - Currently kaffy only depends on phoenix and ecto.
+  - Currently kaffy only depends on Phoenix and Ecto.
 - Simple authorization.
   - I need to limit access for some admins to some schemas.
 - Sensible, modifiable, default assumptions.
   - When the package assumes something, this assumption should be sensible and modifiable when needed.
+
+
+## Copyright and License
+
+Copyright (c) 2020 Abdullah Esmail
+
+This work is free. You can redistribute it and/or modify it under the
+terms of the MIT License. See the [LICENSE.md](./LICENSE.md) file for more details.

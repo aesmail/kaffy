@@ -2,6 +2,8 @@ defmodule Kaffy.ResourceAdmin do
   alias Kaffy.ResourceSchema
   alias Kaffy.Utils
 
+  @default_id_separator ":"
+
   @moduledoc """
   ResourceAdmin modules should be created for every schema you want to customize/configure in Kaffy.
 
@@ -10,6 +12,35 @@ defmodule Kaffy.ResourceAdmin do
 
   All functions are optional.
   """
+
+  @doc """
+  Allows a description to be injected into the index view of a resource's index
+  view. This is helpful when you want to provide information to the user about the index page.
+  Return value can be a string, or {:safe, string) tuple.  If :safe tuple is used, HTML will be rendered.
+
+  `index_description/1` takes a schema and must return a `String.t()` or tuple `{:safe, String.t()}`.
+
+  If `index_description/1` is not defined, Kaffy will return nil.
+
+  ## Examples:
+
+  ```elixir
+  def index_description(resource) do
+    "This will show up on the index page."
+  end
+
+  def index_description(resource) do
+    {:safe, "This will show up on the index page.  <b>This will be bold!</b>."}
+  end
+  ```
+  """
+  def index_description(resource) do
+    Utils.get_assigned_value_or_default(
+      resource,
+      :index_description,
+      ResourceSchema.index_description(resource)
+    )
+  end
 
   @doc """
   `index/1` takes the schema module and should return a keyword list of fields and
@@ -23,7 +54,7 @@ defmodule Kaffy.ResourceAdmin do
 
   If index/1 is not defined, Kaffy will return all the fields of the schema and their default values.
 
-  Example:
+  ## Examples
 
   ```elixir
   def index(_schema) do
@@ -61,7 +92,7 @@ defmodule Kaffy.ResourceAdmin do
   If form_fields/1 is not defined, Kaffy will return all the fields with
   their default types based on the schema.
 
-  Example:
+  ## Examples
 
   ```elixir
   def form_fields(_schema) do
@@ -100,7 +131,7 @@ defmodule Kaffy.ResourceAdmin do
 
   If `search_fields/1` is not defined, Kaffy will return all the fields of the schema with the supported types mentioned earlier.
 
-  Example:
+  ## Examples
 
   ```elixir
   def search_fields(_schema) do
@@ -119,9 +150,9 @@ defmodule Kaffy.ResourceAdmin do
   @doc """
   `ordering/1` takes a schema and returns how the entries should be ordered.
 
-  If `ordering/1` is not defined, Kaffy will return `[desc: :id]`.
+  If `ordering/1` is not defined, Kaffy will return `[desc: primary_key]`, or the first field of the primary key, if it's a composite.
 
-  Example:
+  ## Examples
 
   ```elixir
   def ordering(_schema) do
@@ -130,7 +161,27 @@ defmodule Kaffy.ResourceAdmin do
   ```
   """
   def ordering(resource) do
-    Utils.get_assigned_value_or_default(resource, :ordering, desc: :id)
+    schema = resource[:schema]
+    [order_key | _] = ResourceSchema.primary_keys(schema)
+
+    Utils.get_assigned_value_or_default(resource, :ordering, desc: order_key)
+  end
+
+  @doc """
+  `default_actions/1` takes a schema and returns the default actions for the schema.
+
+  If `default_actions/1` is not defined, Kaffy will return `[:new, :edit, :delete]`.
+
+  Example:
+
+  ```elixir
+  def default_actions(_schema) do
+    [:new, :delete]
+  end
+  ```
+  """
+  def default_actions(resource) do
+    Utils.get_assigned_value_or_default(resource, :default_actions, [:new, :edit, :delete])
   end
 
   @doc """
@@ -141,7 +192,7 @@ defmodule Kaffy.ResourceAdmin do
 
   If `authorized?/2` is not defined, Kaffy will return true.
 
-  Example:
+  ## Examples
 
   ```elixir
   def authorized?(_schema, _conn) do
@@ -160,7 +211,7 @@ defmodule Kaffy.ResourceAdmin do
 
   and if that's not defined, `Ecto.Changeset.change/2` will be called.
 
-  Example:
+  ## Examples
 
   ```elixir
   def create_changeset(schema, attrs) do
@@ -199,7 +250,7 @@ defmodule Kaffy.ResourceAdmin do
 
   and if that's not defined, `Ecto.Changeset.change/2` will be called.
 
-  Example:
+  ## Examples
 
   ```elixir
   def update_changeset(schema, attrs) do
@@ -240,7 +291,7 @@ defmodule Kaffy.ResourceAdmin do
 
   If you have "Post" and you want to display "Article" for example.
 
-  Example:
+  ## Examples
 
   ```elixir
   def singular_name(_schema) do
@@ -272,7 +323,7 @@ defmodule Kaffy.ResourceAdmin do
   If `plural_name/1` is not defined, Kaffy will use the singular
   name and add an "s" to it (e.g. Posts).
 
-  Example:
+  ## Examples
 
   ```elixir
   def plural_name(_schema) do
@@ -281,8 +332,76 @@ defmodule Kaffy.ResourceAdmin do
   ```
   """
   def plural_name(resource) do
-    default = singular_name(resource) <> "s"
+    default = singular_name(resource) |> Kaffy.Inflector.pluralize()
     Utils.get_assigned_value_or_default(resource, :plural_name, default)
+  end
+
+  @doc """
+  `serialize_id/2` takes a schema and record and must return a string to be used in the URL and form values.
+
+  If `serialize_id/2` is not defined, Kaffy will concatenate multiple primary keys with `":"` as a separator.
+
+  Examples:
+
+  ```elixir
+  # Default method with fixed keys
+  def serialize_id(_schema, record) do
+    Enum.join([record.post_id, record.tag_id], ":")
+  end
+
+  # ETF
+  def serialize_id(_schema, record) do
+    {record.post_id, record.tag_id}
+    |> :erlang.term_to_binary()
+    |> Base.url_encode64()
+  end
+  ```
+  """
+  def serialize_id(resource, entry) do
+    schema = resource[:schema]
+
+    default =
+      schema
+      |> ResourceSchema.primary_keys()
+      |> Enum.map_join(@default_id_separator, &Map.get(entry, &1))
+
+    Utils.get_assigned_value_or_default(resource, :serialize_id, default, [entry])
+  end
+
+  @doc """
+  `deserialize_id/2` takes a schema and serialized id and must return a complete
+  keyword list in the form of [{:primary_key, value}, ...].
+
+  If `deserialize_id/2` is not defined, Kaffy will split multiple primary keys with `":"` as a separator.
+
+  Examples:
+
+  ```elixir
+  # Default method with fixed keys
+  def deserialize_id(_schema, serialized_id) do
+    Enum.zip([:post_id, :tag_id], String.split(serialized_id, ":"))
+  end
+
+  # Deserialize from ETF
+  def deserialize_id(_schema, serialized_id) do
+    {product_id, tag_id} = serialized_id
+    |> Base.url_decode64!()
+    |> :erlang.binary_to_term()
+
+    [product_id: product_id, tag_id: tag_id]
+  end
+  ```
+  """
+  def deserialize_id(resource, id) do
+    schema = resource[:schema]
+    id_list = String.split(id, @default_id_separator)
+
+    default =
+      schema
+      |> ResourceSchema.primary_keys()
+      |> Enum.zip(id_list)
+
+    Utils.get_assigned_value_or_default(resource, :deserialize_id, default, [id])
   end
 
   def resource_actions(resource, conn) do
@@ -290,7 +409,32 @@ defmodule Kaffy.ResourceAdmin do
   end
 
   def list_actions(resource, conn) do
-    Utils.get_assigned_value_or_default(resource, :list_actions, nil, [conn], false)
+    delete_action =
+      case authorized?(resource, conn) && :delete in default_actions(resource) do
+        true ->
+          [
+            delete_action: %{
+              name: "Delete selected records",
+              action: fn _, entries ->
+                Kaffy.Utils.repo().transaction(fn ->
+                  Enum.map(entries, fn entry ->
+                    Kaffy.ResourceCallbacks.delete_callbacks(conn, resource, entry)
+                  end)
+                end)
+                |> case do
+                  {:ok, _} -> :ok
+                  err -> err
+                end
+              end
+            }
+          ]
+
+        false ->
+          []
+      end
+
+    delete_action ++
+      Utils.get_assigned_value_or_default(resource, :list_actions, [], [conn], false)
   end
 
   def widgets(resource, conn) do
@@ -302,8 +446,14 @@ defmodule Kaffy.ResourceAdmin do
     )
   end
 
-  def collect_widgets(conn) do
-    Enum.reduce(Kaffy.Utils.contexts(conn), [], fn c, all ->
+  def collect_widgets(conn, context \\ :kaffy_dashboard) do
+    main_dashboard? = context == :kaffy_dashboard
+    show_context_dashboard? = Kaffy.Utils.show_context_dashboards?()
+
+    conn
+    |> Kaffy.Utils.contexts()
+    |> Enum.filter(fn c -> main_dashboard? or (show_context_dashboard? and c == context) end)
+    |> Enum.reduce([], fn c, all ->
       widgets =
         Enum.reduce(Kaffy.Utils.schemas_for_context(conn, c), [], fn {_, resource}, all ->
           all ++ Kaffy.ResourceAdmin.widgets(resource, conn)

@@ -10,6 +10,14 @@ defmodule Kaffy.Utils do
   end
 
   @doc """
+  Returns the :admin_footer config if present, otherwise returns default copyright.
+  """
+  @spec footer() :: String.t() | {:safe, String.t()}
+  def footer() do
+    env(:admin_footer, "Copyright © 2022 Kaffy. All rights reserved.")
+  end
+
+  @doc """
   Returns the static path to the asset.
   """
   @spec static_asset_path(Plug.Conn.t(), String.t()) :: String.t()
@@ -20,17 +28,37 @@ defmodule Kaffy.Utils do
   @doc """
   Returns the :admin_logo config if present, otherwise returns Kaffy default logo.
   """
-  @spec logo(Plug.Conn.t()) :: String.t()
-  def logo(conn) do
-    router().static_path(conn, env(:admin_logo, "/kaffy/assets/images/logo.png"))
-  end
+  @spec logo(Plug.Conn.t()) :: {:safe, String.t()}
+  def logo(_conn, logo_version \\ :full) do
+    default_kaffy_logo =
+      case logo_version do
+        :full -> "/kaffy/assets/images/logo.png"
+        :mini -> "/kaffy/assets/images/logo-mini.png"
+      end
 
-  @doc """
-  Returns the :admin_logo_mini config if present, otherwise returns Kaffy default logo.
-  """
-  @spec logo_mini(Plug.Conn.t()) :: String.t()
-  def logo_mini(conn) do
-    router().static_path(conn, env(:admin_logo_mini, "/kaffy/assets/images/logo-mini.png"))
+    config_key =
+      case logo_version do
+        :full -> :admin_logo
+        :mini -> :admin_logo_mini
+      end
+
+    admin_logo = env(config_key, default_kaffy_logo)
+
+    cond do
+      is_list(admin_logo) ->
+        url = Keyword.get(admin_logo, :url, default_kaffy_logo)
+        css_class = Keyword.get(admin_logo, :class)
+        css_style = Keyword.get(admin_logo, :style)
+
+        tag =
+          ~s[<img src="#{url}" alt="logo" class="#{css_class}" style="#{css_style}" />]
+
+        {:safe, tag}
+
+      true ->
+        tag = ~s[<img src="#{admin_logo}" alt="logo" />]
+        {:safe, tag}
+    end
   end
 
   @doc """
@@ -68,8 +96,15 @@ defmodule Kaffy.Utils do
   """
   @spec get_version_of(atom()) :: String.t()
   def get_version_of(package) do
-    {:ok, version} = :application.get_key(package, :vsn)
-    to_string(version)
+    case package do
+      :elixir ->
+        System.version()
+
+      _ ->
+        {:ok, version} = :application.get_key(package, :vsn)
+        version
+    end
+    |> to_string()
   end
 
   @doc """
@@ -128,6 +163,8 @@ defmodule Kaffy.Utils do
       _ -> setup_resources()
     end
   end
+
+  def auto_detect_resources(), do: setup_resources()
 
   @doc """
   Returns a list of contexts as atoms.
@@ -215,8 +252,9 @@ defmodule Kaffy.Utils do
   """
   @spec get_resource(Plug.Conn.t(), String.t(), String.t()) :: list()
   def get_resource(conn, context, resource) do
+    preloaded_resources = full_resources(conn)
     {context, resource} = convert_to_atoms(context, resource)
-    get_in(full_resources(conn), [context, :resources, resource])
+    get_in(preloaded_resources, [context, :resources, resource])
   end
 
   @doc """
@@ -232,8 +270,9 @@ defmodule Kaffy.Utils do
   """
   @spec schemas_for_context(Plug.Conn.t(), list()) :: list()
   def schemas_for_context(conn, context) do
+    preloaded_resources = full_resources(conn)
     context = convert_to_atom(context)
-    get_in(full_resources(conn), [context, :resources])
+    get_in(preloaded_resources, [context, :resources])
   end
 
   # @doc """
@@ -278,9 +317,18 @@ defmodule Kaffy.Utils do
       true
   """
   @spec has_function?(module(), atom()) :: boolean()
+  def has_function?(nil, _), do: false
+
   def has_function?(admin, func) do
     functions = admin.__info__(:functions)
     Keyword.has_key?(functions, func)
+  end
+
+  def context_admins_include_function?(conn, context, func) do
+    schemas_for_context(conn, context)
+    |> Enum.filter(fn {_, options} -> Keyword.has_key?(options, :admin) end)
+    |> Enum.map(fn {_, options} -> has_function?(Keyword.get(options, :admin), func) end)
+    |> Enum.any?()
   end
 
   @doc """
@@ -330,25 +378,36 @@ defmodule Kaffy.Utils do
   end
 
   def extensions(conn) do
-    exts = env(:extensions, [])
+    env(:extensions, [])
+    |> Enum.reduce(
+      %{stylesheets: [], javascripts: []},
+      fn ext, acc ->
+        Code.ensure_loaded(ext)
 
-    stylesheets =
-      Enum.map(exts, fn ext ->
-        case function_exported?(ext, :stylesheets, 1) do
-          true -> ext.stylesheets(conn)
-          false -> []
-        end
-      end)
+        stylesheets =
+          if function_exported?(ext, :stylesheets, 1) do
+            ext.stylesheets(conn)
+          else
+            []
+          end
 
-    javascripts =
-      Enum.map(exts, fn ext ->
-        case function_exported?(ext, :javascripts, 1) do
-          true -> ext.javascripts(conn)
-          false -> []
-        end
-      end)
+        javascripts =
+          if function_exported?(ext, :javascripts, 1) do
+            ext.javascripts(conn)
+          else
+            []
+          end
 
-    %{stylesheets: stylesheets, javascripts: javascripts}
+        %{
+          stylesheets: stylesheets ++ acc.stylesheets,
+          javascripts: javascripts ++ acc.javascripts
+        }
+      end
+    )
+  end
+
+  def show_context_dashboards?() do
+    env(:enable_context_dashboards, true)
   end
 
   defp env(key, default \\ nil) do
@@ -425,5 +484,14 @@ defmodule Kaffy.Utils do
 
   def get_task_modules() do
     env(:scheduled_tasks, [])
+  end
+
+  def visible?(options) do
+    Keyword.get(options, :in_menu, true)
+  end
+
+  def version_match?(app, version) do
+    get_version_of(app)
+    |> Version.match?(version)
   end
 end

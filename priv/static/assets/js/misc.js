@@ -8,9 +8,9 @@ var infoColor = getComputedStyle(document.body).getPropertyValue('--info');
 var darkColor = getComputedStyle(document.body).getPropertyValue('--dark');
 var lightColor = getComputedStyle(document.body).getPropertyValue('--light');
 
-(function ($) {
+(function($) {
   'use strict';
-  $(function () {
+  $(function() {
     var body = $('body');
     var contentWrapper = $('.content-wrapper');
     var scroller = $('.container-scroller');
@@ -19,7 +19,7 @@ var lightColor = getComputedStyle(document.body).getPropertyValue('--light');
 
     //Close other submenu in sidebar on opening any
 
-    sidebar.on('show.bs.collapse', '.collapse', function () {
+    sidebar.on('show.bs.collapse', '.collapse', function() {
       sidebar.find('.collapse.show').collapse('hide');
     });
 
@@ -35,7 +35,7 @@ var lightColor = getComputedStyle(document.body).getPropertyValue('--light');
       }
     }
 
-    $('[data-toggle="minimize"]').on("click", function () {
+    $('[data-toggle="minimize"]').on("click", function() {
       if ((body.hasClass('sidebar-toggle-display')) || (body.hasClass('sidebar-absolute'))) {
         body.toggleClass('sidebar-hidden');
       } else {
@@ -78,7 +78,9 @@ var lightColor = getComputedStyle(document.body).getPropertyValue('--light');
       wrap: true,
       enableTime: true,
       time_24hr: true,
-      dateFormat: "Y-m-d H:i:S",
+      dateFormat: "Z",
+      altFormat: "Y-m-d H:i:S",
+      altInput: true,
     });
     flatpickr(".flatpickr-wrap-date", {
       wrap: true,
@@ -98,7 +100,9 @@ var lightColor = getComputedStyle(document.body).getPropertyValue('--light');
       time_24hr: true,
       enableSeconds: true,
       enableTime: true,
-      dateFormat: "Z"
+      dateFormat: "Z",
+      altFormat: "Y-m-d H:i:S",
+      altInput: true,
     });
   });
 

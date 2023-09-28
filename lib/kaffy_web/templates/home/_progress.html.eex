@@ -1,4 +1,6 @@
-<div class="col-md-<%= @widget.width %> grid-margin stretch-card">
+<% color = Map.get(@widget, :color, "danger") %>
+<% width = Map.get(@widget, :width, 6) %>
+<div class="col-md-<%= width %> grid-margin stretch-card">
     <div class="card shadow">
         <div class="card-header">
             <h4><%= @widget.title %></h4>
@@ -6,7 +8,7 @@
         <div class="card-body">
             <p class="font-weight-bold text-black"><%= @widget.content %> <span class="float-right"><%= @widget.percentage %>%</span></p>
             <div class="progress">
-                <div class="progress-bar bg-danger" role="progressbar" style="width: <%= @widget.percentage %>%" aria-valuenow="<%= @widget.percentage %>" aria-valuemin="0" aria-valuemax="100"></div>
+                <div class="progress-bar bg-<%= color %>" role="progressbar" style="width: <%= @widget.percentage %>%" aria-valuenow="<%= @widget.percentage %>" aria-valuemin="0" aria-valuemax="100"></div>
             </div>
         </div>
     </div>

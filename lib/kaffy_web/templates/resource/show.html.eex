@@ -9,7 +9,7 @@
         <div class="card-header">
             <div class="row justify-content-between">
                 <div class="col-auto mr-auto">
-                    <h1><%= @resource_name %> #<%= @changeset.data.id %></h1>
+                    <h1><%= @resource_name %> #<%= Kaffy.ResourceAdmin.serialize_id(@my_resource, @changeset.data) %></h1>
                 </div>
                 <div class="col-auto">
                     <%= if Kaffy.ResourceAdmin.resource_actions(@my_resource, @conn) do %>
@@ -20,7 +20,7 @@
                                 </button>
                                 <div class="dropdown-menu">
                                     <%= for {action_key, options} <- Kaffy.ResourceAdmin.resource_actions(@my_resource, @conn) do %>
-                                        <%= form_tag(Kaffy.Utils.router().kaffy_resource_path(@conn, :single_action, @context, @resource, @changeset.data.id, to_string(action_key)), method: :post) %>
+                                        <%= form_tag(Kaffy.Utils.router().kaffy_resource_path(@conn, :single_action, @context, @resource, Kaffy.ResourceAdmin.serialize_id(@my_resource, @changeset.data), to_string(action_key)), method: :post) %>
                                             <input type="submit" name="submit" value="<%= options.name %>" class="dropdown-item" />
                                         </form>
                                     <% end %>
@@ -32,7 +32,7 @@
             </div>
         </div>
         <div class="card-body">
-            <%= f = form_for(@changeset, Kaffy.Utils.router().kaffy_resource_path(@conn, :update, @context, @resource, @changeset.data.id), method: :put, multipart: true) %>
+            <%= form_for @changeset, Kaffy.Utils.router().kaffy_resource_path(@conn, :update, @context, @resource, Kaffy.ResourceAdmin.serialize_id(@my_resource, @changeset.data)), [method: @form_method, multipart: true], fn f -> %>
                 <%= for {field, options} <- Kaffy.ResourceAdmin.form_fields(@my_resource) do %>
                     <%= if options.update != :hidden do %>
                         <%= Kaffy.ResourceForm.kaffy_input @conn, @changeset, f, field, options %>
@@ -41,36 +41,42 @@
 
                 <div class="p-2">
                     <%= link "Back", to: Kaffy.Utils.router().kaffy_resource_path(@conn, :index, @context, @resource), class: "btn btn-sm btn-light" %>
-                    <input type="submit" name="submit" value="Save" class="btn btn-sm btn-primary" />
-                    <input type="submit" name="submit" value="Save and add another" class="btn btn-sm btn-primary"/>
-                    <input type="submit" name="submit" value="Save and continue editing" class="btn btn-sm btn-primary" />
-                    <button type="button" class="btn btn-sm btn-danger float-right" data-toggle="modal" data-target="#delete-modal">
-                        <i class="fas fa-trash"></i> Delete
-                    </button>
+                    <%= if @can_edit do %>
+                      <input type="submit" name="submit" value="Save" class="btn btn-sm btn-primary" />
+                      <input type="submit" name="submit" value="Save and add another" class="btn btn-sm btn-primary"/>
+                      <input type="submit" name="submit" value="Save and continue editing" class="btn btn-sm btn-primary" />
+                    <% end %>
+
+                    <%= if @can_delete do %>
+                      <button type="button" class="btn btn-sm btn-danger float-right" data-toggle="modal" data-target="#delete-modal">
+                          <i class="fas fa-trash"></i> Delete
+                      </button>
+                    <% end %>
                 </div>
-            </form>
+            <% end %>
         </div>
     </div>
 
     <!-- Modal -->
-    <%= form_for(@changeset, Kaffy.Utils.router().kaffy_resource_path(@conn, :delete, @context, @resource, @changeset.data.id), method: :delete) %>
-    <div class="modal fade" id="delete-modal" tabindex="-1" role="dialog" aria-labelledby="delete-modal-label" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="delete-modal-label">Are you sure?</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    You might lose this record and other related records forever if you continue. Make sure this is what you really want to do.
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-light" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-danger">Yes, delete this <%= @resource_name %></button>
+    <%= form_for @changeset, Kaffy.Utils.router().kaffy_resource_path(@conn, :delete, @context, @resource, Kaffy.ResourceAdmin.serialize_id(@my_resource, @changeset.data)), [method: :delete], fn _f -> %>
+        <div class="modal fade" id="delete-modal" tabindex="-1" role="dialog" aria-labelledby="delete-modal-label" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="delete-modal-label">Are you sure?</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        You might lose this record and other related records forever if you continue. Make sure this is what you really want to do.
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-danger">Yes, delete this <%= @resource_name %></button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    <% end %>
 </div>

@@ -30,6 +30,9 @@ defmodule Kaffy.ResourceCallbacks do
       {:error, :not_found} ->
         Kaffy.Utils.repo().insert(changeset)
 
+      {:error, error} ->
+        {:error, error}
+
       unexpected_error ->
         {:error, unexpected_error}
     end
@@ -62,6 +65,9 @@ defmodule Kaffy.ResourceCallbacks do
       {:error, :not_found} ->
         Kaffy.Utils.repo().update(changeset)
 
+      {:error, error} ->
+        {:error, error}
+
       unexpected_error ->
         {:error, unexpected_error}
     end
@@ -82,6 +88,10 @@ defmodule Kaffy.ResourceCallbacks do
         {:error, entry, error} -> repo.rollback({entry, error})
       end
     end)
+    |> case do
+      {:ok, _} -> :ok
+      err -> err
+    end
   end
 
   defp before_insert(conn, resource, changeset) do
@@ -165,13 +175,17 @@ defmodule Kaffy.ResourceCallbacks do
       {:error, :not_found} ->
         Kaffy.Utils.repo().delete(changeset)
 
+      {:error, error} ->
+        {:error, error}
+
       unexpected_error ->
         {:error, unexpected_error}
     end
   end
 
   defp before_delete(conn, resource, entry) do
-    changeset = Kaffy.ResourceAdmin.update_changeset(resource, entry, %{})
+    # changeset = Kaffy.ResourceAdmin.update_changeset(resource, entry, %{})
+    changeset = Ecto.Changeset.change(entry)
 
     Utils.get_assigned_value_or_default(
       resource,

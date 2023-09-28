@@ -5,6 +5,13 @@ defmodule KaffyWeb.ResourceController do
   use Phoenix.HTML
   alias Kaffy.Pagination
 
+  def dashboard(conn, %{"context" => context}) do
+    render(conn, "dashboard.html",
+      layout: {KaffyWeb.LayoutView, "app.html"},
+      context: String.to_existing_atom(context)
+    )
+  end
+
   def index(
         conn,
         %{
@@ -92,6 +99,9 @@ defmodule KaffyWeb.ResourceController do
     my_resource = Kaffy.Utils.get_resource(conn, context, resource)
     schema = my_resource[:schema]
     resource_name = Kaffy.ResourceAdmin.singular_name(my_resource)
+    can_edit = :edit in Kaffy.ResourceAdmin.default_actions(my_resource)
+    can_delete = :delete in Kaffy.ResourceAdmin.default_actions(my_resource)
+    form_method = if can_edit or can_delete, do: :put, else: :get
 
     case can_proceed?(my_resource, conn) do
       false ->
@@ -109,7 +119,10 @@ defmodule KaffyWeb.ResourceController do
             my_resource: my_resource,
             resource_name: resource_name,
             schema: schema,
-            entry: entry
+            entry: entry,
+            can_edit: can_edit,
+            can_delete: can_delete,
+            form_method: form_method
           )
         else
           put_flash(conn, :error, "The resource you are trying to visit does not exist!")
@@ -124,8 +137,10 @@ defmodule KaffyWeb.ResourceController do
     my_resource = Kaffy.Utils.get_resource(conn, context, resource)
     schema = my_resource[:schema]
     params = Kaffy.ResourceParams.decode_map_fields(resource, schema, params)
-
     resource_name = Kaffy.ResourceAdmin.singular_name(my_resource) |> String.capitalize()
+    can_edit = :edit in Kaffy.ResourceAdmin.default_actions(my_resource)
+    can_delete = :delete in Kaffy.ResourceAdmin.default_actions(my_resource)
+    form_method = if can_edit or can_delete, do: :put, else: :get
 
     case can_proceed?(my_resource, conn) do
       false ->
@@ -178,7 +193,10 @@ defmodule KaffyWeb.ResourceController do
               my_resource: my_resource,
               resource_name: resource_name,
               schema: schema,
-              entry: entry
+              entry: entry,
+              can_edit: can_edit,
+              can_delete: can_delete,
+              form_method: form_method
             )
 
           {:error, {entry, error}} when is_binary(error) ->
@@ -193,7 +211,10 @@ defmodule KaffyWeb.ResourceController do
               my_resource: my_resource,
               resource_name: resource_name,
               schema: schema,
-              entry: entry
+              entry: entry,
+              can_edit: can_edit,
+              can_delete: can_delete,
+              form_method: form_method
             )
         end
     end
@@ -203,21 +224,21 @@ defmodule KaffyWeb.ResourceController do
     my_resource = Kaffy.Utils.get_resource(conn, context, resource)
     resource_name = Kaffy.ResourceAdmin.singular_name(my_resource)
 
-    case can_proceed?(my_resource, conn) do
-      false ->
-        unauthorized_access(conn)
+    with {:permitted, true} <- {:permitted, can_proceed?(my_resource, conn)},
+         {:enabled, true} <- {:enabled, is_enabled?(my_resource, :new)} do
+      changeset = Kaffy.ResourceAdmin.create_changeset(my_resource, %{}) |> Map.put(:errors, [])
 
-      true ->
-        changeset = Kaffy.ResourceAdmin.create_changeset(my_resource, %{}) |> Map.put(:errors, [])
-
-        render(conn, "new.html",
-          layout: {KaffyWeb.LayoutView, "app.html"},
-          changeset: changeset,
-          context: context,
-          resource: resource,
-          resource_name: resource_name,
-          my_resource: my_resource
-        )
+      render(conn, "new.html",
+        layout: {KaffyWeb.LayoutView, "app.html"},
+        changeset: changeset,
+        context: context,
+        resource: resource,
+        resource_name: resource_name,
+        my_resource: my_resource
+      )
+    else
+      {:permitted, false} -> unauthorized_access(conn)
+      {:enabled, false} -> not_enabled(conn)
     end
   end
 
@@ -227,56 +248,56 @@ defmodule KaffyWeb.ResourceController do
     changes = Map.get(params, resource, %{})
     resource_name = Kaffy.ResourceAdmin.singular_name(my_resource)
 
-    case can_proceed?(my_resource, conn) do
-      false ->
-        unauthorized_access(conn)
+    with {:permitted, true} <- {:permitted, can_proceed?(my_resource, conn)},
+         {:enabled, true} <- {:enabled, is_enabled?(my_resource, :new)} do
+      case Kaffy.ResourceCallbacks.create_callbacks(conn, my_resource, changes) do
+        {:ok, entry} ->
+          case Map.get(params, "submit", "Save") do
+            "Save" ->
+              put_flash(conn, :success, "Created a new #{resource_name} successfully")
+              |> redirect(
+                to: Kaffy.Utils.router().kaffy_resource_path(conn, :index, context, resource)
+              )
 
-      true ->
-        case Kaffy.ResourceCallbacks.create_callbacks(conn, my_resource, changes) do
-          {:ok, entry} ->
-            case Map.get(params, "submit", "Save") do
-              "Save" ->
-                put_flash(conn, :success, "Created a new #{resource_name} successfully")
-                |> redirect(
-                  to: Kaffy.Utils.router().kaffy_resource_path(conn, :index, context, resource)
-                )
+            "Save and add another" ->
+              conn
+              |> put_flash(:success, "#{resource_name} saved successfully")
+              |> redirect(
+                to: Kaffy.Utils.router().kaffy_resource_path(conn, :new, context, resource)
+              )
 
-              "Save and add another" ->
-                conn
-                |> put_flash(:success, "#{resource_name} saved successfully")
-                |> redirect(
-                  to: Kaffy.Utils.router().kaffy_resource_path(conn, :new, context, resource)
-                )
+            "Save and continue editing" ->
+              put_flash(conn, :success, "Created a new #{resource_name} successfully")
+              |> redirect_to_resource(context, resource, entry)
+          end
 
-              "Save and continue editing" ->
-                put_flash(conn, :success, "Created a new #{resource_name} successfully")
-                |> redirect_to_resource(context, resource, entry)
-            end
+        {:error, %Ecto.Changeset{} = changeset} ->
+          render(conn, "new.html",
+            layout: {KaffyWeb.LayoutView, "app.html"},
+            changeset: changeset,
+            context: context,
+            resource: resource,
+            resource_name: resource_name,
+            my_resource: my_resource
+          )
 
-          {:error, %Ecto.Changeset{} = changeset} ->
-            render(conn, "new.html",
-              layout: {KaffyWeb.LayoutView, "app.html"},
-              changeset: changeset,
-              context: context,
-              resource: resource,
-              resource_name: resource_name,
-              my_resource: my_resource
-            )
+        {:error, {entry, error}} when is_binary(error) ->
+          changeset = Ecto.Changeset.change(entry)
 
-          {:error, {entry, error}} when is_binary(error) ->
-            changeset = Ecto.Changeset.change(entry)
-
-            conn
-            |> put_flash(:error, error)
-            |> render("new.html",
-              layout: {KaffyWeb.LayoutView, "app.html"},
-              changeset: changeset,
-              context: context,
-              resource: resource,
-              resource_name: resource_name,
-              my_resource: my_resource
-            )
-        end
+          conn
+          |> put_flash(:error, error)
+          |> render("new.html",
+            layout: {KaffyWeb.LayoutView, "app.html"},
+            changeset: changeset,
+            context: context,
+            resource: resource,
+            resource_name: resource_name,
+            my_resource: my_resource
+          )
+      end
+    else
+      {:permitted, false} -> unauthorized_access(conn)
+      {:enabled, false} -> not_enabled(conn)
     end
   end
 
@@ -291,7 +312,7 @@ defmodule KaffyWeb.ResourceController do
         entry = Kaffy.ResourceQuery.fetch_resource(conn, my_resource, id)
 
         case Kaffy.ResourceCallbacks.delete_callbacks(conn, my_resource, entry) do
-          {:ok, _deleted} ->
+          :ok ->
             put_flash(conn, :success, "The record was deleted successfully")
             |> redirect(
               to: Kaffy.Utils.router().kaffy_resource_path(conn, :index, context, resource)
@@ -350,9 +371,15 @@ defmodule KaffyWeb.ResourceController do
     kaffy_inputs = Map.get(params, "kaffy-input", %{})
 
     result =
-      case Map.get(action_record, :inputs, []) do
-        [] -> action_record.action.(conn, entries)
-        _ -> action_record.action.(conn, entries, kaffy_inputs)
+      case entries do
+        {:error, error_msg} ->
+          {:error, error_msg}
+
+        entries ->
+          case Map.get(action_record, :inputs, []) do
+            [] -> action_record.action.(conn, entries)
+            _ -> action_record.action.(conn, entries, kaffy_inputs)
+          end
       end
 
     case result do
@@ -374,13 +401,26 @@ defmodule KaffyWeb.ResourceController do
     Kaffy.ResourceAdmin.authorized?(resource, conn)
   end
 
+  defp is_enabled?(resource, action) do
+    action in Kaffy.ResourceAdmin.default_actions(resource)
+  end
+
   defp unauthorized_access(conn) do
     conn
     |> put_flash(:error, "You are not authorized to access that page")
     |> redirect(to: Kaffy.Utils.router().kaffy_home_path(conn, :index))
   end
 
+  defp not_enabled(conn) do
+    conn
+    |> put_flash(:error, "This action has been disabled.")
+    |> redirect(to: Kaffy.Utils.router().kaffy_home_path(conn, :index))
+  end
+
   defp redirect_to_resource(conn, context, resource, entry) do
+    my_resource = Kaffy.Utils.get_resource(conn, context, resource)
+    id = Kaffy.ResourceAdmin.serialize_id(my_resource, entry)
+
     redirect(conn,
       to:
         Kaffy.Utils.router().kaffy_resource_path(
@@ -388,7 +428,7 @@ defmodule KaffyWeb.ResourceController do
           :show,
           context,
           resource,
-          entry.id
+          id
         )
     )
   end

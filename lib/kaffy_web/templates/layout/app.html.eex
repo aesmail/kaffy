@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title><%= Kaffy.Utils.title() %> - Kaffy</title>
+    <title><%= Kaffy.Utils.title() %></title>
     <link rel="stylesheet" href="<%= Kaffy.Utils.static_asset_path(@conn, "/kaffy/assets/vendors/fontawesome/css/all.css") %>">
     <link rel="stylesheet" href="<%= Kaffy.Utils.static_asset_path(@conn, "/kaffy/assets/vendors/css/vendor.bundle.base.css") %>">
     <link rel="stylesheet" href="<%= Kaffy.Utils.static_asset_path(@conn, "/kaffy/assets/scss/style.css") %>">
@@ -20,10 +20,10 @@
       <nav class="navbar default-layout-navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
         <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
           <%= link to: Kaffy.Utils.router().kaffy_home_path(@conn, :index), class: "navbar-brand brand-logo" do %>
-            <img src="<%= Kaffy.Utils.logo(@conn) %>" alt="logo" />
+            <%= Kaffy.Utils.logo(@conn, :full) %>
           <% end %>
           <%= link to: Kaffy.Utils.router().kaffy_home_path(@conn, :index), class: "navbar-brand brand-logo-mini" do %>
-            <img src="<%= Kaffy.Utils.logo_mini(@conn) %>"  alt="logo" />
+            <%= Kaffy.Utils.logo(@conn, :mini) %>
           <% end %>
         </div>
         <div class="navbar-menu-wrapper d-flex align-items-stretch">
@@ -65,7 +65,7 @@
               <li class="nav-item">
                 <%= link to: custom_link.url, method: custom_link.method, class: "nav-link", target: custom_link.target do %>
                   <span class="menu-title"><%= custom_link.name %></span>
-                  <i class="fas fa-<%= custom_link.icon %> menu-icon"></i>
+                  <i class="<%= if custom_link.full_icon do %><%= custom_link.full_icon %><% else %>fas fa-<%= custom_link.icon %><% end %> menu-icon"></i>
                 <% end %>
               </li>
             <% end %>
@@ -90,17 +90,20 @@
             <% end %>
 
             <%= for context <- Kaffy.Utils.contexts(@conn) do %>
-                <li class="nav-item<%= if @conn.assigns[:context] == to_string(context) do %> active<% end %>">
-                    <a class="nav-link <%= if @conn.assigns[:context] != to_string(context) do %> collapsed<% end %>"
+                <li class="nav-item<%= if @conn.path_params["context"] == to_string(context) do %> active<% end %>">
+                    <a class="nav-link <%= if @conn.path_params["context"] != to_string(context) do %> collapsed<% end %>"
                        href="#<%= context %>-context" data-toggle="collapse" aria-expanded="false" aria-controls="<%= context %>-context">
                         <span class="menu-title"><%= Kaffy.Utils.context_name(@conn, context) %></span>
                         <i class="menu-arrow"></i>
                         <i class="fas fa-bars menu-icon"></i>
                     </a>
-                    <div class="collapse<%= if @conn.assigns[:context] == to_string(context) do %> show<% end %>" id="<%= context %>-context">
+                    <div class="collapse<%= if @conn.path_params["context"] == to_string(context) do %> show<% end %>" id="<%= context %>-context">
                       <ul class="nav flex-column sub-menu">
+                        <%= if Kaffy.Utils.show_context_dashboards?() and Kaffy.Utils.context_admins_include_function?(@conn, context, :widgets) do %>
+                            <li class="nav-item"><%= link "Dashboard", to: Kaffy.Utils.router().kaffy_context_dashboard_path(@conn, :dashboard, context), class: "nav-link" %></li>
+                        <% end %>
                         <%= for {resource, options} <- Kaffy.Utils.schemas_for_context(@conn, context) do %>
-                            <%= if Kaffy.ResourceAdmin.authorized?(options, @conn) do %>
+                            <%= if Kaffy.ResourceAdmin.authorized?(options, @conn) && Kaffy.Utils.visible?(options) do %>
                                 <li class="nav-item"><%= link Kaffy.ResourceAdmin.plural_name(options), to: Kaffy.Utils.router().kaffy_resource_path(@conn, :index, context, resource), class: "nav-link" %></li>
                                 <%= for custom_link <- Kaffy.ResourceAdmin.custom_links(options, :sub) do %>
                                     <li class="nav-item"><%= link custom_link.name, to: custom_link.url, class: "nav-link", target: custom_link.target %></li>
@@ -111,6 +114,15 @@
                     </div>
                 </li>
             <% end %>
+
+            <%= for custom_link <- Kaffy.ResourceAdmin.collect_links(@conn, :bottom) do %>
+              <li class="nav-item">
+                <%= link to: custom_link.url, method: custom_link.method, class: "nav-link", target: custom_link.target do %>
+                  <span class="menu-title"><%= custom_link.name %></span>
+                  <i class="fas fa-<%= custom_link.icon %> menu-icon"></i>
+                <% end %>
+              </li>
+            <% end %>
           </ul>
         </nav>
 
@@ -118,7 +130,7 @@
           <div class="content-wrapper">
             <%= if get_flash(@conn, :success) do %>
                 <div class="alert alert-success">
-                  <i class="fa fa-check"></i><strong>Success: </strong> <%= get_flash(@conn, :success) %>
+                    <i class="fa fa-check"></i><strong>Success: </strong> <%= get_flash(@conn, :success) %>
                 </div>
             <% end %>
             <%= if get_flash(@conn, :info) do %>
@@ -137,16 +149,14 @@
                 </div>
             <% end %>
 
-            <%= if Kaffy.Utils.phoenix_version?("1.4.") do %>
-              <%= render(@view_module, @view_template, assigns) %>
-            <% else %>
-              <%= @inner_content %>
-            <% end %>
+            <%= @inner_content %>
           </div>
 
           <footer class="footer">
             <div class="d-sm-flex justify-content-center justify-content-sm-between">
-              <span class="text-muted text-center text-sm-left d-block d-sm-inline-block">Copyright © 2020 Kaffy. All rights reserved.</span>
+              <%= if copyright = Kaffy.Utils.footer() do %>
+                <span class="text-muted text-center text-sm-left d-block d-sm-inline-block"><%= copyright %></span>
+              <% end %>
             </div>
           </footer>
 

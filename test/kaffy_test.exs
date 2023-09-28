@@ -1,12 +1,7 @@
 defmodule KaffyTest do
   use ExUnit.Case
-  doctest Kaffy
-  alias KaffyTest.Schemas.{Person, Pet}
-  # alias KaffyTest.Admin.PersonAdmin
-
-  test "greets the world" do
-    assert Kaffy.hello() == :world
-  end
+  
+  alias KaffyTest.Schemas.{Company, Person, Pet, Owner}
 
   test "creating a person" do
     person = %Person{}
@@ -29,8 +24,12 @@ defmodule KaffyTest do
     end
 
     test "primary_key/1 should return a primary key" do
-      assert [:id] == ResourceSchema.primary_key(Person)
-      assert [:id] == ResourceSchema.primary_key(Pet)
+      assert [:id] == ResourceSchema.primary_keys(Person)
+      assert [:id] == ResourceSchema.primary_keys(Pet)
+    end
+
+    test "primary_key/1 should return a composite key" do
+      assert [:person_id, :pet_id] == ResourceSchema.primary_keys(Owner)
     end
 
     test "kaffy_field_name/2 should return the name of the field" do
@@ -56,9 +55,16 @@ defmodule KaffyTest do
       assert "Abdullah" == ResourceSchema.kaffy_field_value(nil, person, field)
     end
 
+    test "kaffy_field_value/3 should handle preloaded structs with a custom function" do
+      person = %Person{company: %Company{name: "Dashbit"}}
+
+      options = {:company, %{name: "Company", value: fn p -> p.company.name end}}
+      assert "Dashbit" == ResourceSchema.kaffy_field_value(%{}, person, options)
+    end
+
     test "associations/1 must return all associations for the schema" do
       associations = ResourceSchema.associations(Person)
-      assert [:pets] == associations
+      assert [:pets, :company] == associations
       pet_assoc = ResourceSchema.associations(Pet)
       assert [:person] == pet_assoc
     end

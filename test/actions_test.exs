@@ -1,6 +1,6 @@
 defmodule ActionsTest do
   use ExUnit.Case
-  use Phoenix.ConnTest
+  import Phoenix.ConnTest
 
   import Mock
   alias Phoenix.Controller, as: PhoenixController
@@ -67,6 +67,41 @@ defmodule ActionsTest do
     end
   end
 
+  defmodule ActionsCompositeKeyAdmin do
+    @string_action :test_action
+    @response %{person_id: 1, pet_id: 1}
+
+    def index(_), do: []
+
+    def resource_actions(_conn) do
+      [
+        {
+          @string_action,
+          %{
+            name: "Test Action",
+            action: fn _, _ ->
+              {:ok, @response}
+            end
+          }
+        }
+      ]
+    end
+
+    def list_actions(_conn) do
+      [
+        {
+          @string_action,
+          %{
+            name: "Test Action",
+            action: fn _, _ ->
+              :ok
+            end
+          }
+        }
+      ]
+    end
+  end
+
   defmodule FakeSchema do
     use Ecto.Schema
 
@@ -99,6 +134,12 @@ defmodule ActionsTest do
           resources: [
             test: [schema: FakeSchema, admin: ActionsMapAdmin]
           ]
+        ],
+        composite: [
+          name: "composite",
+          resources: [
+            test: [schema: KaffyTest.Schemas.Owner, admin: ActionsCompositeKeyAdmin]
+          ]
         ]
       ]
     end)
@@ -123,7 +164,7 @@ defmodule ActionsTest do
           "id" => "id"
         })
 
-      assert %{"success" => _} = get_flash(result_conn)
+      assert %{"success" => _} = KaffyWeb.LayoutView.get_flash(result_conn)
     end
   end
 
@@ -137,7 +178,36 @@ defmodule ActionsTest do
           "id" => "id"
         })
 
-      assert %{"success" => _} = get_flash(result_conn)
+      assert %{"success" => _} = KaffyWeb.LayoutView.get_flash(result_conn)
+    end
+  end
+
+  test "single action handles composite primary keys", %{conn: conn} do
+    with_mock Kaffy.ResourceQuery, fetch_resource: fn _, _, _ -> %{person_id: 1, pet_id: 1} end do
+      result_conn =
+        ResourceController.single_action(conn, %{
+          "context" => "composite",
+          "resource" => "test",
+          "action_key" => "test_action",
+          "id" => "1:1"
+        })
+
+      assert %{"success" => _} = KaffyWeb.LayoutView.get_flash(result_conn)
+    end
+  end
+
+  test "list action handles composite primary keys", %{conn: conn} do
+    with_mock Kaffy.ResourceQuery,
+      fetch_list: fn _, _ -> [%{person_id: 1, pet_id: 1}, %{person_id: 1, pet_id: 2}] end do
+      result_conn =
+        ResourceController.list_action(conn, %{
+          "context" => "composite",
+          "resource" => "test",
+          "action_key" => "test_action",
+          "id" => "1:1,1:2"
+        })
+
+      assert %{"success" => _} = KaffyWeb.LayoutView.get_flash(result_conn)
     end
   end
 end
