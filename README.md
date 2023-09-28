@@ -527,22 +527,24 @@ def form_fields(_schema) do
       end
     }
   ]
- ```
+end
+```
 
- If you don't want users to be able to edit or delete records, you can define the `default_actions/1` function in your admin module:
+If you don't want users to be able to edit or delete records, you can define the `default_actions/1` function in your admin module:
 
- ```elixir
+```elixir
 defmodule MyApp.Blog.PostAdmin do
   def default_actions(_schema) do
     # default actions are [:new, :edit, :delete] by default.
     [:new] # only create records, cannot edit or delete.
   end
 end
- ```
+```
 
 #### Association Forms
 
 A `belongs_to` association should be referenced by the field name, *not* the association name. For example, a schema with the following association:
+
 
 ```elixir
 schema "my_model" do
@@ -727,14 +729,14 @@ Kaffy has support for Ecto's [embedded schemas](https://hexdocs.pm/ecto/Ecto.Sch
 
 Kaffy provides very basic search capabilities.
 
-Currently, only `:string` and `:text` fields are supported for search.
+Supported field types are: `:string`, `:textarea`, `:richtext`, `:id`, `:integer`, and `:decimal`.
 
 If you need to customize the list of fields to search against, define the `search_fields/1` function.
 
 ```elixir
 defmodule MyApp.Blog.PostAdmin do
   def search_fields(_schema) do
-    [:title, :slug, :body]
+    [:id, :title, :body, :views]
   end
 end
 ```
@@ -748,6 +750,7 @@ defmodule MyApp.Blog.PostAdmin do
     [
       :title,
       :body,
+      :view,
       category: [:name, :description]
     ]
   end
@@ -755,9 +758,8 @@ end
 ```
 
 This function takes a schema and returns a list of schema fields that you want to search.
-All the fields must be of type `:string` or `:text`.
 
-If this function is not defined, Kaffy will return all `:string` and `:text` fields by default.
+If this function is not defined, Kaffy will return all fields with supported types by default.
 
 ### Authorization
 

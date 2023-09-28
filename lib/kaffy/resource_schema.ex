@@ -299,10 +299,10 @@ defmodule Kaffy.ResourceSchema do
     Enum.filter(fields(schema), fn f ->
       field_name = elem(f, 0)
 
-      field_type(schema, f).type in [:string, :textarea, :richtext] &&
+      field_type(schema, f).type in [:string, :textarea, :richtext, :id, :integer, :decimal] &&
         field_name in persisted_fields
     end)
-    |> Enum.map(fn {f, _} -> f end)
+    |> Enum.map(fn {f, options} -> {f, options.type} end)
   end
 
   def filter_fields(_), do: nil
