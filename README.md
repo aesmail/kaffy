@@ -145,6 +145,7 @@ Follow the instructions at https://hexdocs.pm/phoenix_view/Phoenix.View.html
 
 You will also need to change `helpers: false` to `true` as shown in example below.
 ```elixir
+# in your lib/you_app_web/endpoint.ex
   def router do
     quote do
       use Phoenix.Router, helpers: true
