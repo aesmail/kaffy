@@ -1,0 +1,4 @@
+* linguist-vendored
+*.ex linguist-vendored=false
+*.exs linguist-vendored=false
+
