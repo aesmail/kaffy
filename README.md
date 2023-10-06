@@ -82,12 +82,13 @@ def deps do
   ]
 end
 ```
-as of phoenix version 1.7 you need the following dependencies
+
+If you are using `kaffy` v0.9.x with `phoenix` 1.7, you need to add `phoenix_view` to your dependencies:
 ```elixir
 def deps do
   [
     {:phoenix_view, "~> 2.0.2"},
-    {:kaffy, "~> 0.10.0"}
+    {:kaffy, "~> 0.9.4"}
   ]
 end
 ```
