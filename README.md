@@ -121,7 +121,10 @@ config :kaffy,
   router: MyAppWeb.Router, # required
   # optional keys
   admin_title: "My Awesome App",
-  admin_logo: "/images/logo.png",
+  admin_logo: [
+    url: "https://example.com/img/logo.png",
+    style: "width:200px;height:66px;"
+  ],
   admin_logo_mini: "/images/logo-mini.png",
   hide_dashboard: true,
   home_page: [schema: [:accounts, :user]],
