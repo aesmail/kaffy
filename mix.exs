@@ -2,7 +2,7 @@ defmodule Kaffy.MixProject do
   use Mix.Project
 
   @source_url "https://github.com/aesmail/kaffy"
-  @version "0.10.0-rc.3"
+  @version "0.10.0"
 
   def project do
     [
@@ -55,7 +55,8 @@ defmodule Kaffy.MixProject do
       licenses: ["MIT"],
       links: %{
         "GitHub" => @source_url,
-        "Demo" => "https://kaffy.fly.dev/admin/"
+        "Demo" => "https://kaffy.fly.dev/admin/",
+        "Sponsor" => "https://github.com/sponsors/aesmail"
       }
     ]
   end
