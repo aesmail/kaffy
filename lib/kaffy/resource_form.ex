@@ -357,23 +357,28 @@ defmodule Kaffy.ResourceForm do
                 number_input(form, field,
                   class: "form-control",
                   id: field,
+                  disabled: opts[:readonly],
                   aria_describedby: field
                 ),
-                content_tag :div, class: "input-group-append" do
-                  content_tag :span, class: "input-group-text", id: field do
-                    link(content_tag(:i, "", class: "fas fa-search"),
-                      to:
-                        Kaffy.Utils.router().kaffy_resource_path(
-                          conn,
-                          :index,
-                          target_context,
-                          target_resource,
-                          c: conn.params["context"],
-                          r: conn.params["resource"],
-                          pick: field
-                        ),
-                      id: "pick-raw-resource"
-                    )
+                if opts[:readonly] do
+                  ""
+                else
+                  content_tag :div, class: "input-group-append" do
+                    content_tag :span, class: "input-group-text", id: field do
+                      link(content_tag(:i, "", class: "fas fa-search"),
+                        to:
+                          Kaffy.Utils.router().kaffy_resource_path(
+                            conn,
+                            :index,
+                            target_context,
+                            target_resource,
+                            c: conn.params["context"],
+                            r: conn.params["resource"],
+                            pick: field
+                          ),
+                        id: "pick-raw-resource"
+                      )
+                    end
                   end
                 end
               ]
@@ -410,7 +415,8 @@ defmodule Kaffy.ResourceForm do
                 Enum.map(options, fn o ->
                   {Map.get(o, string_field, "Resource ##{o.id}"), o.id}
                 end),
-              class: "custom-select"
+              class: "custom-select",
+              disabled: opts[:readonly]
             )
         end
 
