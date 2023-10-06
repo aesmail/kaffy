@@ -51,7 +51,7 @@ without the need to touch the current codebase. It was inspired by django's love
 
 ## Sponsors
 
-If you or your company wants to sponsor the development of Kaffy, please reach out to me at <aesmail@hey.com>.
+Sponsor the [development of Kaffy](https://github.com/sponsors/aesmail) through GitHub Sponsors.
 
 ## Demo
 
@@ -78,7 +78,7 @@ The latest released `major.minor` version will be supported. For example, if the
 ```elixir
 def deps do
   [
-    {:kaffy, "~> 0.9.4"}
+    {:kaffy, "~> 0.10.0"}
   ]
 end
 ```
@@ -87,7 +87,7 @@ as of phoenix version 1.7 you need the following dependencies
 def deps do
   [
     {:phoenix_view, "~> 2.0.2"},
-    {:kaffy, "~> 0.9.4"}
+    {:kaffy, "~> 0.10.0"}
   ]
 end
 ```
@@ -143,11 +143,12 @@ end
 Note that if you use Phoenix version 1.7 you also need to manually add the use of phoenix views in your project.
 Follow the instructions at https://hexdocs.pm/phoenix_view/Phoenix.View.html
 
-You will also need to change `helpers: false` to `true` as shown in example below.
+You will also need to change `helpers: false` to `true` in the `myapp_web.ex` file as shown in example below.
 ```elixir
+  # lib/myapp_web.ex
   def router do
     quote do
-      use Phoenix.Router, helpers: true
+      use Phoenix.Router, helpers: true # <- set to true
 ```
 
 ## Customizations
