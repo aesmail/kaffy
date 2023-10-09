@@ -332,7 +332,7 @@ defmodule Kaffy.Utils do
   end
 
   @doc """
-  Returns true if `thing` is a module, false otherwise.
+  Returns true if `thing` is an elixir module, false otherwise.
   """
   @spec is_module(module()) :: boolean()
   def is_module(thing), do: is_atom(thing) && function_exported?(thing, :__info__, 1)
@@ -432,8 +432,12 @@ defmodule Kaffy.Utils do
 
   defp get_schemas(mods) do
     Enum.filter(mods, fn m ->
-      functions = m.__info__(:functions)
-      Keyword.has_key?(functions, :__schema__) && Map.has_key?(m.__struct__, :__meta__)
+      if is_module(m) do
+        functions = m.__info__(:functions)
+        Keyword.has_key?(functions, :__schema__) && Map.has_key?(m.__struct__, :__meta__)
+      else
+        false
+      end
     end)
   end
 
