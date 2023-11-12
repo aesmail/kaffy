@@ -4,7 +4,7 @@ defmodule Kaffy.Pagination do
   # number of pages to show on the showleft/right of the current page
   @pagination_delta 2
 
-  def get_pages(0, 0), do: []
+  def get_pages(1, 0), do: []
 
   def get_pages(current_page, total_page) do
     showleft = current_page - @pagination_delta
