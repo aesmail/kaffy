@@ -24,4 +24,4 @@ defmodule Kaffy.InflectorTest do
   defp assert_plural(singular, plural) do
     assert Inflector.pluralize(singular) == plural
   end
- end
+end
