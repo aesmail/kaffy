@@ -1,6 +1,6 @@
 defmodule KaffyTest do
   use ExUnit.Case
-  
+
   alias KaffyTest.Schemas.{Company, Person, Pet, Owner}
 
   test "creating a person" do

@@ -2,7 +2,6 @@ defmodule KaffyWeb.ResourceController do
   @moduledoc false
 
   use Phoenix.Controller, namespace: KaffyWeb
-  use Phoenix.HTML
   alias Kaffy.Pagination
 
   def dashboard(conn, %{"context" => context}) do
