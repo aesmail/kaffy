@@ -5,7 +5,7 @@ defmodule KaffyWeb.LayoutView do
     root: "lib/kaffy_web/templates",
     namespace: KaffyWeb
 
-  use Phoenix.HTML
+  use PhoenixHTMLHelpers
 
   def get_flash(conn), do: conn.assigns.flash
 
