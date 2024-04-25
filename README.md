@@ -63,8 +63,8 @@ Starting with v0.10.0, Kaffy will officially support the latest two phoenix vers
 
 | Kaffy   | Supported phoenix versions |
 |---------|----------------------------|
-| v0.10.0 | 1.6, 1.7                   |
-| v0.9.X  | 1.5, 1.6, 1.7              |
+| v0.10.0 | 1.6, 1.7.0                 |
+| v0.9.X  | 1.5, 1.6, 1.7.0            |
 |         |                            |
 
 
