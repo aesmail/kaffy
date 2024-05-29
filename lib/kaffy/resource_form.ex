@@ -261,6 +261,9 @@ defmodule Kaffy.ResourceForm do
       :select ->
         select(form, field, [class: "custom-select"] ++ opts)
 
+      :color ->
+        color_input(form, field, opts)
+
       :date ->
         flatpickr_date(form, field, opts)
 
