@@ -25,7 +25,11 @@ defmodule Fixtures.TravelSchema do
     field(:description, :string)
     field(:number_of_people, :integer)
     field(:requires_passport, :boolean)
-    field(:travel_type, Ecto.Enum, values: [business: "business", leisure: "leisure", other: "undisclosed"])
+
+    field(:travel_type, Ecto.Enum,
+      values: [business: "business", leisure: "leisure", other: "undisclosed"]
+    )
+
     field(:start_time, :utc_datetime)
     field(:local_start_time, :naive_datetime)
     field(:end_date, :date)
