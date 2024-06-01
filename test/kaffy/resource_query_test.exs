@@ -7,6 +7,13 @@ defmodule Kaffy.ResourceQueryTest do
   defmodule PetAdmin do
   end
 
+  defmodule WithCustomQueryAdmin do
+    def custom_index_query(_conn, _resource, query) do
+      query
+      |> where([p], p.name == "Fido")
+    end
+  end
+
   setup_all do
     Application.put_env(:kaffy, :ecto_repo, KaffyTest.Repo)
 
@@ -18,6 +25,10 @@ defmodule Kaffy.ResourceQueryTest do
             pets: [
               schema: KaffyTest.Schemas.Pet,
               admin: PetAdmin
+            ],
+            with_custom_query: [
+              schema: KaffyTest.Schemas.Pet,
+              admin: WithCustomQueryAdmin
             ]
           ]
         ]
@@ -128,6 +139,13 @@ defmodule Kaffy.ResourceQueryTest do
       returned_pet_ids = Enum.map(returned_pets, & &1.id)
       sorted_pet_ids = Enum.reverse(Enum.sort(Enum.map(pets, & &1.id)))
       assert returned_pet_ids == sorted_pet_ids
+    end
+
+    test "returns custom query results and page count", %{conn: conn} do
+      insert_list(3, :pet)
+      _pet = insert(:pet, name: "Fido")
+      resource = Kaffy.Utils.get_resource(conn, "admin", "with_custom_query")
+      assert {1, [%Pet{name: "Fido"}]} = ResourceQuery.list_resource(conn, resource, %{})
     end
   end
 end

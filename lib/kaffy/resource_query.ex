@@ -14,9 +14,18 @@ defmodule Kaffy.ResourceQuery do
     current_offset = (page - 1) * per_page
     schema = resource[:schema]
 
+    {query, opts} =
+      case Kaffy.ResourceAdmin.custom_index_query(conn, resource, schema) do
+        {custom_query, opts} ->
+          {custom_query, opts}
+
+        custom_query ->
+          {custom_query, []}
+      end
+
     {all, paged} =
       build_query(
-        schema,
+        query,
         search_fields,
         filtered_fields,
         search,
@@ -25,18 +34,10 @@ defmodule Kaffy.ResourceQuery do
         current_offset
       )
 
-    {current_page, opts} =
-      case Kaffy.ResourceAdmin.custom_index_query(conn, resource, paged) do
-        {custom_query, opts} ->
-          {Kaffy.Utils.repo().all(custom_query, opts), opts}
-
-        custom_query ->
-          {Kaffy.Utils.repo().all(custom_query), []}
-      end
-
+    results = Kaffy.Utils.repo().all(paged, opts)
     do_cache = if search == "" and Enum.empty?(filtered_fields), do: true, else: false
     all_count = cached_total_count(schema, do_cache, all, opts)
-    {all_count, current_page}
+    {all_count, results}
   end
 
   def get_ordering(resource, params) do
