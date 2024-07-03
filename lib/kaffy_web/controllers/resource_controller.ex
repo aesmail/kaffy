@@ -360,6 +360,10 @@ defmodule KaffyWeb.ResourceController do
         put_flash(conn, :success, "Action performed successfully")
         |> redirect(to: Kaffy.Utils.router().kaffy_resource_path(conn, :index, context, resource))
 
+      {:ok, redirect_url} ->
+        put_flash(conn, :success, "Action performed successfully, redirecting back")
+        |> redirect(external: redirect_url)
+
       {:error, error_msg} ->
         put_flash(conn, :error, error_msg)
         |> redirect(to: Kaffy.Utils.router().kaffy_resource_path(conn, :index, context, resource))
