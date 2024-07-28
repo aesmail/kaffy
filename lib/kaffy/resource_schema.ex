@@ -176,12 +176,15 @@ defmodule Kaffy.ResourceSchema do
         value.(schema)
 
       is_map(value) && Map.has_key?(value, :__struct__) ->
-        if value.__struct__ in [NaiveDateTime, DateTime, Date, Time] do
-          value
-        else
-          Map.from_struct(value)
-          |> Map.drop([:__meta__])
-          |> Kaffy.Utils.json().encode!(escape: :html_safe, pretty: true)
+        cond do
+          value.__struct__ in [NaiveDateTime, DateTime, Date, Time] ->
+            value
+          value.__struct__ in [Geo.Point] ->
+            Kaffy.Utils.json().encode!(value, escape: :html_safe, pretty: true)
+          true ->
+            Map.from_struct(value)
+            |> Map.drop([:__meta__])
+            |> Kaffy.Utils.json().encode!(escape: :html_safe, pretty: true)
         end
 
       Kaffy.Utils.is_module(ft) && Keyword.has_key?(ft.__info__(:functions), :render_index) ->
@@ -206,12 +209,15 @@ defmodule Kaffy.ResourceSchema do
         value
 
       is_map(value) && Map.has_key?(value, :__struct__) ->
-        if value.__struct__ in [NaiveDateTime, DateTime, Date, Time] do
-          value
-        else
-          Map.from_struct(value)
-          |> Map.drop([:__meta__])
-          |> Kaffy.Utils.json().encode!(escape: :html_safe, pretty: true)
+        cond do
+          value.__struct__ in [NaiveDateTime, DateTime, Date, Time] ->
+            value
+          value.__struct__ in [Geo.Point] ->
+            Kaffy.Utils.json().encode!(value, escape: :html_safe, pretty: true)
+          true ->
+            Map.from_struct(value)
+            |> Map.drop([:__meta__])
+            |> Kaffy.Utils.json().encode!(escape: :html_safe, pretty: true)
         end
 
       is_map(value) ->
@@ -318,6 +324,9 @@ defmodule Kaffy.ResourceSchema do
         true
 
       {_f, %{type: {:array, _}}} ->
+        true
+
+      {_f, %{type: Geo.PostGIS.Geometry}} ->
         true
 
       f when is_atom(f) ->
