@@ -127,7 +127,7 @@ defmodule Kaffy.ResourceForm do
           false -> text_or_assoc(conn, schema, form, field, opts)
         end
 
-      :binary_id ->
+      t when t in [:binary_id, Ecto.ULID] ->
         case field in Kaffy.ResourceSchema.primary_keys(schema) do
           true -> text_input(form, field, opts)
           false -> text_or_assoc(conn, schema, form, field, opts)
