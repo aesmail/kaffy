@@ -191,7 +191,11 @@ defmodule Kaffy.ResourceSchema do
         Kaffy.Utils.json().encode!(value, escape: :html_safe, pretty: true)
 
       is_binary(value) ->
-        value
+        if String.valid?(value) do
+          value
+        else
+          Base.encode64(value)
+        end
 
       true ->
         kaffy_field_value(schema, field)
@@ -218,7 +222,11 @@ defmodule Kaffy.ResourceSchema do
         Kaffy.Utils.json().encode!(value, escape: :html_safe, pretty: true)
 
       is_binary(value) ->
-        String.slice(value, 0, 140)
+        if String.valid?(value) do
+          String.slice(value, 0, 140)
+        else
+          Base.encode64(String.slice(value, 0, 140))
+        end
 
       is_list(value) ->
         pretty_list(value)
@@ -322,6 +330,17 @@ defmodule Kaffy.ResourceSchema do
 
       f when is_atom(f) ->
         f == :map
+
+      _ ->
+        false
+    end)
+  end
+
+  def get_binary_fields(schema) do
+    get_all_fields(schema)
+    |> Enum.filter(fn
+      {_f, %{type: :binary}} ->
+        true
 
       _ ->
         false

@@ -152,6 +152,14 @@ defmodule Kaffy.ResourceForm do
       :decimal ->
         text_input(form, field, opts)
 
+      :binary ->
+        value =
+          data
+          |> Map.get(field, "")
+          |> Base.encode64()
+
+        text_input(form, field, [value: value] ++ opts)
+
       t when t in [:boolean, :boolean_checkbox] ->
         checkbox_opts = add_class(opts, "custom-control-input")
         label_opts = add_class(opts, "custom-control-label")
