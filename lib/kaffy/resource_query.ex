@@ -136,21 +136,7 @@ defmodule Kaffy.ResourceQuery do
 
           {term, term_type} =
             case Decimal.parse(term) do
-              {:ok, value} ->
-                # this is the return value for the decimal package pre-2.0
-                number = if value.exp >= 0, do: :integer, else: :decimal
-
-                case number do
-                  :integer ->
-                    v = Decimal.to_integer(value) |> to_string()
-                    {v, number}
-
-                  :decimal ->
-                    {term, number}
-                end
-
               {value, ""} ->
-                # this is the return value for the decimal package since 2.0
                 number = if Decimal.integer?(value), do: :integer, else: :decimal
 
                 case number do
