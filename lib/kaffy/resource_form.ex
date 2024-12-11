@@ -282,6 +282,14 @@ defmodule Kaffy.ResourceForm do
       :utc_datetime_usec ->
         flatpickr_datetime_usec(form, field, opts)
 
+      Geo.PostGIS.Geometry ->
+        value =
+          data
+          |> Map.get(field, "")
+          |> Kaffy.Utils.json().encode!(escape: :html_safe, pretty: true)
+
+        textarea(form, field, [value: value, rows: 4, placeholder: "JSON Content"] ++ opts)
+
       _ ->
         text_input(form, field, opts)
     end
