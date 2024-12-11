@@ -9,9 +9,9 @@
             <div class="clearfix">
                 <h4 class="card-title float-left"><%= @widget.title %></h4>
             </div>
-            <%# <div class="kaffy-chart-container" style="position:relative;height:200px;"> %>
+            <% # <div class="kaffy-chart-container" style="position:relative;height:200px;"> %>
                 <canvas id="<%= :crypto.strong_rand_bytes(6) |> Base.url_encode64() %>" class="mt-2"></canvas>
-            <%# </div> %>
+            <% # </div> %>
         </div>
     </div>
 </div>
