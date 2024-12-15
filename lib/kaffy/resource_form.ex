@@ -143,6 +143,9 @@ defmodule Kaffy.ResourceForm do
       :textarea ->
         textarea(form, field, opts)
 
+      :password ->
+        password_input(form, field, opts)
+
       :integer ->
         number_input(form, field, opts)
 
