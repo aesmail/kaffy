@@ -163,7 +163,7 @@ defmodule Kaffy.ResourceQuery do
                      term_type == :string do
                   term = "%#{term}%"
 
-                  from(r in current_query,
+                  from([..., r] in current_query,
                     or_where: ilike(type(field(r, ^f), :string), ^term)
                   )
                 else
@@ -171,7 +171,7 @@ defmodule Kaffy.ResourceQuery do
                        term_type == :decimal do
                     current_query
                   else
-                    from(r in current_query,
+                    from([..., r] in current_query,
                       or_where: field(r, ^f) == ^term
                     )
                   end
