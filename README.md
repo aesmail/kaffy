@@ -949,7 +949,7 @@ These callbacks are:
 - `after_update/2`
 - `after_insert/2`
 
-`before_*` functions are passed the current `conn` and a changeset. `after_*` functions are passed the current `conn` and the record itself. With the exception of `before_delete/2` and `after_delete/2` which are both passed the current `conn` and the record itself.
+`before_*` functions are passed the current `conn` and a changeset. `after_*` functions are passed the current `conn` and the record itself. 
 
 - `before_(create|save|update)/2` must return `{:ok, changeset}` to continue.
 - `before_delete/2` must return `{:ok, record}` to continue.
