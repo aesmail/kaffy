@@ -179,13 +179,20 @@ defmodule Kaffy.ResourceSchema do
         cond do
           value.__struct__ in [NaiveDateTime, DateTime, Date, Time] ->
             value
+
           value.__struct__ in [Geo.Point] ->
             Kaffy.Utils.json().encode!(value, escape: :html_safe, pretty: true)
+
           true ->
             Map.from_struct(value)
             |> Map.drop([:__meta__])
             |> Kaffy.Utils.json().encode!(escape: :html_safe, pretty: true)
         end
+
+      is_tuple(ft) && elem(ft, 0) == :parameterized &&
+          Keyword.has_key?(elem(elem(ft, 1), 0).__info__(:functions), :render_index) ->
+        {:parameterized, {pt, _opts}} = ft
+        pt.render_index(conn, schema, field, options)
 
       Kaffy.Utils.is_module(ft) && Keyword.has_key?(ft.__info__(:functions), :render_index) ->
         ft.render_index(conn, schema, field, options)
@@ -216,8 +223,10 @@ defmodule Kaffy.ResourceSchema do
         cond do
           value.__struct__ in [NaiveDateTime, DateTime, Date, Time] ->
             value
+
           value.__struct__ in [Geo.Point] ->
             Kaffy.Utils.json().encode!(value, escape: :html_safe, pretty: true)
+
           true ->
             Map.from_struct(value)
             |> Map.drop([:__meta__])

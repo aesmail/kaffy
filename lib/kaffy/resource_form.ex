@@ -384,6 +384,7 @@ defmodule Kaffy.ResourceForm do
                       disabled: opts[:readonly],
                       aria_describedby: field
                     )
+
                   _ ->
                     text_input(form, field,
                       class: "form-control",
@@ -456,6 +457,7 @@ defmodule Kaffy.ResourceForm do
         case type do
           :id ->
             number_input(form, field, opts)
+
           _ ->
             text_input(form, field, opts)
         end
@@ -501,11 +503,8 @@ defmodule Kaffy.ResourceForm do
   def kaffy_input(conn, changeset, form, field, options) do
     ft = Kaffy.ResourceSchema.field_type(changeset.data.__struct__, field)
 
-    case Kaffy.Utils.is_module(ft) && Keyword.has_key?(ft.__info__(:functions), :render_form) do
-      true ->
-        ft.render_form(conn, changeset, form, field, options)
-
-      false ->
+    case custom_field_type(ft) do
+      {:ok, :default_type} ->
         {error_msg, error_class} = get_field_error(changeset, field)
         help_text = form_help_text({field, options})
 
@@ -529,10 +528,23 @@ defmodule Kaffy.ResourceForm do
 
           [label_tag, field_tag, field_feeback]
         end
+
+      {:ok, ft} ->
+        ft.render_form(conn, changeset, form, field, options)
     end
   end
 
   defp add_class(opts, class) do
     Keyword.update(opts, :class, class, &"#{&1} #{class}")
+  end
+
+  defp custom_field_type({:parameterized, {ft, _opts}}), do: custom_field_type(ft)
+
+  defp custom_field_type(ft) do
+    if Kaffy.Utils.is_module(ft) && Keyword.has_key?(ft.__info__(:functions), :render_form) do
+      {:ok, ft}
+    else
+      {:ok, :default_type}
+    end
   end
 end
