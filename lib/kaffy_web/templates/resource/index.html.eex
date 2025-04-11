@@ -124,19 +124,19 @@
                       <div class="form-group">
                         <%= cond do %>
                           <% Map.has_key?(extra, :use_select) && extra.use_select -> %>
-                          <% Map.has_key?(extra, :type) && extra.type == :select -> %>
+                          <% Map.get(extra, :type) == :select -> %>
                             <label><%= extra.title %></label>
                             <select data-title="<%= extra.title %>" name="kaffy-input[<%= extra.name %>]" class="form-select w-100 kaffy-list-action-input">
                               <%= for [text, value] <- extra.options do %>
                                 <option value="<%= value %>"><%= text %></option>
                               <% end %>
                             </select>
-                          <% Map.has_key?(extra, :type) && extra.type == :textarea -> %>
+                          <% Map.get(extra, :type) == :textarea -> %>
                             <label><%= extra.title %></label>
-                            <textarea name="kaffy-input[<%= extra.name %>]" class="form-control kaffy-list-action-input" rows="4"><%= extra.default %></textarea>
+                            <textarea name="kaffy-input[<%= extra.name %>]" class="form-control kaffy-list-action-input" rows="<%= Map.get(extra, :rows, 4) %>"><%= Map.get(extra, :default, "") %></textarea>
                           <% true -> %>
                             <label><%= extra.title %></label>
-                            <input type="text" data-title="<%= extra.title %>" name="kaffy-input[<%= extra.name %>]" value="<%= extra.default %>" class="form-control kaffy-list-action-input" />
+                            <input type="text" data-title="<%= extra.title %>" name="kaffy-input[<%= extra.name %>]" value="<%= Map.get(extra, :default, "") %>" class="form-control kaffy-list-action-input" />
                         <% end %>
                       </div>
                     <% end %>
