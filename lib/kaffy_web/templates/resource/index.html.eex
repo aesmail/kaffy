@@ -122,16 +122,21 @@
                   <div class="modal-body">
                     <%= for extra <- extra_inputs do %>
                       <div class="form-group">
-                        <%= if Map.has_key?(extra, :use_select) && extra.use_select do %>
-                          <label><%= extra.title %></label>
-                          <select data-title="<%= extra.title %>" name="kaffy-input[<%= extra.name %>]" class="form-select w-100 kaffy-list-action-input">
-                            <%= for [text, value] <- extra.options do %>
-                              <option value="<%= value %>"><%= text %></option>
-                            <% end %>
-                          </select>
-                        <% else %>
-                          <label><%= extra.title %></label>
-                          <input type="text" data-title="<%= extra.title %>" name="kaffy-input[<%= extra.name %>]" value="<%= extra.default %>" class="form-control kaffy-list-action-input" />
+                        <%= cond do %>
+                          <% Map.has_key?(extra, :use_select) && extra.use_select -> %>
+                          <% Map.has_key?(extra, :type) && extra.type == :select -> %>
+                            <label><%= extra.title %></label>
+                            <select data-title="<%= extra.title %>" name="kaffy-input[<%= extra.name %>]" class="form-select w-100 kaffy-list-action-input">
+                              <%= for [text, value] <- extra.options do %>
+                                <option value="<%= value %>"><%= text %></option>
+                              <% end %>
+                            </select>
+                          <% Map.has_key?(extra, :type) && extra.type == :textarea -> %>
+                            <label><%= extra.title %></label>
+                            <textarea name="kaffy-input[<%= extra.name %>]" class="form-control kaffy-list-action-input" rows="4"><%= extra.default %></textarea>
+                          <% true -> %>
+                            <label><%= extra.title %></label>
+                            <input type="text" data-title="<%= extra.title %>" name="kaffy-input[<%= extra.name %>]" value="<%= extra.default %>" class="form-control kaffy-list-action-input" />
                         <% end %>
                       </div>
                     <% end %>

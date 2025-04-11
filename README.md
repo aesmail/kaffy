@@ -919,6 +919,7 @@ The defined `:inputs` option will display a popup with a form that contains defi
 `:inputs` should be a list of maps. Each input must have a `:name` and a `:title`.
 An optional key in the input map is `:use_select`, which defaults to `false`.
 If `true`, the input becomes a `select` instead by using a passed in list called `:options`, which is a list of lists formatted like so `[[display, value], [display, value]]`.
+An optional key in the input map is `:type`. If set to `:textarea`, the input becomes a textarea instead of a text input. For textarea inputs, a `:default` value is required.
 If `false`, a `:default` value is required for the text input.
 After submitting the popup form, the extra values, along with the selected resources, are passed to the `:action` function.
 In the example above, `change_price/2` will receive the selected products with a map of extra inputs, like: `%{"new_price" => "3.5"}` for example.
