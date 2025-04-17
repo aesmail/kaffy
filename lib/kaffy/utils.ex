@@ -433,7 +433,7 @@ defmodule Kaffy.Utils do
   defp get_schemas(mods) do
     Enum.filter(mods, fn m ->
       functions = m.__info__(:functions)
-      Keyword.has_key?(functions, :__schema__) && Map.has_key?(m.__struct__, :__meta__)
+      Keyword.has_key?(functions, :__schema__) && Map.has_key?(m.__struct__(), :__meta__)
     end)
   end
 
