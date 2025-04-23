@@ -176,12 +176,15 @@ defmodule Kaffy.ResourceSchema do
         value.(schema)
 
       is_map(value) && Map.has_key?(value, :__struct__) ->
-        if value.__struct__ in [NaiveDateTime, DateTime, Date, Time] do
-          value
-        else
-          Map.from_struct(value)
-          |> Map.drop([:__meta__])
-          |> Kaffy.Utils.json().encode!(escape: :html_safe, pretty: true)
+        cond do
+          value.__struct__ in [NaiveDateTime, DateTime, Date, Time] ->
+            value
+          value.__struct__ in [Geo.Point] ->
+            Kaffy.Utils.json().encode!(value, escape: :html_safe, pretty: true)
+          true ->
+            Map.from_struct(value)
+            |> Map.drop([:__meta__])
+            |> Kaffy.Utils.json().encode!(escape: :html_safe, pretty: true)
         end
 
       Kaffy.Utils.is_module(ft) && Keyword.has_key?(ft.__info__(:functions), :render_index) ->
@@ -191,7 +194,11 @@ defmodule Kaffy.ResourceSchema do
         Kaffy.Utils.json().encode!(value, escape: :html_safe, pretty: true)
 
       is_binary(value) ->
-        value
+        if String.valid?(value) do
+          value
+        else
+          Base.encode64(value)
+        end
 
       true ->
         kaffy_field_value(schema, field)
@@ -206,19 +213,26 @@ defmodule Kaffy.ResourceSchema do
         value
 
       is_map(value) && Map.has_key?(value, :__struct__) ->
-        if value.__struct__ in [NaiveDateTime, DateTime, Date, Time] do
-          value
-        else
-          Map.from_struct(value)
-          |> Map.drop([:__meta__])
-          |> Kaffy.Utils.json().encode!(escape: :html_safe, pretty: true)
+        cond do
+          value.__struct__ in [NaiveDateTime, DateTime, Date, Time] ->
+            value
+          value.__struct__ in [Geo.Point] ->
+            Kaffy.Utils.json().encode!(value, escape: :html_safe, pretty: true)
+          true ->
+            Map.from_struct(value)
+            |> Map.drop([:__meta__])
+            |> Kaffy.Utils.json().encode!(escape: :html_safe, pretty: true)
         end
 
       is_map(value) ->
         Kaffy.Utils.json().encode!(value, escape: :html_safe, pretty: true)
 
       is_binary(value) ->
-        String.slice(value, 0, 140)
+        if String.valid?(value) do
+          String.slice(value, 0, 140)
+        else
+          Base.encode64(String.slice(value, 0, 140))
+        end
 
       is_list(value) ->
         pretty_list(value)
@@ -328,8 +342,22 @@ defmodule Kaffy.ResourceSchema do
       {_f, %{type: {:array, _}}} ->
         true
 
+      {_f, %{type: Geo.PostGIS.Geometry}} ->
+        true
+
       f when is_atom(f) ->
         f == :map
+
+      _ ->
+        false
+    end)
+  end
+
+  def get_binary_fields(schema) do
+    get_all_fields(schema)
+    |> Enum.filter(fn
+      {_f, %{type: :binary}} ->
+        true
 
       _ ->
         false

@@ -2,7 +2,7 @@ defmodule Kaffy.MixProject do
   use Mix.Project
 
   @source_url "https://github.com/aesmail/kaffy"
-  @version "0.10.2"
+  @version "0.10.3"
 
   def project do
     [
@@ -42,7 +42,8 @@ defmodule Kaffy.MixProject do
       {:mock, "~> 0.3.3", only: :test},
       {:ecto, "~> 3.0"},
       {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
-      {:jason, "~> 1.3", only: :test}
+      {:jason, "~> 1.3", only: :test},
+      {:decimal, "~> 2.2", optional: true}
     ]
   end
 

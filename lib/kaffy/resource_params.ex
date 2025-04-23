@@ -3,6 +3,7 @@ defmodule Kaffy.ResourceParams do
 
   def decode_map_fields(resource, schema, params) do
     map_fields = ResourceSchema.get_map_fields(schema) |> Enum.map(fn {f, _} -> to_string(f) end)
+    binary_fields = ResourceSchema.get_binary_fields(schema) |> Enum.map(fn {f, _} -> to_string(f) end)
 
     attrs =
       Map.get(params, resource, %{})
@@ -12,9 +13,13 @@ defmodule Kaffy.ResourceParams do
             {k, v}
 
           false ->
-            case k in map_fields && String.length(v) > 0 do
-              true -> {k, Kaffy.Utils.json().decode!(v)}
-              false -> {k, v}
+            if k in binary_fields && String.length(v) > 0 do
+              {k, Base.decode64!(v)}
+            else
+              case k in map_fields && String.length(v) > 0 do
+                true -> {k, Kaffy.Utils.json().decode!(v)}
+                false -> {k, v}
+              end
             end
         end
       end)
