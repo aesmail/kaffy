@@ -120,7 +120,7 @@ defmodule Kaffy.ResourceQuery do
          ordering,
          current_offset
        ) do
-    query = from(s in schema)
+    query = from(s in schema, as: ^schema)
 
     query =
       cond do
@@ -152,49 +152,11 @@ defmodule Kaffy.ResourceQuery do
                 {term, :string}
             end
 
-          Enum.reduce(search_fields, query, fn
-            {association, fields}, q when is_list(fields) ->
-              query = from(s in q, left_join: a in assoc(s, ^association))
-
-              Enum.reduce(fields, query, fn f, current_query ->
-                the_association = Kaffy.ResourceSchema.association(schema, association).queryable
-
-                if Kaffy.ResourceSchema.field_type(the_association, f) == :string or
-                     term_type == :string do
-                  term = "%#{term}%"
-
-                  from([..., r] in current_query,
-                    or_where: ilike(type(field(r, ^f), :string), ^term)
-                  )
-                else
-                  if Kaffy.ResourceSchema.field_type(schema, f) in [:id, :integer] and
-                       term_type == :decimal do
-                    current_query
-                  else
-                    from([..., r] in current_query,
-                      or_where: field(r, ^f) == ^term
-                    )
-                  end
-                end
-              end)
-
-            {f, t}, q when is_atom(t) ->
-              if Kaffy.ResourceSchema.field_type(schema, f) == :string or term_type == :string do
-                term = "%#{term}%"
-                from(s in q, or_where: ilike(type(field(s, ^f), :string), ^term))
-              else
-                if Kaffy.ResourceSchema.field_type(schema, f) in [:id, :integer] and
-                     term_type == :decimal do
-                  q
-                else
-                  from(s in q, or_where: field(s, ^f) == ^term)
-                end
-              end
-
-            f, q ->
-              term = "%#{term}%"
-              from(s in q, or_where: ilike(type(field(s, ^f), :string), ^term))
-          end)
+          Enum.reduce(
+            search_fields,
+            query,
+            &reduce_search_fields(&1, &2, schema, term_type, term)
+          )
       end
 
     query = build_filtered_fields_query(query, filtered_fields)
@@ -218,6 +180,35 @@ defmodule Kaffy.ResourceQuery do
     Enum.reduce(key_pairs, schema, fn pair, query_acc ->
       from(query_acc, or_where: ^pair)
     end)
+  end
+
+  defp reduce_search_fields(search_fields, q, schema, term_type, term) do
+    case search_fields do
+      {association, fields} when is_list(fields) ->
+        query = from({^schema, s} in q, left_join: a in assoc(s, ^association), as: ^association)
+
+        Enum.reduce(fields, query, &reduce_search_fields(&1, &2, association, term_type, term))
+
+      {f, t} when is_atom(t) ->
+        field_type = Kaffy.ResourceSchema.field_type(schema, f)
+        add_where(field_type, term_type, term, schema, q, f)
+
+      f ->
+        add_where(:string, term_type, term, schema, q, f)
+    end
+  end
+
+  defp add_where(field_type, term_type, term, schema, q, f) do
+    if field_type == :string or term_type == :string do
+      term = "%#{term}%"
+      from({^schema, s} in q, or_where: ilike(type(field(s, ^f), :string), ^term))
+    else
+      if field_type in [:id, :integer] and term_type == :decimal do
+        q
+      else
+        from({^schema, s} in q, or_where: field(s, ^f) == ^term)
+      end
+    end
   end
 
   defp build_filtered_fields_query(query, []), do: query
