@@ -117,7 +117,7 @@ defmodule Kaffy.ResourceForm do
         value =
           data
           |> Map.get(field, "")
-          |> Kaffy.Utils.json().encode!(escape: :html_safe, pretty: true)
+          |> Kaffy.Utils.json().encode!()
 
         textarea(form, field, [value: value, rows: 4, placeholder: "JSON Content"] ++ opts)
 
@@ -190,7 +190,7 @@ defmodule Kaffy.ResourceForm do
 
         value =
           cond do
-            is_map(value) -> Kaffy.Utils.json().encode!(value, escape: :html_safe, pretty: true)
+            is_map(value) -> Kaffy.Utils.json().encode!(value)
             true -> value
           end
 
@@ -261,7 +261,7 @@ defmodule Kaffy.ResourceForm do
             value =
               data
               |> Map.get(field, "")
-              |> Kaffy.Utils.json().encode!(escape: :html_safe, pretty: true)
+              |> Kaffy.Utils.json().encode!()
 
             textarea(form, field, [value: value, rows: 4, placeholder: "JSON Content"] ++ opts)
         end
@@ -297,7 +297,7 @@ defmodule Kaffy.ResourceForm do
         value =
           data
           |> Map.get(field, "")
-          |> Kaffy.Utils.json().encode!(escape: :html_safe, pretty: true)
+          |> Kaffy.Utils.json().encode!()
 
         textarea(form, field, [value: value, rows: 4, placeholder: "JSON Content"] ++ opts)
 
