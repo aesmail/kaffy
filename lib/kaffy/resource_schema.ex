@@ -179,19 +179,21 @@ defmodule Kaffy.ResourceSchema do
         cond do
           value.__struct__ in [NaiveDateTime, DateTime, Date, Time] ->
             value
+
           value.__struct__ in [Geo.Point] ->
-            Kaffy.Utils.json().encode!(value, escape: :html_safe, pretty: true)
+            Kaffy.Utils.json().encode!(value)
+
           true ->
             Map.from_struct(value)
             |> Map.drop([:__meta__])
-            |> Kaffy.Utils.json().encode!(escape: :html_safe, pretty: true)
+            |> Kaffy.Utils.json().encode!()
         end
 
       Kaffy.Utils.is_module(ft) && Keyword.has_key?(ft.__info__(:functions), :render_index) ->
         ft.render_index(conn, schema, field, options)
 
       is_map(value) ->
-        Kaffy.Utils.json().encode!(value, escape: :html_safe, pretty: true)
+        Kaffy.Utils.json().encode!(value)
 
       is_binary(value) ->
         if String.valid?(value) do
@@ -216,16 +218,18 @@ defmodule Kaffy.ResourceSchema do
         cond do
           value.__struct__ in [NaiveDateTime, DateTime, Date, Time] ->
             value
+
           value.__struct__ in [Geo.Point] ->
-            Kaffy.Utils.json().encode!(value, escape: :html_safe, pretty: true)
+            Kaffy.Utils.json().encode!(value)
+
           true ->
             Map.from_struct(value)
             |> Map.drop([:__meta__])
-            |> Kaffy.Utils.json().encode!(escape: :html_safe, pretty: true)
+            |> Kaffy.Utils.json().encode!()
         end
 
       is_map(value) ->
-        Kaffy.Utils.json().encode!(value, escape: :html_safe, pretty: true)
+        Kaffy.Utils.json().encode!(value)
 
       is_binary(value) ->
         if String.valid?(value) do
