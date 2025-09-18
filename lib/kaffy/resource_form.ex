@@ -127,7 +127,7 @@ defmodule Kaffy.ResourceForm do
           false -> text_or_assoc(conn, schema, form, field, type, opts)
         end
 
-      t when t in [:binary_id, Ecto.ULID] ->
+      t when t in [:binary_id, Ecto.ULID, UUIDv7] ->
         case field in Kaffy.ResourceSchema.primary_keys(schema) do
           true -> text_input(form, field, opts)
           false -> text_or_assoc(conn, schema, form, field, type, opts)
@@ -196,7 +196,7 @@ defmodule Kaffy.ResourceForm do
 
         textarea(form, field, [value: value, rows: 4, placeholder: "JSON Content"] ++ opts)
 
-      {:parameterized, Ecto.Enum, %{values: values}} ->
+      {:parameterized, {Ecto.Enum, %{values: values}}} ->
         values = Enum.map(values, &to_string/1)
         value = Map.get(data, field, nil)
 
@@ -209,7 +209,7 @@ defmodule Kaffy.ResourceForm do
 
         select(form, field, enum_options, [class: "custom-select", value: value] ++ opts)
 
-      {:parameterized, Ecto.Enum, %{mappings: mappings, on_cast: on_cast}} ->
+      {:parameterized, {Ecto.Enum, %{mappings: mappings, on_cast: on_cast}}} ->
         value = Map.get(data, field, nil)
 
         # NOTE enum_options preserves the order of enum defined in the schema
@@ -223,7 +223,7 @@ defmodule Kaffy.ResourceForm do
 
         select(form, field, enum_options, [class: "custom-select", value: value] ++ opts)
 
-      {:array, {:parameterized, Ecto.Enum, %{values: values}}} ->
+      {:array, {:parameterized, {Ecto.Enum, %{values: values}}}} ->
         values = Enum.map(values, &to_string/1)
         value = Map.get(data, field, nil)
 
@@ -236,7 +236,7 @@ defmodule Kaffy.ResourceForm do
 
         multiple_select(form, field, enum_options, [value: value] ++ opts)
 
-      {:array, {:parameterized, Ecto.Enum, %{mappings: mappings, on_cast: on_cast}}} ->
+      {:array, {:parameterized, {Ecto.Enum, %{mappings: mappings, on_cast: on_cast}}}} ->
         value = Map.get(data, field, nil)
 
         # NOTE enum_options preserves the order of enum defined in the schema
@@ -426,7 +426,7 @@ defmodule Kaffy.ResourceForm do
                 options.type == :string or
                   (Kaffy.Utils.is_module(options.type) and
                      Kernel.function_exported?(options.type, :type, 0) and
-                     options.type.type == :string)
+                     options.type.type() == :string)
               end)
 
             popular_strings =
@@ -440,12 +440,18 @@ defmodule Kaffy.ResourceForm do
                 false -> elem(popular_strings, 0)
               end
 
+            # Get the primary key(s) for the associated schema
+            pk_fields = Kaffy.ResourceSchema.primary_keys(assoc)
+            primary_key = List.first(pk_fields)
+
             select(
               form,
               field,
               [{nil, nil}] ++
                 Enum.map(options, fn o ->
-                  {Map.get(o, string_field, "Resource ##{o.id}"), o.id}
+                  pk_value = Map.get(o, primary_key)
+                  display_value = Map.get(o, string_field, "Resource ##{pk_value}")
+                  {display_value, pk_value}
                 end),
               class: "custom-select",
               disabled: opts[:readonly]
