@@ -69,7 +69,8 @@ defmodule Kaffy.ResourceSchema do
       update: :editable,
       label: nil,
       type: nil,
-      choices: nil
+      choices: nil,
+      value: nil
     }
 
     Map.merge(default, options || %{})

@@ -17,10 +17,40 @@ defmodule Kaffy.ResourceForm do
     type = Map.get(options, :type, Kaffy.ResourceSchema.field_type(resource[:schema], field))
     permission = Map.get(options, :permission, :write)
     choices = Map.get(options, :choices)
+    value_option = Map.get(options, :value)
+
+    # Handle the :value option for bare form fields
+    opts =
+      case value_option do
+        nil ->
+          []
+
+        value_fn when is_function(value_fn) ->
+          computed_value = value_fn.(resource[:schema])
+          [value: computed_value]
+
+        static_value ->
+          [value: static_value]
+      end
 
     cond do
       !is_nil(choices) ->
-        select(form, field, choices, class: "custom-select")
+        select_opts = [class: "custom-select"]
+
+        select_opts =
+          case value_option do
+            nil ->
+              select_opts
+
+            value_fn when is_function(value_fn) ->
+              computed_value = value_fn.(resource[:schema])
+              Keyword.put(select_opts, :value, computed_value)
+
+            static_value ->
+              Keyword.put(select_opts, :value, static_value)
+          end
+
+        select(form, field, choices, select_opts)
 
       permission == :read ->
         content_tag(
@@ -29,7 +59,7 @@ defmodule Kaffy.ResourceForm do
         )
 
       true ->
-        build_html_input(resource[:schema], form, {field, options}, type, [])
+        build_html_input(resource[:schema], form, {field, options}, type, opts)
     end
   end
 
@@ -61,10 +91,40 @@ defmodule Kaffy.ResourceForm do
       end
 
     choices = Map.get(options, :choices)
+    value_option = Map.get(options, :value)
+
+    # Handle the :value option - compute initial value if function provided
+    opts =
+      case value_option do
+        nil ->
+          opts
+
+        value_fn when is_function(value_fn) ->
+          computed_value = value_fn.(changeset.data)
+          Keyword.put(opts, :value, computed_value)
+
+        static_value ->
+          Keyword.put(opts, :value, static_value)
+      end
 
     cond do
       !is_nil(choices) ->
-        select(form, field, choices, class: "custom-select", disabled: permission == :readonly)
+        select_opts = [class: "custom-select", disabled: permission == :readonly]
+
+        select_opts =
+          case value_option do
+            nil ->
+              select_opts
+
+            value_fn when is_function(value_fn) ->
+              computed_value = value_fn.(changeset.data)
+              Keyword.put(select_opts, :value, computed_value)
+
+            static_value ->
+              Keyword.put(select_opts, :value, static_value)
+          end
+
+        select(form, field, choices, select_opts)
 
       true ->
         build_html_input(
@@ -384,6 +444,7 @@ defmodule Kaffy.ResourceForm do
                       disabled: opts[:readonly],
                       aria_describedby: field
                     )
+
                   _ ->
                     text_input(form, field,
                       class: "form-control",
@@ -462,6 +523,7 @@ defmodule Kaffy.ResourceForm do
         case type do
           :id ->
             number_input(form, field, opts)
+
           _ ->
             text_input(form, field, opts)
         end

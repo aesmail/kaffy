@@ -78,7 +78,7 @@ defmodule Kaffy.ResourceAdmin do
 
   Supported options are:
 
-  `:label`, `:type`, `:choices`, and `:permission`
+  `:label`, `:type`, `:choices`, `:permission`, and `:value`
 
   `:type` can be any ecto type in addition to `:file` and `:textarea`
 
@@ -86,6 +86,9 @@ defmodule Kaffy.ResourceAdmin do
   the field will be rendered as a `<select>` element regardless of the actual field type.
 
   Setting `:permission` to `:read` will make the field non-editable. It is `:write` by default.
+
+  The `:value` option can be a function that takes the schema instance and returns the initial value
+  for the field. This is useful for setting default values or computed values.
 
   If you want to remove a field from being rendered, just remove it from the list.
 
@@ -102,7 +105,13 @@ defmodule Kaffy.ResourceAdmin do
       image: %{type: :file},
       status: %{choices: [{"Pending", "pending"}, {"Published", "published"}]},
       body: %{type: :textarea, rows: 3},
-      views: %{permission: :read}
+      views: %{permission: :read},
+      company_id: %{
+        label: "Company",
+        type: :select,
+        choices: company_choices(),
+        value: fn schema -> get_default_company_id(schema) end
+      }
     ]
   end
   ```
