@@ -2,7 +2,7 @@ defmodule Kaffy.ResourceSchema do
   @moduledoc false
 
   def primary_keys(schema) do
-    schema.__schema__(:primary_key)
+    schema.__schema__(:primary_key) || []
   end
 
   def excluded_fields(schema) do
@@ -99,7 +99,7 @@ defmodule Kaffy.ResourceSchema do
   end
 
   defp reorder_fields(fields_list, schema) do
-    [_id, first_field | _fields] = schema.__schema__(:fields)
+    [first_field | _fields] = schema.__schema__(:fields) -- [:id]
 
     # this is a "nice" feature to re-order the default fields to put the specified fields at the top/bottom of the form
     fields_list

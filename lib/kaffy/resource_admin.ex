@@ -162,9 +162,10 @@ defmodule Kaffy.ResourceAdmin do
   """
   def ordering(resource) do
     schema = resource[:schema]
-    [order_key | _] = ResourceSchema.primary_keys(schema)
-
-    Utils.get_assigned_value_or_default(resource, :ordering, desc: order_key)
+    case ResourceSchema.primary_keys(schema) do
+      [order_key | _] -> Utils.get_assigned_value_or_default(resource, :ordering, desc: order_key)
+      [] -> Utils.get_assigned_value_or_default(resource, :ordering, desc: :id)
+    end
   end
 
   @doc """
