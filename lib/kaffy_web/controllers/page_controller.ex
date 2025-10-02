@@ -1,7 +1,7 @@
 defmodule KaffyWeb.PageController do
   @moduledoc false
 
-  use Phoenix.Controller, namespace: KaffyWeb
+  use Phoenix.Controller, formats: [html: "View"]
 
   def index(conn, %{"slug" => slug}) do
     case Kaffy.ResourceAdmin.find_page(conn, slug) do

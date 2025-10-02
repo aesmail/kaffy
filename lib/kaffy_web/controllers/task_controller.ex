@@ -1,7 +1,7 @@
 defmodule KaffyWeb.TaskController do
   @moduledoc false
 
-  use Phoenix.Controller, namespace: KaffyWeb
+  use Phoenix.Controller, formats: [html: "View"]
 
   def index(conn, _params) do
     render(conn, "index.html")

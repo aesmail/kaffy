@@ -1,7 +1,7 @@
 defmodule KaffyWeb.HomeController do
   @moduledoc false
 
-  use Phoenix.Controller, namespace: KaffyWeb
+  use Phoenix.Controller, formats: [html: "View"]
 
   def index(conn, _params) do
     redirect(conn, to: Kaffy.Utils.home_page(conn))

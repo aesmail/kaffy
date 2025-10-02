@@ -25,7 +25,8 @@ defmodule Kaffy.Routes do
         plug(:fetch_flash)
         plug(:protect_from_forgery)
         plug(:put_secure_browser_headers)
-        plug(:put_root_layout, {KaffyWeb.LayoutView, :root})
+        # plug(:put_root_layout, html: {KaffyWeb.LayoutView, :root})
+        # plug(:put_layout, html: KaffyWeb.LayoutView)
       end
 
       scope unquote(scoped), KaffyWeb do

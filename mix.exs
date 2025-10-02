@@ -2,7 +2,7 @@ defmodule Kaffy.MixProject do
   use Mix.Project
 
   @source_url "https://github.com/aesmail/kaffy"
-  @version "0.10.3"
+  @version "0.11.0"
 
   def project do
     [
@@ -35,7 +35,7 @@ defmodule Kaffy.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:phoenix, "~> 1.7.10"},
+      {:phoenix, "~> 1.7.21 or ~> 1.8.0"},
       {:phoenix_html, "~> 4.0"},
       {:phoenix_html_helpers, "~> 1.0"},
       {:phoenix_view, "~> 2.0.2"},

@@ -31,3 +31,4 @@ kaffy-*.tar
 # Misc.
 .DS_Store
 .tool-versions
+mise.toml
